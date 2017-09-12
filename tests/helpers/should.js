@@ -45,12 +45,12 @@ const protoMethods = {
   },
   createNewFile: function(o){
     o.$name = 'createNewFile';
-    prop(o,{$function:Function,$arguments:[Array,Object,undefined],$exclude:undefined,$include:undefined,$testParameter:undefined,$callback:undefined,$errorObject:undefined,$file:String},(o)=>{
+    prop(o,{$function:Function,$arguments:[Array,Object,undefined],$exclude:undefined,$include:undefined,$testParameter:undefined,$callback:undefined,$errorObject:undefined,$file:[String,Function]},(o)=>{
       throw new TypeError(`${warn(o.$name)} ${o.message}`);
     });
     const u = this.utils;
     const negated = u.negated(this);
-    return [`it should ${negated?'not ':''}create new folder`,function(done){
+    return [`it should ${negated?'not ':''}create new file`,function(done){
       u.compareStates.call(u,{
         userContext:this,
         data:o,
@@ -281,6 +281,8 @@ const protoMethods = {
     },
     compareStates:function(obj){
       var that = this;
+      if(of(obj.data.$file,Function)&&obj.data.$file.name==='userContext') obj.data.$file = obj.data.$file.call(obj.userContext);
+      
       obj.before(function(beforeData){
         obj.data.$callback = 'done';
         var argsScenarios = that.prepareArgs({

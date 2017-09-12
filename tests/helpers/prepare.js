@@ -38,6 +38,14 @@ module.exports = {
     args(arguments,[String]);
     return this.utils.add(item,'dir',done);
   },
+  writeJSON:function(item,obj,done){
+    args(arguments,[String,[Object,Array,String,Number]]);
+    return this.utils.writeJson(item,obj,done);
+  },
+  writeFile:function(item,data,done){
+    args(arguments,[String,String]);
+    return this.utils.writeJson(item,data,done);
+  },
   utils:{
     remove:function(done){
       return new Promise((resolve,reject)=>{
@@ -106,6 +114,36 @@ module.exports = {
               re.ject(err);
             });
             }
+      });
+    },
+    writeJson:function(item,obj,done){
+      return new Promise((resolve,reject)=>{
+        const re = this.response(done,resolve,reject);
+        const pth = path.resolve(paths.rootDir,item);
+        fs.ensureFile(pth,(err)=>{
+          if(err) re.ject(new Error(`Could not write '${item}' file.`));
+          if(!err){
+            fs.writeJson(pth,obj,{spaces:2},(err)=>{
+              if(err) re.ject(new Error(`Could not write '${item}' file.`));
+              if(!err) re.solve(null);
+            });
+          }
+        });
+      });
+    },
+    writeFile:function(item,data,done){
+      return new Promise((resolve,reject)=>{
+        const re = this.response(done,resolve,reject);
+        const pth = path.resolve(paths.rootDir,item);
+        fs.ensureFile(pth,(err)=>{
+          if(err) re.ject(new Error(`Could not write '${item}' file.`));
+          if(!err){
+            fs.writeFile(pth,data,(err)=>{
+              if(err) re.ject(new Error(`Could not write '${item}' file.`));
+              if(!err) re.solve(null);
+            });
+          }
+        });
       });
     },
     response:function(done,resolve,reject){

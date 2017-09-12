@@ -1,10 +1,18 @@
 /* global expect, __dirname, it, xit */
 
 const path = require('path');
+const helpers = path.resolve('./tests/helpers');
 const should = require(path.resolve('./tests/helpers/should.js'));
 const testingModule = require(path.resolve('./index.js'));
+const prepare = require(path.resolve(helpers,'prepare.js'));
 
 describe("When the module function is executed",function(){
+  beforeAll(function(done){
+    prepare.remove()
+    .then(()=>prepare.resetTo())
+    .then(done)
+    .catch(done.fail);
+  });
   describe("without any arguments passed through it",function(){
     it.apply(this,should.throwError({
       $function:testingModule,
@@ -31,17 +39,17 @@ describe("When the module function is executed",function(){
       }));
 
     });
-    describe("with [Function] done-callback, but [Non-Array] structure arguments",function(){
+    describe("with [Function] done-callback, but [Non-Array|Non-String] structure arguments",function(){
       
       it.apply(this,should.not.throwError({
         $function:testingModule,
-        $exclude:'Array',
+        $exclude:['Array','String'],
         $testParameter:'structure'
       }));
 
       it.apply(this,should.runCallbackTimes({
         $function:testingModule,
-        $exclude:'Array',
+        $exclude:['Array','String'],
         $testParameter:'structure',
         $callback:'done',
         $times:1
@@ -49,17 +57,17 @@ describe("When the module function is executed",function(){
 
       it.apply(this,should.runCallbackError({
         $function:testingModule,
-        $exclude:'Array',
+        $exclude:['Array','String'],
         $testParameter:'structure',
         $callback:'done',
         $propertyName:'error',
         $errorObject:TypeError,
-        $message:/Invalid argument \[1\]. The \[.+\] argument has been passed, while the argument of type \[Array\] is expected\./i
+        $message:/Invalid argument \[1\]. The \[.+\] argument has been passed, while the argument of type \[Array|String\] is expected\./i
       }));
 
       it.apply(this,should.not.runCallback({
         $function:testingModule,
-        $exclude:'Array',
+        $exclude:['Array','String'],
         $testParameter:'structure',
         $callback:'each'
       }));

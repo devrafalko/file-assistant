@@ -24,13 +24,28 @@ const contentStructure = [
 
 const newContent = '#new{color:black;}\n';
 
-describe(`When the '${paths.name('prod.css')}' file does not exist in the '${paths.toDir}' folder\n`+
-         `and create('${paths.toDir}',structure,(done)=>{},(each)=>{}) is fired\n`+
-         `and the structure contains an item with file:'${paths.name('prod.css')}' property`,function(){
+describe(`When the file does not exist in the root folder\n`+
+         `and the structure contains an item with that file`,function(){
 
   describe(`regardless the 'overwrite' property is true, false or undefined`,function(){
     
-      it(`it should create '${name('prod.css')}' file in '${paths.toDir}' folder`,function(){
+      beforeAll(function(done){
+        this.structure = [{file:paths.name('prod.css')}];
+        this.filePath = paths.to('prod.css');
+        prepare.remove()
+        .then(()=>prepare.resetFrom())
+        .then(()=>prepare.resetTo())
+        .then(done)
+        .catch(done.fail);
+      });
+    
+      it.apply(this,should.createNewFile({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $file:should.context('filePath')
+      }));
+      
+      xit(`it should create '${paths.name('prod.css')}' file in '${paths.toDir}' folder`,function(){
         expect(true).toBe(true);
       });
       
@@ -40,7 +55,7 @@ describe(`When the '${paths.name('prod.css')}' file does not exist in the '${pat
       xit(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -72,7 +87,7 @@ describe(`When the '${paths.name('prod.css')}' file does not exist in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -88,7 +103,7 @@ describe(`When the '${paths.name('prod.css')}' file does not exist in the '${pat
       });
   });
 
-  describe(`and copy:'${paths.from('dist.css')}' property, regardless 'overwrite' property is true, false or undefined`,function(){
+  xdescribe(`and copy:'${paths.from('dist.css')}' property, regardless 'overwrite' property is true, false or undefined`,function(){
       it(`it should copy the file from '${paths.from('dist.css')}' and paste it to '${paths.to('prod.css')}'`,function(){
         expect(true).toBe(false);
       });
@@ -104,7 +119,7 @@ describe(`When the '${paths.name('prod.css')}' file does not exist in the '${pat
       it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -136,7 +151,7 @@ describe(`When the '${paths.name('prod.css')}' file does not exist in the '${pat
           expect(true).toBe(false);
         });
       });      
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -152,7 +167,7 @@ describe(`When the '${paths.name('prod.css')}' file does not exist in the '${pat
       });
   });
 
-  describe(`and move:'${paths.from('dist.css')}' property, regardless 'overwrite' property is true, false or undefined`,function(){
+  xdescribe(`and move:'${paths.from('dist.css')}' property, regardless 'overwrite' property is true, false or undefined`,function(){
       it(`it should cut the file from '${paths.from('dist.css')}' and paste it to '${paths.to('prod.css')}'`,function(){
         expect(true).toBe(false);
       });
@@ -168,7 +183,7 @@ describe(`When the '${paths.name('prod.css')}' file does not exist in the '${pat
       it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -200,7 +215,7 @@ describe(`When the '${paths.name('prod.css')}' file does not exist in the '${pat
           expect(true).toBe(false);
         });
       });      
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -216,7 +231,7 @@ describe(`When the '${paths.name('prod.css')}' file does not exist in the '${pat
       });
   });
 
-  describe(`and content:'${newContent}' property, regardless 'overwrite' property is true, false or undefined`,function(){
+  xdescribe(`and content:'${newContent}' property, regardless 'overwrite' property is true, false or undefined`,function(){
       it(`it should create '${paths.to('prod.css')}' file`,function(){
         expect(true).toBe(false);
       });
@@ -226,7 +241,7 @@ describe(`When the '${paths.name('prod.css')}' file does not exist in the '${pat
       it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -258,7 +273,7 @@ describe(`When the '${paths.name('prod.css')}' file does not exist in the '${pat
           expect(true).toBe(false);
         });
       });      
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -274,7 +289,7 @@ describe(`When the '${paths.name('prod.css')}' file does not exist in the '${pat
       });
   });
 
-  describe(`and data:'${paths.from('dist.css')}' property, regardless 'overwrite' property is true, false or undefined`,function(){
+  xdescribe(`and data:'${paths.from('dist.css')}' property, regardless 'overwrite' property is true, false or undefined`,function(){
       it(`it should create '${paths.to('prod.css')}' file`,function(){
         expect(true).toBe(false);
       });
@@ -287,7 +302,7 @@ describe(`When the '${paths.name('prod.css')}' file does not exist in the '${pat
       it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -319,7 +334,7 @@ describe(`When the '${paths.name('prod.css')}' file does not exist in the '${pat
           expect(true).toBe(false);
         });
       });      
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -336,10 +351,10 @@ describe(`When the '${paths.name('prod.css')}' file does not exist in the '${pat
   });
 });
 
-describe(`When the '${paths.name('prod.css')}' file already exists in the '${paths.toDir}' folder\n`+
+xdescribe(`When the '${paths.name('prod.css')}' file already exists in the '${paths.toDir}' folder\n`+
          `and create('${paths.toDir}',structure,(done)=>{},(each)=>{}) is fired\n`+
          `and the structure contains an item with file:'${paths.name('prod.css')}' property`,function(){
-  describe("and overwrite:true property",function(){
+  xdescribe("and overwrite:true property",function(){
       it(`it should replace existing '${paths.to('prod.css')}' file with the new '${paths.to('prod.css')}' file`,function(){
         expect(true).toBe(false);
       });
@@ -352,7 +367,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -384,7 +399,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -400,7 +415,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       });
   });
 
-  describe(`and overwrite:false property\n(or not overwrite property at all - because false is default)`,function(){
+  xdescribe(`and overwrite:false property\n(or not overwrite property at all - because false is default)`,function(){
       it(`the action should be aborted, the new file should not be created`,function(){
         expect(true).toBe(false);
       });
@@ -410,7 +425,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -442,7 +457,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -458,7 +473,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       });
   });
 
-  describe(`and copy:'${paths.from('dist.css')}' and overwrite:true property`,function(){
+  xdescribe(`and copy:'${paths.from('dist.css')}' and overwrite:true property`,function(){
       it(`it should replace existing '${paths.to('prod.css')}' file with the copied '${paths.from('dist.css')}' file`,function(){
         expect(true).toBe(false);
       });
@@ -474,7 +489,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -506,7 +521,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -522,7 +537,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       });
   });
 
-  describe(`and copy:'${paths.from('dist.css')}' and overwrite:false property\n(or not overwrite property at all - because false is default)`,function(){
+  xdescribe(`and copy:'${paths.from('dist.css')}' and overwrite:false property\n(or not overwrite property at all - because false is default)`,function(){
       it(`the action should be aborted, the new file should not be copied`,function(){
         expect(true).toBe(false);
       });
@@ -539,7 +554,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
         expect(true).toBe(false);
       });
 
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -571,7 +586,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -587,7 +602,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       });
   });
 
-  describe(`and move:'${paths.from('dist.css')}' and overwrite:true property`,function(){
+  xdescribe(`and move:'${paths.from('dist.css')}' and overwrite:true property`,function(){
       it(`it should replace existing '${paths.to('prod.css')}' file with the moved '${paths.from('dist.css')}' file`,function(){
         expect(true).toBe(false);
       });
@@ -604,7 +619,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
         expect(true).toBe(false);
       });
 
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -636,7 +651,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
           expect(true).toBe(false);
         });
       });      
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -652,7 +667,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       });
   });
 
-  describe(`and move:'${paths.from('dist.css')}' and overwrite:false property\n(or not overwrite property at all - because false is default)`,function(){
+  xdescribe(`and move:'${paths.from('dist.css')}' and overwrite:false property\n(or not overwrite property at all - because false is default)`,function(){
       it(`the action should be aborted, the new file should not be moved`,function(){
         expect(true).toBe(false);
       });
@@ -668,7 +683,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -700,7 +715,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -716,14 +731,14 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       });    
   });
 
-  describe(`and content:'${newContent}' property and overwrite:true property`,function(){
+  xdescribe(`and content:'${newContent}' property and overwrite:true property`,function(){
       it(`it should replace existing '${paths.to('prod.css')}' file content with the following '${newContent}' content`,function(){
         expect(true).toBe(false);
       });
       it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -755,7 +770,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
           expect(true).toBe(false);
         });
       });      
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -771,7 +786,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       });
   });
 
-  describe(`and content:'${newContent}' property and overwrite:false property\n(or not overwrite property at all - because false is default)`,function(){
+  xdescribe(`and content:'${newContent}' property and overwrite:false property\n(or not overwrite property at all - because false is default)`,function(){
       it(`the action should not be aborted`,function(){
         expect(true).toBe(false);
       });
@@ -781,7 +796,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -813,7 +828,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
           expect(true).toBe(false);
         });
       });      
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -829,7 +844,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       });
   });
 
-  describe(`and data:'${paths.from('dist.css')}' property and overwrite:true property`,function(){
+  xdescribe(`and data:'${paths.from('dist.css')}' property and overwrite:true property`,function(){
       it(`it should replace existing '${paths.to('prod.css')}' file content with the content of '${paths.from('dist.css')}' file`,function(){
         expect(true).toBe(false);
       });
@@ -845,7 +860,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -877,7 +892,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
           expect(true).toBe(false);
         });
       });      
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -893,7 +908,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       });        
   });
 
-  describe(`and data:'${paths.from('dist.css')}' property and overwrite:false property\n(or not overwrite property at all - because false is default)`,function(){
+  xdescribe(`and data:'${paths.from('dist.css')}' property and overwrite:false property\n(or not overwrite property at all - because false is default)`,function(){
       it(`the action should not be aborted`,function(){
         expect(true).toBe(false);
       });
@@ -906,7 +921,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
       it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -938,7 +953,7 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
           expect(true).toBe(false);
         });
       });      
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -955,11 +970,11 @@ describe(`When the '${paths.name('prod.css')}' file already exists in the '${pat
   });
 });
 
-describe(`When the '${paths.name('styles')}' folder does not exist in the '${paths.toDir}' folder\n`+
+xdescribe(`When the '${paths.name('styles')}' folder does not exist in the '${paths.toDir}' folder\n`+
          `and create('${paths.toDir}',structure,(done)=>{},(each)=>{}) is fired\n`+
          `and the structure contains an item with dir:'${paths.name('styles')}' property`,function(){
            
-  describe("regardless the 'overwrite' property is true, false or undefined",function(){
+  xdescribe("regardless the 'overwrite' property is true, false or undefined",function(){
       it(`it should create '${paths.name('styles')}' dir in '${paths.to('styles')}' folder`,function(){
         expect(true).toBe(false);
       });
@@ -969,7 +984,7 @@ describe(`When the '${paths.name('styles')}' folder does not exist in the '${pat
       it("the creating process of subsequent item on the structure list should not be aborted",function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1002,7 +1017,7 @@ describe(`When the '${paths.name('styles')}' folder does not exist in the '${pat
         });
 
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1018,7 +1033,7 @@ describe(`When the '${paths.name('styles')}' folder does not exist in the '${pat
       });
   });
   
-  describe(`and the property content:[ {file:'${paths.name('styles/mixins.scss')}'}, {dir:'${paths.name('styles/css')}'} ]\n`+
+  xdescribe(`and the property content:[ {file:'${paths.name('styles/mixins.scss')}'}, {dir:'${paths.name('styles/css')}'} ]\n`+
             `regardless 'overwrite' property is true, false or undefined`,function(){
              
       it(`it should create '${paths.name('styles')}' folder in '${paths.to('styles')}' folder`,function(){
@@ -1030,7 +1045,7 @@ describe(`When the '${paths.name('styles')}' folder does not exist in the '${pat
       it("the creating process of subsequent item on the structure list should not be aborted",function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1062,7 +1077,7 @@ describe(`When the '${paths.name('styles')}' folder does not exist in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1078,7 +1093,7 @@ describe(`When the '${paths.name('styles')}' folder does not exist in the '${pat
       });    
   });
 
-  describe(`and copy:'${paths.from('styles')}' property, regardless 'overwrite' property is true, false or undefined`,function(){
+  xdescribe(`and copy:'${paths.from('styles')}' property, regardless 'overwrite' property is true, false or undefined`,function(){
       it(`it should copy the folder from '${paths.from('styles')}' and paste it to '${paths.to('styles')}'`,function(){
         expect(true).toBe(false);
       });
@@ -1091,7 +1106,7 @@ describe(`When the '${paths.name('styles')}' folder does not exist in the '${pat
       it("the creating process of subsequent item on the structure list should not be aborted",function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1124,7 +1139,7 @@ describe(`When the '${paths.name('styles')}' folder does not exist in the '${pat
         });
 
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1140,7 +1155,7 @@ describe(`When the '${paths.name('styles')}' folder does not exist in the '${pat
       });
   });
 
-  describe(`and move:'${paths.from('styles')}' property, regardless 'overwrite' property is true, false or undefined`,function(){
+  xdescribe(`and move:'${paths.from('styles')}' property, regardless 'overwrite' property is true, false or undefined`,function(){
       it(`it should cut the folder from '${paths.from('styles')}' and paste it to '${paths.to('styles')}'`,function(){
         expect(true).toBe(false);
       });
@@ -1153,7 +1168,7 @@ describe(`When the '${paths.name('styles')}' folder does not exist in the '${pat
       it("the creating process of subsequent item on the structure list should not be aborted",function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1185,7 +1200,7 @@ describe(`When the '${paths.name('styles')}' folder does not exist in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1201,7 +1216,7 @@ describe(`When the '${paths.name('styles')}' folder does not exist in the '${pat
       });
   });
 
-  describe(`and merge:'${paths.from('styles')}' property, regardless 'overwrite' property is true, false or undefined`,function(){
+  xdescribe(`and merge:'${paths.from('styles')}' property, regardless 'overwrite' property is true, false or undefined`,function(){
       it(`it should copy the folder from '${paths.from('styles')}' and paste it to '${paths.to('styles')}'`,function(){
         expect(true).toBe(false);
       });
@@ -1214,7 +1229,7 @@ describe(`When the '${paths.name('styles')}' folder does not exist in the '${pat
       it("the creating process of subsequent item on the structure list should not be aborted",function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1246,7 +1261,7 @@ describe(`When the '${paths.name('styles')}' folder does not exist in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1263,11 +1278,11 @@ describe(`When the '${paths.name('styles')}' folder does not exist in the '${pat
   });
 });
 
-describe(`When the '${paths.name('styles')}' folder already exists in the '${paths.toDir}' folder\n`+
+xdescribe(`When the '${paths.name('styles')}' folder already exists in the '${paths.toDir}' folder\n`+
          `and create('${paths.toDir}',structure,(done)=>{},(each)=>{}) is fired\n`+
          `and the structure contains an item with dir:'${paths.name('styles')}' property`,function(){
 
-  describe("and overwrite:true property",function(){
+  xdescribe("and overwrite:true property",function(){
       it(`it should replace existing '${paths.to('styles')}' folder with the new '${paths.from('styles')}' folder`,function(){
         expect(true).toBe(false);
       });
@@ -1277,7 +1292,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
       it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       });    
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1309,7 +1324,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1325,7 +1340,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
       });
   });
 
-  describe("and overwrite:false property\n(or not overwrite property at all - because false is default)",function(){
+  xdescribe("and overwrite:false property\n(or not overwrite property at all - because false is default)",function(){
       it(`the action should be aborted, it should not replace existing '${paths.to('styles')}' folder with the new '${paths.to('styles')}' folder`,function(){
         expect(true).toBe(false);
       });
@@ -1335,7 +1350,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
       it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       }); 
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1367,7 +1382,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1383,7 +1398,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
       }); 
   });
 
-  describe(`and the property content:[ {file:'${paths.name('styles/mixins.scss')}'}, {dir:'${paths.name('styles/css')}'} ]\n`+
+  xdescribe(`and the property content:[ {file:'${paths.name('styles/mixins.scss')}'}, {dir:'${paths.name('styles/css')}'} ]\n`+
             `and overwrite:true property`,function(){
 
       it(`it should replace existing '${paths.to('styles')}' folder with the new '${paths.to('styles')}' folder`,function(){
@@ -1398,7 +1413,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
       it("the creating process of subsequent item on the structure list should not be aborted",function(){
         expect(true).toBe(false);
       });              
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1430,7 +1445,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1446,7 +1461,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
       });
   });
 
-  describe(`and the property content:`+
+  xdescribe(`and the property content:`+
            JSON.stringify(contentStructure,null,2)+
            `\nand overwrite:false property (or not overwrite property at all - because false is default)`,function(){
 
@@ -1460,7 +1475,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         expect(true).toBe(false);
       });
 
-      describe(`the each callback for '${paths.to('styles')}' folder should pass an Object with the property`,function(){
+      xdescribe(`the each callback for '${paths.to('styles')}' folder should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1492,8 +1507,8 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe("for the 'content' property items - they should behave according to their own 'overwrite' settings, that is",function(){
-        describe(`for the content ${paths.name('styles/mixins.scss')} file of ${paths.rel('styles/mixins.scss')} path`,function(){
+      xdescribe("for the 'content' property items - they should behave according to their own 'overwrite' settings, that is",function(){
+        xdescribe(`for the content ${paths.name('styles/mixins.scss')} file of ${paths.rel('styles/mixins.scss')} path`,function(){
           it(`the content of '${paths.from('dist.css')}' file should be appended into the existing '${paths.to('styles/mixins.scss')}' file at the end of its content`,function(){
             expect(true).toBe(false);
           });
@@ -1501,7 +1516,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
             expect(true).toBe(false);
           });
 
-          describe(`the each callback for '${paths.to('styles/mixins.scss')}' folder should pass an Object with the property`,function(){
+          xdescribe(`the each callback for '${paths.to('styles/mixins.scss')}' folder should pass an Object with the property`,function(){
             it(`error:null`,function(){
               expect(true).toBe(false);
             });
@@ -1535,7 +1550,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           });
         });
         
-        describe(`for the content ${paths.name('styles/imports.scss')} file of ${paths.rel('styles/imports.scss')} path`,function(){
+        xdescribe(`for the content ${paths.name('styles/imports.scss')} file of ${paths.rel('styles/imports.scss')} path`,function(){
           it(`it should copy the file from '${paths.from('styles/imports.scss')}' and paste it to '${paths.to('styles/imports.scss')}'`,function(){
             expect(true).toBe(false);
           });
@@ -1548,7 +1563,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           it(`the copied '${paths.name('styles/imports.scss')}' and pasted '${paths.name('styles/imports.scss')}' files should have the same content`,function(){
             expect(true).toBe(false);
           });
-          describe(`the each callback should pass an Object with the property`,function(){
+          xdescribe(`the each callback should pass an Object with the property`,function(){
             it(`error:null`,function(){
               expect(true).toBe(false);
             });
@@ -1582,7 +1597,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           });
         });
         
-        describe(`for the content ${paths.name('styles/css')} dir of ${paths.rel('styles/css')} path`,function(){
+        xdescribe(`for the content ${paths.name('styles/css')} dir of ${paths.rel('styles/css')} path`,function(){
           it(`it should replace existing '${paths.to('styles/css')}' folder with the new '${paths.to('styles/css')}' folder`,function(){
             expect(true).toBe(false);
           });
@@ -1592,7 +1607,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           it(`the new created '${paths.name('styles/css')}' folder should contain '${paths.name('styles/css/main.css')}' file and '${paths.name('styles/css/extra.css')}' file`,function(){
             expect(true).toBe(false);
           });
-          describe(`the each callback for '${paths.name('styles/css')}' folder should pass an Object with the property`,function(){
+          xdescribe(`the each callback for '${paths.name('styles/css')}' folder should pass an Object with the property`,function(){
             it(`error:null`,function(){
               expect(true).toBe(false);
             });
@@ -1625,7 +1640,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
             });
           });
 
-          describe(`the each callback for '${paths.name('styles/css/main.css')}' file should pass an Object with the property`,function(){
+          xdescribe(`the each callback for '${paths.name('styles/css/main.css')}' file should pass an Object with the property`,function(){
             it(`error:null`,function(){
               expect(true).toBe(false);
             });
@@ -1657,7 +1672,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
               expect(true).toBe(false);
             });
           });
-          describe(`the each callback for '${paths.name('styles/css/extra.css')}' file should pass an Object with the property`,function(){
+          xdescribe(`the each callback for '${paths.name('styles/css/extra.css')}' file should pass an Object with the property`,function(){
             it(`error:null`,function(){
               expect(true).toBe(false);
             });
@@ -1691,14 +1706,14 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           });
         });
         
-        describe(`for the content ${paths.name('styles/scss')} dir of ${paths.rel('styles/scss')} path`,function(){
+        xdescribe(`for the content ${paths.name('styles/scss')} dir of ${paths.rel('styles/scss')} path`,function(){
           it(`it should create '${paths.name('styles/scss')}' folder in '${paths.to('styles/scss')}' folder`,function(){
             expect(true).toBe(false);
           });
           it(`the new created '${paths.name('styles/scss')}' folder should contain '${paths.name('styles/scss/main.scss')}' file`,function(){
             expect(true).toBe(false);
           });
-          describe(`the each callback for '${paths.name('styles/scss')}' folder should pass an Object with the property`,function(){
+          xdescribe(`the each callback for '${paths.name('styles/scss')}' folder should pass an Object with the property`,function(){
             it(`error:null`,function(){
               expect(true).toBe(false);
             });
@@ -1731,7 +1746,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
             });
           });
           
-          describe(`the each callback for '${paths.name('styles/scss/main.scss')}' file should pass an Object with the property`,function(){
+          xdescribe(`the each callback for '${paths.name('styles/scss/main.scss')}' file should pass an Object with the property`,function(){
             it(`error:null`,function(){
               expect(true).toBe(false);
             });
@@ -1766,7 +1781,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         });
      
       });  
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1788,7 +1803,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
       });
   });
 
-  describe(`and copy:'${paths.from('styles')}' and overwrite:true property`,function(){
+  xdescribe(`and copy:'${paths.from('styles')}' and overwrite:true property`,function(){
       it(`it should replace existing '${paths.to('styles')}' folder with the copied '${paths.from('styles')}' folder`,function(){
         expect(true).toBe(false);
       });
@@ -1805,7 +1820,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         expect(true).toBe(false);
       });
       
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1837,7 +1852,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1853,7 +1868,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
       });
   });
 
-  describe(`and copy:'${paths.from('styles')}' and 'overwrite:false' property\n(or not overwrite property at all - because false is default)`,function(){
+  xdescribe(`and copy:'${paths.from('styles')}' and 'overwrite:false' property\n(or not overwrite property at all - because false is default)`,function(){
       it(`the action should be aborted, it should not replace existing '${paths.to('styles')}' folder with the new '${paths.from('styles')}' folder`,function(){
         expect(true).toBe(false);
       });  
@@ -1869,7 +1884,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
       it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
         expect(true).toBe(false);
       });    
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1901,7 +1916,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1917,7 +1932,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
       });
   });
 
-  describe(`and move:'${paths.from('styles')}' and overwrite:true property`,function(){
+  xdescribe(`and move:'${paths.from('styles')}' and overwrite:true property`,function(){
       it(`it should replace existing '${paths.to('styles')}' folder with the moved '${paths.from('styles')}' folder`,function(){
         expect(true).toBe(false);
       });
@@ -1933,7 +1948,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
       it("the creating process of subsequent item on the structure list should not be aborted",function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1965,7 +1980,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -1981,7 +1996,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
       });
   });
 
-  describe(`and move:'${paths.from('styles')}' and overwrite:false property\n(or not overwrite property at all - because false is default)`,function(){
+  xdescribe(`and move:'${paths.from('styles')}' and overwrite:false property\n(or not overwrite property at all - because false is default)`,function(){
       it(`the action should be aborted, it should not replace existing '${paths.to('styles')}' folder with the new '${paths.from('styles')}' folder`,function(){
         expect(true).toBe(false);
       });  
@@ -1997,7 +2012,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
       it("the creating process of subsequent item on the structure list should not be aborted",function(){
         expect(true).toBe(false);
       });
-      describe(`the each callback should pass an Object with the property`,function(){
+      xdescribe(`the each callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -2029,7 +2044,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           expect(true).toBe(false);
         });
       });
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -2045,16 +2060,16 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
       });
   });
 
-  describe(`and merge:'${paths.from('styles')}' and overwrite:true property`,function(){
+  xdescribe(`and merge:'${paths.from('styles')}' and overwrite:true property`,function(){
       it(`after the merging process, the merged ${paths.to('styles')} folder should contain the files and folders of both merging ${paths.from('styles')} folder and the merged ${paths.to('styles')} folder before merge process`,function(){
         expect(true).toBe(false);
       });
       
-      describe(`for the '${paths.from('styles')}' folder`,function(){
+      xdescribe(`for the '${paths.from('styles')}' folder`,function(){
         it(`the folder in '${paths.from('styles')}' should be still there`,function(){
           expect(true).toBe(false);
         });
-        describe(`the each callback should pass an Object with the property`,function(){
+        xdescribe(`the each callback should pass an Object with the property`,function(){
           it(`error:null`,function(){
             expect(true).toBe(false);
           });
@@ -2088,7 +2103,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         });
       });
       
-      describe(`for the '${paths.from('styles/imports.scss')}' file`,function(){
+      xdescribe(`for the '${paths.from('styles/imports.scss')}' file`,function(){
         it(`it should copy the file from '${paths.from('styles/imports.scss')}' and paste it to '${paths.to('styles/imports.scss')}'`,function(){
           expect(true).toBe(false);
         });
@@ -2101,7 +2116,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         it(`the copied '${paths.name('styles/imports.scss')}' and pasted '${paths.name('styles/imports.scss')}' files should have the same content`,function(){
           expect(true).toBe(false);
         });
-        describe(`the each callback should pass an Object with the property`,function(){
+        xdescribe(`the each callback should pass an Object with the property`,function(){
           it(`error:null`,function(){
             expect(true).toBe(false);
           });
@@ -2135,7 +2150,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         });
       });
 
-      describe(`for the '${paths.from('styles/scss')}' folder`,function(){
+      xdescribe(`for the '${paths.from('styles/scss')}' folder`,function(){
         it(`it should copy the folder from '${paths.from('styles/scss')}' and paste it to '${paths.to('styles/scss')}'`,function(){
           expect(true).toBe(false);
         });
@@ -2145,7 +2160,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         it(`the copied folder in '${paths.from('styles/scss')}' should be still there with all its contents`,function(){
           expect(true).toBe(false);
         });        
-        describe(`the each callback for '${paths.from('styles/scss')}' folder should pass an Object with the property`,function(){
+        xdescribe(`the each callback for '${paths.from('styles/scss')}' folder should pass an Object with the property`,function(){
           it(`error:null`,function(){
             expect(true).toBe(false);
           });
@@ -2177,7 +2192,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
             expect(true).toBe(false);
           });
         });
-        describe(`the each callback for '${paths.from('styles/scss/main.scss')}' file should pass an Object with the property`,function(){
+        xdescribe(`the each callback for '${paths.from('styles/scss/main.scss')}' file should pass an Object with the property`,function(){
           it(`error:null`,function(){
             expect(true).toBe(false);
           });
@@ -2211,11 +2226,11 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         });
       });
 
-      describe(`for the '${paths.from('styles/css')}' folder`,function(){
+      xdescribe(`for the '${paths.from('styles/css')}' folder`,function(){
         it(`the folder in '${paths.from('styles/css')}' should be still there`,function(){
           expect(true).toBe(false);
         });
-        describe(`the each callback should pass an Object with the property`,function(){
+        xdescribe(`the each callback should pass an Object with the property`,function(){
           it(`error:null`,function(){
             expect(true).toBe(false);
           });
@@ -2249,7 +2264,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         });
       });
 
-      describe(`for the '${paths.from('styles/css/extra.css')}' file`,function(){
+      xdescribe(`for the '${paths.from('styles/css/extra.css')}' file`,function(){
         it(`it should copy the file from '${paths.from('styles/css/extra.css')}' and paste it to '${paths.to('styles/css/extra.css')}'`,function(){
           expect(true).toBe(false);
         });
@@ -2262,7 +2277,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         it(`the copied '${paths.from('styles/css/extra.css')}' and pasted '${paths.to('styles/css/extra.css')}' files should have the same content`,function(){
           expect(true).toBe(false);
         });
-        describe(`the each callback should pass an Object with the property`,function(){
+        xdescribe(`the each callback should pass an Object with the property`,function(){
           it(`error:null`,function(){
             expect(true).toBe(false);
           });
@@ -2295,7 +2310,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           });
         });
       });
-      describe(`for the '${paths.to('styles/css/main.css')}' file`,function(){
+      xdescribe(`for the '${paths.to('styles/css/main.css')}' file`,function(){
         it(`it should replace existing '${paths.to('styles/css/main.css')}' file with the copied '${paths.to('styles/css/main.css')}' file`,function(){
           expect(true).toBe(false);
         });
@@ -2311,7 +2326,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         it(`the creating process of subsequent item on the structure list should not be aborted`,function(){
           expect(true).toBe(false);
         });
-        describe(`the each callback should pass an Object with the property`,function(){
+        xdescribe(`the each callback should pass an Object with the property`,function(){
           it(`error:null`,function(){
             expect(true).toBe(false);
           });
@@ -2345,7 +2360,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         });
       });
 
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });
@@ -2360,16 +2375,16 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         });
       });
   });
-  describe(`and merge:'${paths.from('styles')}' and overwrite:false property\n(or not overwrite property at all - because false is default)`,function(){
+  xdescribe(`and merge:'${paths.from('styles')}' and overwrite:false property\n(or not overwrite property at all - because false is default)`,function(){
       it(`after the merging process, the merged ${paths.to('styles')} folder should contain the files and folders of both merging ${paths.from('styles')} folder and the merged ${paths.to('styles')} folder before merge process`,function(){
         expect(true).toBe(false);
       });
       
-      describe(`for the '${paths.from('styles')}' folder`,function(){
+      xdescribe(`for the '${paths.from('styles')}' folder`,function(){
         it(`the folder in '${paths.from('styles')}' should be still there`,function(){
           expect(true).toBe(false);
         });
-        describe(`the each callback should pass an Object with the property`,function(){
+        xdescribe(`the each callback should pass an Object with the property`,function(){
           it(`error:null`,function(){
             expect(true).toBe(false);
           });
@@ -2403,7 +2418,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         });
       });
       
-      describe(`for the '${paths.from('styles/imports.scss')}' file`,function(){
+      xdescribe(`for the '${paths.from('styles/imports.scss')}' file`,function(){
         it(`it should copy the file from '${paths.from('styles/imports.scss')}' and paste it to '${paths.to('styles/imports.scss')}'`,function(){
           expect(true).toBe(false);
         });
@@ -2416,7 +2431,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         it(`the copied '${paths.name('styles/imports.scss')}' and pasted '${paths.name('styles/imports.scss')}' files should have the same content`,function(){
           expect(true).toBe(false);
         });
-        describe(`the each callback should pass an Object with the property`,function(){
+        xdescribe(`the each callback should pass an Object with the property`,function(){
           it(`error:null`,function(){
             expect(true).toBe(false);
           });
@@ -2450,7 +2465,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         });
       });
 
-      describe(`for the '${paths.from('styles/scss')}' folder`,function(){
+      xdescribe(`for the '${paths.from('styles/scss')}' folder`,function(){
         it(`it should copy the folder from '${paths.from('styles/scss')}' and paste it to '${paths.to('styles/scss')}'`,function(){
           expect(true).toBe(false);
         });
@@ -2460,7 +2475,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         it(`the copied folder in '${paths.from('styles/scss')}' should be still there with all its contents`,function(){
           expect(true).toBe(false);
         });        
-        describe(`the each callback for '${paths.from('styles/scss')}' folder should pass an Object with the property`,function(){
+        xdescribe(`the each callback for '${paths.from('styles/scss')}' folder should pass an Object with the property`,function(){
           it(`error:null`,function(){
             expect(true).toBe(false);
           });
@@ -2492,7 +2507,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
             expect(true).toBe(false);
           });
         });
-        describe(`the each callback for '${paths.from('styles/scss/main.scss')}' file should pass an Object with the property`,function(){
+        xdescribe(`the each callback for '${paths.from('styles/scss/main.scss')}' file should pass an Object with the property`,function(){
           it(`error:null`,function(){
             expect(true).toBe(false);
           });
@@ -2526,11 +2541,11 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         });
       });
 
-      describe(`for the '${paths.from('styles/css')}' folder`,function(){
+      xdescribe(`for the '${paths.from('styles/css')}' folder`,function(){
         it(`the folder in '${paths.from('styles/css')}' should be still there`,function(){
           expect(true).toBe(false);
         });
-        describe(`the each callback should pass an Object with the property`,function(){
+        xdescribe(`the each callback should pass an Object with the property`,function(){
           it(`error:null`,function(){
             expect(true).toBe(false);
           });
@@ -2564,7 +2579,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         });
       });
 
-      describe(`for the '${paths.from('styles/css/extra.css')}' file`,function(){
+      xdescribe(`for the '${paths.from('styles/css/extra.css')}' file`,function(){
         it(`it should copy the file from '${paths.from('styles/css/extra.css')}' and paste it to '${paths.to('styles/css/extra.css')}'`,function(){
           expect(true).toBe(false);
         });
@@ -2577,7 +2592,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         it(`the copied '${paths.from('styles/css/extra.css')}' and pasted '${paths.to('styles/css/extra.css')}' files should have the same content`,function(){
           expect(true).toBe(false);
         });
-        describe(`the each callback should pass an Object with the property`,function(){
+        xdescribe(`the each callback should pass an Object with the property`,function(){
           it(`error:null`,function(){
             expect(true).toBe(false);
           });
@@ -2610,7 +2625,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           });
         });
       });
-      describe(`for the '${paths.to('styles/css/main.css')}' file`,function(){
+      xdescribe(`for the '${paths.to('styles/css/main.css')}' file`,function(){
 
         it(`the action should be aborted, the '${paths.to('styles/css/main.css')}' file should not be copied`,function(){
           expect(true).toBe(false);
@@ -2625,7 +2640,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
           expect(true).toBe(false);
         });
 
-        describe(`the each callback should pass an Object with the property`,function(){
+        xdescribe(`the each callback should pass an Object with the property`,function(){
           it(`error:null`,function(){
             expect(true).toBe(false);
           });
@@ -2659,7 +2674,7 @@ describe(`When the '${paths.name('styles')}' folder already exists in the '${pat
         });        
       });
 
-      describe(`the done callback should pass an Object with the property`,function(){
+      xdescribe(`the done callback should pass an Object with the property`,function(){
         it(`error:null`,function(){
           expect(true).toBe(false);
         });

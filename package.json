@@ -1,15 +1,20 @@
 {
-  "name": "structure-dirs",
+  "name": "file-assistant",
   "version": "0.1.0",
   "description": "Create the folders and files contents according to the given [Array] structure.",
   "main": "index.js",
   "scripts": {
     "test": "node tests/jasmine.conf.js",
-    "open-dir":"start ."
+    "open-dir": "start ."
   },
   "keywords": [
     "contents",
     "content",
+    "recursive",
+    "recurse",
+    "fs",
+    "file-system",
+    "file system",
     "folders",
     "files",
     "file",
@@ -28,21 +33,15 @@
   "author": "Paweł Rafałko",
   "license": "MIT",
   "dependencies": {
-    "fs-extra": "^4.0.0",
     "typeof-arguments": "^3.1.0",
     "typeof-properties": "^1.1.1",
-    "of-type": "^2.1.0",
+    "list-contents": "^2.0.4",
     "move-on": "^1.0.0",
-    "list-contents": "^2.0.3",
+    "of-type": "^2.1.0",
     "cli-color": "^1.2.0"
   },
   "devDependencies": {
     "fs-extra": "^4.0.0",
-    "of-type": "^2.1.0",
-    "typeof-arguments": "^3.1.0",
-    "typeof-properties": "^1.1.1",
-    "list-contents": "^2.0.3",
-    "cli-color": "^1.2.0",
     "jasmine": "^2.8.0",
     "jasmine-spec-reporter": "^4.2.1"
   }

@@ -118,7 +118,7 @@ describe("When the module function is executed",function(){
         $callback:'done',
         $propertyName:'error',
         $errorObject:Error,
-        $message:/Could not create the root folder/i
+        $message:/Could not create the folder/i
       }));
 
       it.apply(this,should.not.createNewFolder({
@@ -161,7 +161,7 @@ describe("When the module function is executed",function(){
         $callback:'done',
         $propertyName:'error',
         $errorObject:Error,
-        $message:/The file of the same name already exists in the path/i
+        $message:/The file of the same name already exists in this path/i
       }));
 
       it.apply(this,should.not.createNewFolder({
