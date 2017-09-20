@@ -17,14 +17,15 @@ The `file-assistant` contains 3 methods:
 ## List of contents:
 1. Common tips
 1. Installation
-2. Usage
-3. Parameters
+2. Tests
+3. Usage
+4. Parameters
     a. `root`
     b. `structure`
     c. `done`
     d. `each`
-4. Errors
-5. Structure object
+5. Errors
+6. Structure object
    1. JSON structure object
    2. items properties
       a. `file`
@@ -36,9 +37,9 @@ The `file-assistant` contains 3 methods:
       g. `write`
       h. `writeFrom`
       i. `overwrite`
-6. fileAssistant.structurize method
-7. fileAssistant.compare method
-8. Samples
+7. fileAssistant.structurize method
+8. fileAssistant.compare method
+9. Samples
       
 
 
@@ -74,6 +75,16 @@ If you are confused by the excess of the description, there is a list of common 
 
 # Installation
 `npm install file-assistant`
+
+# Tests
+```
+> git clone https://github.com/devrafalko/file-assistant
+> cd file-assistant
+> npm install
+> npm test
+# or
+> npm test deep
+```
 
 # Usage
 
@@ -133,19 +144,15 @@ function each(o){
 * This is the **callback** function
 * It is fired **for each** file and folder separately when the file or folder is successfully created or if some error has occured, combined with this file or folder.
 * The one [Object] argument is passed through `each` callback function with the following properties:
-  * **`error`**  
-  Returns `null` if the file or folder has been succesfully created, moved or copied.  
-  Returns `null` if the file or folder has been successfully replaced *(when the file or folder already exists in the destination folder and `overwrite` was set to `true`)*
-  Returns `null` if the file or folder has not been replaced *(when the file or folder already exists in the destination folder and `overwrite` was set to `false`)*
-  Returns [Error] if the file or folder could not have been created, moved, copied or replaced *(while it should have been to)*.
-  * **`message`**  
-  Returns `null` if the `error` returns [Error] object.  
-  Returns the [String] default message with the details of the operation **done** or **failed**, eg:  
-    * The file 'style.css' was successfully copied.
-    * The copy action failed. The file of the same path 'dist/style.css' already exists and was expected not to be overwritten.
-   * **`success`**  
-  Returns the [Boolean] `true`, if the action for the file or folder was successfully done *(if the file or folder was in fact created, copied or moved, or when the content was in fact appended to the file)*.
-  Otherwise returns the [Boolean] `false`
+  * **`success`**  
+    Returns [String] message, about the successfull *(create, copy, move, write, append, etc.)* action, eg. `"The file './prod/styles.css' was successfully copied from the './dist/styles.css' path."`.  
+    Otherwise returns `null`.
+  * **`warning`**  
+    Returns [String] message, if the action was abandoned due to the `overwrite:false` settings, eg. `"The already existing file './prod/styles.css' was not overwritten by the './dist/styles.css' as intended."`.  
+    Otherwise returns `null`.
+  * **`fail`**  
+    Returns [String] message, if the action was failed and the file or folder could not be created, copied, moved, etc, eg. `"Could not move the file from the './dist/styles.css' path into the path './prod/styles.css'."`.  
+    Otherwise returns `null`.
   * **`item`**  
   Returns [String] `'file'` value when the file was created or `'dir'` value when the folder was created.
   * **`action`**  
@@ -501,7 +508,7 @@ const structure = [
   * it compares the structure of `dist` folder and the structure of `prod` folder
   * all the **files** and **folders** that do not exist in the `prod` folder are copied from `dist` folder into it
   * all the **folders** that already exist in the `prod` folder **are not removed** and **are not replaced** by their `dist` equivalents
-  * only the **files** that already exist in the `prod` folder *(and all its subfoldeers)* **are removed** and **are replaced** by their `dist` equivalents *(of the same relative path)*.
+  * only the **files** that already exist in the `prod` folder *(and all its subfolders)* **are removed** and **are replaced** by their `dist` equivalents *(of the same relative path)*.
 
 **The `./dist` folder to be merged:**
 ```
@@ -541,7 +548,7 @@ prod
   * it compares the structure of `dist` folder and the structure of `prod` folder
   * all the **files** and **folders** that do not exist in the `prod` folder are copied from `dist` folder into it
   * all the **folders** that already exist in the `prod` folder **are not removed** and **are not replaced** by their `dist` equivalents
-  * the **files** that already exist in the `prod` folder *(and all its subfoldeers)* **are not removed** and **are not replaced** by their `dist` equivalents *(of the same relative path)*. Instead of that:
+  * the **files** that already exist in the `prod` folder *(and all its subfolders)* **are not removed** and **are not replaced** by their `dist` equivalents *(of the same relative path)*. Instead of that:
     * The `each` `message` property [see above]() will warn you of failed action
     * The `each` `success` property [see above]() will be `false`
     * The failure of this action **does not abort** creating subsequent files and folders, so the `done` callback function will not return error when all actions are done.
