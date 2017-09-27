@@ -23,6 +23,7 @@ const protoMethods = {
     const u = this.utils;
     const negated = u.negated(this);
     return [`it should ${negated?'not ':''}create new folder`,function(done){
+      u.getUserContextData.call(this,o);
       u.compareStates.call(u,{
         userContext:this,
         data:o,
@@ -43,6 +44,41 @@ const protoMethods = {
       });
     }];
   },
+  removeFolder:function(o){
+    o.$name = 'removeFolder';
+    prop(o,{$function:Function,$arguments:[Array,Object,undefined],$exclude:undefined,$include:undefined,$testParameter:undefined,$callback:undefined,$errorObject:undefined,$folder:String},(o)=>{
+      throw new TypeError(`${warn(o.$name)} ${o.message}`);
+    });
+    const u = this.utils;
+    const negated = u.negated(this);
+    return [`it should ${negated?'not ':''}remove the existing folder`,function(done){
+      u.getUserContextData.call(this,o);
+      u.compareStates.call(u,{
+        userContext:this,
+        data:o,
+        before:(ok)=>{
+          u.isDirExists(o.$folder,ok);
+        },
+        after:(existBefore)=>{
+          u.isDirExists(o.$folder,(existAfter)=>{
+            u.expect({
+              not:false,
+              actual:existBefore,
+              matcher:'toBe',
+              expected:true
+            });
+            u.expect({
+              not:negated,
+              actual:!existAfter,
+              matcher:'toBe',
+              expected:true
+            });
+            done();
+          });
+        }
+      });
+    }];
+  },
   createNewFile: function(o){
     o.$name = 'createNewFile';
     prop(o,{$function:Function,$arguments:[Array,Object,undefined],$exclude:undefined,$include:undefined,$testParameter:undefined,$callback:undefined,$errorObject:undefined,$file:[String,Function]},(o)=>{
@@ -51,6 +87,7 @@ const protoMethods = {
     const u = this.utils;
     const negated = u.negated(this);
     return [`it should ${negated?'not ':''}create new file`,function(done){
+      u.getUserContextData.call(this,o);
       u.compareStates.call(u,{
         userContext:this,
         data:o,
@@ -71,6 +108,173 @@ const protoMethods = {
       });
     }];
   },
+  removeFile: function(o){
+    o.$name = 'removeFile';
+    prop(o,{$function:Function,$arguments:[Array,Object,undefined],$exclude:undefined,$include:undefined,$testParameter:undefined,$callback:undefined,$errorObject:undefined,$file:[String,Function]},(o)=>{
+      throw new TypeError(`${warn(o.$name)} ${o.message}`);
+    });
+    const u = this.utils;
+    const negated = u.negated(this);
+    return [`it should ${negated?'not ':''}remove the existing file`,function(done){
+      u.getUserContextData.call(this,o);
+      u.compareStates.call(u,{
+        userContext:this,
+        data:o,
+        before:(ok)=>{
+          u.isFileExists(o.$file,ok);
+        },
+        after:(existBefore)=>{
+          u.isFileExists(o.$file,(existAfter)=>{
+            u.expect({
+              not:false,
+              actual:existBefore,
+              matcher:'toBe',
+              expected:true
+            });
+            u.expect({
+              not:negated,
+              actual:!existAfter,
+              matcher:'toBe',
+              expected:true
+            });
+            done();
+          });
+        }
+      });
+    }];
+  },
+  haveContent: function(o){
+    o.$name = 'haveContent';
+    prop(o,{$function:Function,$arguments:[Array,Object,undefined],$exclude:undefined,$include:undefined,$testParameter:undefined,$callback:undefined,$errorObject:undefined,$file:[String,Function],$content:[String,RegExp,Function]},(o)=>{
+      throw new TypeError(`${warn(o.$name)} ${o.message}`);
+    });
+    const u = this.utils;
+    const negated = u.negated(this);
+    return [`the file should ${negated?'not ':''}have the ${o.$content.length||of(o.$content,RegExp) ? 'given':'empty'} content`,function(done){
+        u.getUserContextData.call(this,o);
+        u.hasTheGivenContent({
+          userContext:this,
+          utils:u,
+          negated:negated,
+          data:o,
+          done:done
+      });
+    }];
+  },
+  haveContentAppended: function(o){
+    o.$name = 'haveContentAppended';
+    prop(o,{$function:Function,$arguments:[Array,Object,undefined],$exclude:undefined,$include:undefined,$testParameter:undefined,$callback:undefined,$errorObject:undefined,$file:[String,Function],$writeFrom:[String,Function,undefined],$write:[String,Function,undefined]},(o)=>{
+      throw new TypeError(`${warn(o.$name)} ${o.message}`);
+    });
+    if((!o.$writeFrom&&!o.$write)||(o.$writeFrom&&o.$write)) throw new Error(`${warn(o.$name)} Either '$write' or '$writeFrom' property must be declared.`);
+    const u = this.utils;
+    const negated = u.negated(this);
+    return [`the new content should ${negated?'not ':''}be appended into the file`,function(done){
+      u.getUserContextData.call(this,o);
+      u.compareStates.call(u,{
+        userContext:this,
+        data:o,
+        before:(ok)=>{
+          u.resolveFileContent(o.$file)
+          .then(ok)
+          .catch(done.fail);
+        },
+        after:(dataBefore)=>{
+          u.resolveFileContent(o.$file)
+          .then((dataAfter)=>{
+            return new Promise((resolve,reject)=>{
+              if(o.$write) return resolve({dataAfter:dataAfter,dataAppended:o.$write});
+              if(o.$writeFrom){
+                fs.readFile(o.$writeFrom,'utf8',(err,getAppended)=>{
+                  if(err) return reject(`Could not get the access to the content of '${o.$writeFrom}' file.`);
+                  return resolve({dataAfter:dataAfter,dataAppended:getAppended});
+                });
+              }
+            });
+          })
+          .then((data)=>{
+            u.expect({
+              not:negated,
+              actual:data.dataAfter,
+              matcher:'toBe',
+              expected:dataBefore+data.dataAppended
+            });
+            done();
+          }).catch(done.fail);
+        }
+      });
+    }];
+  },
+  haveTheSameContent: function(o){
+    o.$name = 'haveTheSameContent';
+    prop(o,{$function:Function,$arguments:[Array,Object,undefined],$exclude:undefined,$include:undefined,$testParameter:undefined,$callback:undefined,$errorObject:undefined,$model:[String,Function],$compared:[String,Function]},(o)=>{
+      throw new TypeError(`${warn(o.$name)} ${o.message}`);
+    });
+    const u = this.utils;
+    const negated = u.negated(this);
+    return [`the two indicated files should ${negated?'not ':''}have the same content`,function(done){
+      u.getUserContextData.call(this,o);
+      u.hasTheSameContent({
+        userContext:this,
+        utils:u,
+        negated:negated,
+        data:o,
+        done:done
+      });
+    }];
+    
+  },
+  keepFileContent: function(o){
+    o.$name = 'keepFileContent';
+    prop(o,{$function:Function,$arguments:[Array,Object,undefined],$exclude:undefined,$include:undefined,$testParameter:undefined,$callback:undefined,$errorObject:undefined,$file:[String,Function]},(o)=>{
+      throw new TypeError(`${warn(o.$name)} ${o.message}`);
+    });
+    const u = this.utils;
+    const negated = u.negated(this);
+    return [`the file content should ${negated?'not ':''}be the same before and after the execution.`,function(done){
+      u.getUserContextData.call(this,o);
+      u.compareStates.call(u,{
+        userContext:this,
+        data:o,
+        before:(ok)=>{
+          u.resolveFileContent(o.$file)
+          .then(ok)
+          .catch(done.fail);
+        },
+        after:(dataBefore)=>{
+          u.resolveFileContent(o.$file)
+          .then((dataAfter)=>{
+            u.expect({
+              not:negated,
+              actual:dataBefore,
+              matcher:'toBe',
+              expected:dataAfter
+            });
+            done();
+          }).catch(done.fail);
+        }
+      });
+    }];
+  },
+  containItemsNumber: function(o){
+    o.$name = 'containItemsNumber';
+    prop(o,{$function:Function,$arguments:[Array,Object,undefined],$exclude:undefined,$include:undefined,$testParameter:undefined,$callback:undefined,$errorObject:undefined,$directory:String,$files:[Number,Function,undefined],$folders:[Number,Function,undefined]},(o)=>{
+      throw new TypeError(`${warn(o.$name)} ${o.message}`);
+    });
+    if(of(o.$files,undefined)&&of(o.$folders,undefined)) throw new Error(`${warn(o.$name)} Either '$files' or '$folders' property must be declared.`);
+    const u = this.utils;
+    const negated = u.negated(this);
+    return [`the folder should ${negated?'not ':''}contain the expected number of (sub)files and (sub)folders`,function(done){
+      u.getUserContextData.call(this,o);
+      u.hasTheItemsNumber({
+        userContext:this,
+        utils:u,
+        negated:negated,
+        data:o,
+        done:done
+      });
+    }];
+  },
   keepPreviousContents: function(o){
     o.$name = 'keepPreviousContents';
     prop(o,{$function:Function,$arguments:[Array,Object,undefined],$exclude:undefined,$include:undefined,$testParameter:undefined,$callback:undefined,$errorObject:undefined,$directory:String},(o)=>{
@@ -78,7 +282,8 @@ const protoMethods = {
     });
     const u = this.utils;
     const negated = u.negated(this);
-    return [`the content should ${negated?'not ':''} be the same before and after the execution.`,function(done){
+    return [`the folder contents should ${negated?'not ':''}be the same before and after the execution.`,function(done){
+      u.getUserContextData.call(this,o);
       u.compareStates.call(u,{
         userContext:this,
         data:o,
@@ -88,18 +293,28 @@ const protoMethods = {
           .catch(done.fail);
         },
         after:(dataBefore)=>{
+          jasmine.addCustomEqualityTester(hasTheSameItems);
           u.resolveContents(o.$directory)
           .then((dataAfter)=>{
-            const before = dataBefore.dirs.concat(dataBefore.file);
-            const after = dataAfter.dirs.concat(dataAfter.file);
+            const before = dataBefore.dirs.concat(dataBefore.files);
+            const after = dataAfter.dirs.concat(dataAfter.files);
             u.expect({
               not:negated,
               actual:after,
               matcher:'toEqual',
-              expected:jasmine.arrayContaining(before)
+              expected:before
             });
             done();
           }).catch(done.fail);
+          
+            function hasTheSameItems(actual,expected){
+              if(actual.length!==expected.length) return false;
+              while(actual.length){
+                var index = expected.indexOf(actual.shift());
+                if(index>=0) expected.splice(index,1);
+              }
+              return !expected.length;
+            }
         }
       });
     }];
@@ -111,19 +326,21 @@ const protoMethods = {
     });
     const u = this.utils;
     const negated = u.negated(this);
-    const clbNum = o.$callback==='each'?3:2;
-    return [`the ${o.$callback}-callback function should ${negated?'not ':''}be run.`,function(done){
+    return [`the ${o.$callback}-callback function should ${negated?'not ':''}be called ${o.$callbackTimes} time(s).`,function(done){
+      u.getUserContextData.call(this,o);
       var argsScenarios = u.prepareArgs({
         userContext:this,
         data:o,
-        done:done,
-        timeout:1000,
-        expectation:(i)=>{
-          u.expect({
-            not:negated,
-            actual:argsScenarios[i][clbNum],
-            matcher:'toHaveBeenCalled'
-          });
+        beforeStart:(mock)=>{
+          setTimeout(()=>{
+            u.expect({
+              not:negated,
+              actual:mock,
+              matcher:'toHaveBeenCalledTimes',
+              expected:o.$callbackTimes
+            });
+            done();
+          },100);
         }
       });
       for(var loopIterator in argsScenarios) o.$function.apply(this,argsScenarios[loopIterator]);
@@ -139,6 +356,7 @@ const protoMethods = {
     var hasErrorDefined = of(o.$errorObject,Function);
     var hasMessageDefined = of(o.$message,RegExp);
     return [`the ${hasErrorDefined ? o.$errorObject.name:'exception'}${hasMessageDefined ? ' of the message matching the regular expression: '+o.$message.toString():''} should ${negated?'not ':''}be thrown.`,function(){
+      u.getUserContextData.call(this,o);
       var argsScenarios = u.prepareArgs({userContext:this,data:o});
       for(let loopIterator in argsScenarios){
         let hasBeenErrorThrown = false;
@@ -157,35 +375,9 @@ const protoMethods = {
       }
     }];
   },
-  runCallbackTimes: function(o){
-    o.$name = 'runCallbackTimes';
-    prop(o,{$function:Function,$arguments:[Array,Object,undefined],$exclude:[String,Array,undefined],$include:[String,Array,undefined],$testParameter:[String,undefined],$callback:String,$errorObject:undefined,$times:Number},(o)=>{
-      throw new TypeError(`${warn(o.$name)} ${o.message}`);
-    });
-    const u = this.utils;
-    const negated = u.negated(this);
-    const clbNum = o.$callback==='each'?3:2;
-    return [`the ${o.$callback}-callback function should ${negated?'not ':''}be run ${o.$times} time(s).`,function(done){
-      var argsScenarios = u.prepareArgs({
-        userContext:this,
-        data:o,
-        done:done,
-        timeout:4000,
-        expectation:(i)=>{
-          u.expect({
-            not:negated,
-            actual:argsScenarios[i][clbNum],
-            matcher:'toHaveBeenCalledTimes',
-            expected:argsScenarios[i][clbNum].calls.count()*o.$times
-          });
-        }
-      });
-      for(var i in argsScenarios) o.$function.apply(this,argsScenarios[i]);
-    }];
-  },
   runCallbackWithObject:function(o){
     o.$name = 'runCallbackWithObject';
-    prop(o,{$function:Function,$arguments:[Array,Object,undefined],$exclude:[String,Array,undefined],$include:[String,Array,undefined],$testParameter:[String,undefined],$callback:String,$errorObject:undefined,$properties:Object},(o)=>{
+    prop(o,{$function:Function,$arguments:[Array,Object,undefined],$exclude:[String,Array,undefined],$include:[String,Array,undefined],$testParameter:[String,undefined],$callback:String,$callbackTimes:Number,$errorObject:undefined,$properties:Object},(o)=>{
       throw new TypeError(`${warn(o.$name)} ${o.message}`);
     });
     const u = this.utils;
@@ -193,21 +385,25 @@ const protoMethods = {
     const clbNum = o.$callback==='each'?3:2;
     var props = Object.getOwnPropertyNames(o.$properties).map((a)=>`"${a}"`).join(', ');
     return [`the ${o.$callback}-callback function should ${negated?'not ':''}return object with the following (valid) properties: ${props}`,function(done){
-      var argsScenarios = u.prepareArgs({
+        u.getUserContextData.call(this,o);
+        var argsScenarios = u.prepareArgs({
         userContext:this,
         data:o,
-        done:done,
-        timeout:4000,
-        expectation:(i)=>{
-          u.expect({
-            not:negated,
-            actual:argsScenarios[i][clbNum].calls.argsFor(i)[0],
-            matcher:'toEqual',
-            expected:jasmine.objectContaining(o.$properties)
-          });
+        expectation:(mock)=>{
+          if(mock.calls.count()===o.$callbackTimes){
+            u.expect({
+              not:negated,
+              actual:mock.calls.allArgs(),
+              matcher:'toEqual',
+              expected:jasmine.arrayContaining([[jasmine.objectContaining(o.$properties)]])
+            });
+            done();
+          }
         }
       });
-      for(var i in argsScenarios) o.$function.apply(this,argsScenarios[i]);
+      for(var i in argsScenarios){
+        o.$function.apply(this,argsScenarios[i]);
+      }
     }];
   },
   runCallbackError: function(o){
@@ -219,13 +415,12 @@ const protoMethods = {
     const negated = u.negated(this);
     const clbNum = o.$callback==='each'?3:2;
     return [`the ${o.$callback}-callback function should ${negated?'not ':''}return ${o.$errorObject.name} with the message matching the regular expression: ${o.$message}`,function(done){
-      var argsScenarios = u.prepareArgs({
+        u.getUserContextData.call(this,o);
+        var argsScenarios = u.prepareArgs({
         userContext:this,
         data:o,
-        done:done,
-        timeout:4000,
-        expectation:(i)=>{
-          var callbackObject = argsScenarios[i][clbNum].calls.argsFor(i)[0];
+        expectation:(mock)=>{
+          var callbackObject = mock.calls.argsFor(mock.calls.count()-1)[0];
           if(u.fail({
             condition:!of(callbackObject,Object),
             message:'Expected callback returned argument to be of type [Object]'
@@ -239,6 +434,7 @@ const protoMethods = {
             condition:!(callbackObject[o.$propertyName].message.match(o.$message)),
             message:`Expected callback ["${o.$propertyName}"] ${o.$errorObject.name} to have a message matching the regular expression ${o.$message}, while ${callbackObject.error}`
           })) return;
+          done();
         }
       });
       for(let i in argsScenarios) o.$function.apply(this,argsScenarios[i]);
@@ -247,7 +443,7 @@ const protoMethods = {
   utils:{
     expect:function(o){
       var exp = expect(o.actual);
-      var parseExpected = of(o.expected,'array|undefined|null') ? o.expected:[o.expected];
+      var parseExpected = [o.expected];
       exp.not[o.matcher].apply(o.not ? exp.not:exp,parseExpected);
     },
     fail:function(o){
@@ -271,6 +467,83 @@ const protoMethods = {
         clb(exists&&isFile);
       });
     },
+    
+    hasTheGivenContent:function(obj){
+        obj.data.$callback = 'done';
+        var argsScenarios = obj.utils.prepareArgs({
+          userContext:obj.userContext,
+          data:obj.data,
+          expectation:()=>{
+            fs.readFile(obj.data.$file,'utf8',(err,actual)=>{
+              if(err) return obj.done.fail(`Could not get the access to the content of '${obj.data.$file}' file.`);
+              var matcher = of(obj.data.$content,String) ? 'toEqual':'toMatch';
+              obj.utils.expect({
+                not:obj.negated,
+                actual:actual,
+                matcher:matcher,
+                expected:obj.data.$content
+              });
+              obj.done();
+            });
+          }
+        });
+        obj.data.$function.apply(this,argsScenarios[0]);
+    },
+    hasTheSameContent:function(obj){
+        obj.data.$callback = 'done';
+        var argsScenarios = obj.utils.prepareArgs({
+          userContext:obj.userContext,
+          data:obj.data,
+          expectation:()=>{
+            var iter = 0;
+            var model,compared;
+            fs.readFile(obj.data.$model,'utf8',(err,getModel)=>{
+              if(err) return obj.done.fail(`Could not get the access to the content of '${obj.data.$model}' file.`);
+              model = getModel;
+              compare();
+            });
+            fs.readFile(obj.data.$compared,'utf8',(err,getCompared)=>{
+              if(err) return obj.done.fail(`Could not get the access to the content of '${obj.data.$compared}' file.`);
+              compared = getCompared;
+              compare();
+            });
+            
+            function compare(){
+              if(++iter!==2) return;
+              obj.utils.expect({
+                not:obj.negated,
+                actual:model===compared,
+                matcher:'toBe',
+                expected:true
+              });
+              obj.done();
+            }
+          }
+        });
+        obj.data.$function.apply(this,argsScenarios[0]);
+    },
+    hasTheItemsNumber:function(obj){
+        obj.data.$callback = 'done';
+        var argsScenarios = obj.utils.prepareArgs({
+          userContext:obj.userContext,
+          data:obj.data,
+          expectation:()=>{
+            obj.utils.resolveContents(obj.data.$directory)
+            .then((data)=>{
+              const files = data.files.length;
+              const dirs = data.dirs.length;
+              obj.utils.expect({
+                not:obj.negated,
+                actual:files===obj.data.$files&&dirs===obj.data.$folders,
+                matcher:'toBe',
+                expected:true
+              });
+              obj.done();
+            }).catch(obj.done.fail);
+          }
+        });
+        obj.data.$function.apply(this,argsScenarios[0]);
+    },
     resolveContents:function(directory){
       return new Promise((resolve,reject)=>{
         listContent(directory,(o)=>{
@@ -279,10 +552,16 @@ const protoMethods = {
         });
       });
     },
+    resolveFileContent:function(filePath){
+      return new Promise((resolve,reject)=>{
+        fs.readFile(filePath,'utf8',(err,getContent)=>{
+          if(err) return reject(`Could not get the access to the content of '${filePath}' file.`);
+          resolve(getContent);
+        });
+      });
+    },
     compareStates:function(obj){
       var that = this;
-      if(of(obj.data.$file,Function)&&obj.data.$file.name==='userContext') obj.data.$file = obj.data.$file.call(obj.userContext);
-      
       obj.before(function(beforeData){
         obj.data.$callback = 'done';
         var argsScenarios = that.prepareArgs({
@@ -327,7 +606,6 @@ const protoMethods = {
       const argumentNames = ['root','structure','done','each'];
       const absoluteToDir = path.resolve(paths.rootDir,paths.toDir);
       const argumentDefaults = [absoluteToDir,[],()=>{},()=>{}];
-      const mock = jasmine.createSpyObj('mock',['each','done']);
       
       const scenarioErr = this.scenarioErr(o);
       const isScenario = scenarioErr === "scenario";
@@ -342,11 +620,7 @@ const protoMethods = {
         callback = o.$callback.toLowerCase();
       }
 
-      if(isDefault){
-        var mocks = [setMocks(argumentDefaults.slice())];
-        asyncMocks(mocks.length);
-        return mocks;
-      }
+      if(isDefault) return [setMocks(argumentDefaults.slice())];
 
       if(isScenario){
         const types = this.prepareTypes(o);
@@ -358,7 +632,6 @@ const protoMethods = {
           newScenario[changeArgIndex] = types[i];
           scenarioList.push(setMocks(newScenario));
         }
-        asyncMocks(scenarioList.length);
         return scenarioList;
       }
 
@@ -371,24 +644,21 @@ const protoMethods = {
           o.$arguments = arrayToObject;
         }
         
-        for(var i in o.$arguments){
-          if(of(o.$arguments[i],Function)&&o.$arguments[i].name==='userContext'){
-            o.$arguments[i] = o.$arguments[i].call(obj.userContext);
-          }
-        }
-        
         this.listItemErr(o,argumentNames,'$arguments');
         var change = (i)=> Object.getOwnPropertyNames(o.$arguments).some(a=>a===argumentNames[i]);
         var finalArguments = [];
         for(var i in argumentNames){
           finalArguments.push(change(i) ? o.$arguments[argumentNames[i]]:argumentDefaults[i]);
         }
-        var mocks = [setMocks(finalArguments)];
-        asyncMocks(mocks.length);
-        return mocks;
+        return [setMocks(finalArguments)];
       }
 
         function setMocks(args){
+          const mock = jasmine.createSpyObj('mock',['each','done']);
+          if(of(obj.expectation,Function)){
+            mock.each.and.callFake(()=>obj.expectation(mock.each));
+            mock.done.and.callFake(()=>obj.expectation(mock.done));
+          }
           const done = callback==='done';
           const each = callback==='each';
           const validDone = of(args[2],'function');
@@ -397,31 +667,10 @@ const protoMethods = {
           if(each&&!validEach) throw new TypeError(`${warn(o.$name)} The ["$callback"] each function must be of type [function] in order to be mocked.`);
           if(done&&validDone) args[2] = mock.done;
           if(each&&validEach) args[3] = mock.each;
+          if(of(obj.beforeStart,Function)) obj.beforeStart(mock[done?'done':'each']);
           return args;
         }
 
-        function asyncMocks(length){
-          const runDone = of(obj.done,Function);
-          o.$async = {each:0,done:0,length:length};
-          mock.each.and.callFake(function(){
-            obj.expectation(o.$async.each);
-            o.$async.each++;
-            if(runDone&&o.$async.each===length) obj.done();
-          });
-          mock.done.and.callFake(function(){
-            obj.expectation(o.$async.done);
-            o.$async.done++;
-            if(runDone&&o.$async.done===length) obj.done();
-          });
-          if(runDone&&of(callback,String)){
-            setTimeout(function(){
-              for(var i in length){
-                obj.expectation(i);
-              }
-              obj.done();
-            },obj.timeout);
-          }
-        }
     },
     hasAllItems: function(original,compared){ //arguments: Array|Object
       if(of(original,'object')) original = Object.getOwnPropertyNames(original);
@@ -435,6 +684,15 @@ const protoMethods = {
         if(i===-1) return false;
       }
       return true;
+    },
+    getUserContextData: function(o){
+      loop.call(this,o);
+      function loop(o){
+        for(let prop in o){
+          if(of(o[prop],Function)&&o[prop].name==='userContext') o[prop] = o[prop].call(this);
+          if(of(o[prop],Object)) loop.call(this,o[prop]);
+        }
+      }
     },
     scenarioErr: function(o){
       var i = of(o.$include,'string|array');

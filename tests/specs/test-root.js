@@ -30,16 +30,10 @@ describe("When the module function is executed",function(){
       $function:testingModule,
       $arguments:[absoluteToDir],
       $callback:'done',
+      $callbackTimes:1,
       $properties:{
         error:null
       }
-    }));
-
-    it.apply(this,should.runCallbackTimes({
-      $function:testingModule,
-      $arguments:[absoluteToDir],
-      $callback:'done',
-      $times:1
     }));
 
     describe("if the existing root folder has got some content",function(){
@@ -80,16 +74,10 @@ describe("When the module function is executed",function(){
         $function:testingModule,
         $arguments:[absoluteToDir],
         $callback:'done',
+        $callbackTimes:1,
         $properties:{
           error:null
         }
-      }));
-
-      it.apply(this,should.runCallbackTimes({
-        $function:testingModule,
-        $arguments:[absoluteToDir],
-        $callback:'done',
-        $times:1
       }));
 
       it.apply(this,should.createNewFolder({
@@ -116,6 +104,7 @@ describe("When the module function is executed",function(){
         $function:testingModule,
         $arguments:['X:/a/b'],
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:Error,
         $message:/Could not create the folder/i
@@ -127,17 +116,11 @@ describe("When the module function is executed",function(){
         $folder:'X:/a/b'
       }));
 
-      it.apply(this,should.runCallbackTimes({
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:['X:/a/b'],
-        $callback:'done',
-        $times:1
-      }));
-
-      it.apply(this,should.not.runCallback({
-        $function:testingModule,
-        $arguments:['X:/a/b'],
-        $callback:'each'
+        $callback:'each',
+        $callbackTimes:0
       }));
 
   });
@@ -159,6 +142,7 @@ describe("When the module function is executed",function(){
         $function:testingModule,
         $arguments:[absoluteToDir],
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:Error,
         $message:/The file of the same name already exists in this path/i
@@ -168,13 +152,6 @@ describe("When the module function is executed",function(){
         $function:testingModule,
         $arguments:[absoluteToDir],
         $folder:absoluteToDir
-      }));
-
-      it.apply(this,should.runCallbackTimes({
-        $function:testingModule,
-        $arguments:[absoluteToDir],
-        $callback:'done',
-        $times:1
       }));
 
   });

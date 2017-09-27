@@ -39,7 +39,7 @@
   },
   "styles/mixins.scss":{
     "type":"file",
-    "name":"mixins.css",
+    "name":"mixins.scss",
     "path":"styles/mixins.scss",
     "content":"$paleBlue: #a2d1e0;\n"
   },
@@ -62,7 +62,7 @@
   },
   "styles/css/style.css":{
     "type":"file",
-    "name":"main.css",
+    "name":"style.css",
     "path":"styles/css/style.css",
     "content":"div{color:blue;}\n"
   },

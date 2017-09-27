@@ -47,29 +47,23 @@ describe("When the module function is executed",function(){
         $testParameter:'structure'
       }));
 
-      it.apply(this,should.runCallbackTimes({
-        $function:testingModule,
-        $exclude:['Array','String'],
-        $testParameter:'structure',
-        $callback:'done',
-        $times:1
-      }));
-
       it.apply(this,should.runCallbackError({
         $function:testingModule,
         $exclude:['Array','String'],
         $testParameter:'structure',
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:TypeError,
         $message:/Invalid argument \[1\]. The \[.+\] argument has been passed, while the argument of type \[Array|String\] is expected\./i
       }));
-
-      it.apply(this,should.not.runCallback({
+      
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $exclude:['Array','String'],
         $testParameter:'structure',
-        $callback:'each'
+        $callback:'each',
+        $callbackTimes:0
       }));
       
     });
@@ -84,29 +78,23 @@ describe("When the module function is executed",function(){
         $testParameter:'root'
       }));
 
-      it.apply(this,should.runCallbackTimes({
-        $function:testingModule,
-        $exclude:'String',
-        $testParameter:'root',
-        $callback:'done',
-        $times:1
-      }));
-
       it.apply(this,should.runCallbackError({
         $function:testingModule,
         $exclude:'String',
         $testParameter:'root',
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:TypeError,
         $message:/Invalid argument \[0\]. The \[.+\] argument has been passed, while the argument of type \[String\] is expected\./i
       }));
 
-      it.apply(this,should.not.runCallback({
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $exclude:'String',
         $testParameter:'root',
-        $callback:'each'
+        $callback:'each',
+        $callbackTimes:0
       }));
     });
   });
@@ -125,6 +113,7 @@ describe("When the module function is executed",function(){
         $include:'undefined',
         $testParameter:'each',
         $callback:'done',
+        $callbackTimes:1,
         $properties:{
           error:null
         }
@@ -144,6 +133,7 @@ describe("When the module function is executed",function(){
         $exclude:['Function','undefined'],
         $testParameter:'each',
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:TypeError,
         $message:/Invalid argument \[3\]. The \[.+\] argument has been passed, while the argument of type \[Function\|undefined\] is expected\./i
@@ -163,6 +153,7 @@ describe("When the module function is executed",function(){
         $include:'Function',
         $testParameter:'each',
         $callback:'done',
+        $callbackTimes:1,
         $properties:{
           error:null
         }

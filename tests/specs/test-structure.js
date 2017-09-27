@@ -33,16 +33,17 @@ describe('When the module function is executed with the [String] structure argum
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
+      $callbackTimes:1,
       $propertyName:'error',
       $errorObject:Error,
       $message:/Invalid structure argument\. The file of the specified path does not exist\./i
     }));
-
-    it.apply(this,should.runCallbackTimes({
+    
+    it.apply(this,should.runCallback({
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
-      $times:1
+      $callbackTimes:1
     }));
     
   });
@@ -64,16 +65,17 @@ describe('When the module function is executed with the [String] structure argum
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
+      $callbackTimes:1,
       $propertyName:'error',
       $errorObject:Error,
       $message:/Invalid structure argument\. The path leads to the folder, while it should indicate the JSON file\./i
     }));
 
-    it.apply(this,should.runCallbackTimes({
+    it.apply(this,should.runCallback({
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
-      $times:1
+      $callbackTimes:1
     }));
   });
   
@@ -94,16 +96,17 @@ describe('When the module function is executed with the [String] structure argum
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
+      $callbackTimes:1,
       $propertyName:'error',
       $errorObject:Error,
       $message:/Invalid structure argument\. The path should indicate the JSON file\./i
     }));
 
-    it.apply(this,should.runCallbackTimes({
+    it.apply(this,should.runCallback({
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
-      $times:1
+      $callbackTimes:1
     }));
   });
   
@@ -122,16 +125,17 @@ describe('When the module function is executed with the [String] structure argum
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
+      $callbackTimes:1,
       $propertyName:'error',
       $errorObject:Error,
       $message:/Invalid structure argument\. Could not convert the given JSON file content\./i
     }));
 
-    it.apply(this,should.runCallbackTimes({
+    it.apply(this,should.runCallback({
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
-      $times:1
+      $callbackTimes:1
     }));
   });
   
@@ -153,16 +157,17 @@ describe('When the module function is executed with the [String] structure argum
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
+      $callbackTimes:1,
       $propertyName:'error',
       $errorObject:Error,
       $message:/Invalid structure argument\. It must be of \[Array\] type\./i
     }));
 
-    it.apply(this,should.runCallbackTimes({
+    it.apply(this,should.runCallback({
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
-      $times:1
+      $callbackTimes:1
     }));
   });
   
@@ -186,16 +191,17 @@ describe('When the module function is executed with the [String] structure argum
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
+        $callbackTimes:1,
         $properties:{
           error:null
         }
       }));
 
-      it.apply(this,should.runCallbackTimes({
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
-        $times:1
+        $callbackTimes:1
       }));
 
     });
@@ -218,16 +224,17 @@ describe('When the module function is executed with the [String] structure argum
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:TypeError,
         $message:/Invalid structure argument \[0\]\. Each item of \[Array\] structure argument must be of \[Object\] type\./i
       }));
-
-      it.apply(this,should.runCallbackTimes({
+      
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
-        $times:1
+        $callbackTimes:1
       }));
       
     });
@@ -261,16 +268,17 @@ describe('When the module function is executed with the [Array] structure argume
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:Error,
         $message:/Invalid structure argument \[0\]\. Invalid property \["contents"\]\. The file of the specified path does not exist\./i
       }));
 
-      it.apply(this,should.runCallbackTimes({
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
-        $times:1
+        $callbackTimes:1
       }));
 
     });
@@ -292,16 +300,17 @@ describe('When the module function is executed with the [Array] structure argume
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:Error,
         $message:/Invalid structure argument \[0\]\. Invalid property \["contents"\]\. The path leads to the folder, while it should indicate the JSON file\./i
       }));
 
-      it.apply(this,should.runCallbackTimes({
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
-        $times:1
+        $callbackTimes:1
       }));
     });
 
@@ -322,16 +331,17 @@ describe('When the module function is executed with the [Array] structure argume
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:Error,
         $message:/Invalid structure argument \[0\]\. Invalid property \["contents"\]\. The path should indicate the JSON file\./i
       }));
 
-      it.apply(this,should.runCallbackTimes({
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
-        $times:1
+        $callbackTimes:1
       }));
     });
 
@@ -350,16 +360,17 @@ describe('When the module function is executed with the [Array] structure argume
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:Error,
         $message:/Invalid structure argument \[0\]\. Invalid property \["contents"\]\. Could not convert the given JSON file content\./i
       }));
 
-      it.apply(this,should.runCallbackTimes({
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
-        $times:1
+        $callbackTimes:1
       }));
     });
 
@@ -382,16 +393,17 @@ describe('When the module function is executed with the [Array] structure argume
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:Error,
         $message:/Invalid structure argument \[0\]\. Invalid property \["contents"\]\. It must be of \[Array\] type\./i
       }));
 
-      it.apply(this,should.runCallbackTimes({
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
-        $times:1
+        $callbackTimes:1
       }));
     });
 
@@ -416,16 +428,17 @@ describe('When the module function is executed with the [Array] structure argume
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
+          $callbackTimes:1,
           $properties:{
             error:null
           }
         }));
 
-        it.apply(this,should.runCallbackTimes({
+        it.apply(this,should.runCallback({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
-          $times:1
+          $callbackTimes:1
         }));
 
       });
@@ -449,16 +462,17 @@ describe('When the module function is executed with the [Array] structure argume
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
+          $callbackTimes:1,
           $propertyName:'error',
           $errorObject:TypeError,
           $message:/Invalid structure argument \[0\]\[0\]\. Each item of \[Array\] structure argument must be of \[Object\] type\./i
         }));
 
-        it.apply(this,should.runCallbackTimes({
+        it.apply(this,should.runCallback({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
-          $times:1
+          $callbackTimes:1
         }));
 
       });
@@ -487,16 +501,17 @@ describe('When the module function is executed with the [Array] structure argume
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
+      $callbackTimes:1,
       $properties:{
         error:null
       }
     }));
 
-    it.apply(this,should.runCallbackTimes({
+    it.apply(this,should.runCallback({
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
-      $times:1
+      $callbackTimes:1
     }));
 
   });
@@ -515,16 +530,17 @@ describe('When the module function is executed with the [Array] structure argume
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
+      $callbackTimes:1,
       $propertyName:'error',
       $errorObject:TypeError,
       $message:/Invalid structure argument \[0\]\. Each item of \[Array\] structure argument must be of \[Object\] type\./i
     }));
 
-    it.apply(this,should.runCallbackTimes({
+    it.apply(this,should.runCallback({
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
-      $times:1
+      $callbackTimes:1
     }));
 
   });
@@ -545,16 +561,17 @@ describe('When the module function is executed with the [Array] structure argume
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:Error,
         $message:/Invalid structure argument \[0\]\. Each item of \[Array\] structure argument must contain either \['file'\] or \['dir'\] property\./i
       }));
 
-      it.apply(this,should.runCallbackTimes({
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
-        $times:1
+        $callbackTimes:1
       }));
 
     });
@@ -573,16 +590,17 @@ describe('When the module function is executed with the [Array] structure argume
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:Error,
         $message:/Invalid structure argument \[0\]\. Each item of \[Array\] structure argument must contain either \['file'\] or \['dir'\] property\./i
       }));
-
-      it.apply(this,should.runCallbackTimes({
+      
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
-        $times:1
+        $callbackTimes:1
       }));
       
     });
@@ -602,16 +620,17 @@ describe('When the module function is executed with the [Array] structure argume
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:Error,
         $message:/Invalid structure argument \[0\]\. Each item of \[Array\] structure argument must contain either \['file'\] or \['dir'\] property\./i
       }));
 
-      it.apply(this,should.runCallbackTimes({
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
-        $times:1
+        $callbackTimes:1
       }));
     });
     
@@ -629,16 +648,17 @@ describe('When the module function is executed with the [Array] structure argume
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:Error,
         $message:/Invalid structure argument \[0\]\. Each item of \[Array\] structure argument must contain either \['file'\] or \['dir'\] property\./i
       }));
 
-      it.apply(this,should.runCallbackTimes({
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
-        $times:1
+        $callbackTimes:1
       }));
     });
     
@@ -658,16 +678,17 @@ describe('When the module function is executed with the [Array] structure argume
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
+          $callbackTimes:1,
           $propertyName:'error',
           $errorObject:TypeError,
           $message:/Invalid structure argument \[0\]\. Invalid property \["file"\]\. The \[.+\] value has been assigned, while the value of type \[String\] is expected\./i
         }));
 
-        it.apply(this,should.runCallbackTimes({
+        it.apply(this,should.runCallback({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
-          $times:1
+          $callbackTimes:1
         }));
 
       });
@@ -688,16 +709,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \["file"\] property should define the file name rather than file path\. It cannot contain backslashes and forwardslashes\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -716,16 +738,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \["file"\] property is empty, while it should define the file name\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -745,16 +768,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $properties:{
               error:null
             }
           }));
-
-          it.apply(this,should.runCallbackTimes({
+          
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
           
         });
@@ -779,16 +803,17 @@ describe('When the module function is executed with the [Array] structure argume
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
+          $callbackTimes:1,
           $propertyName:'error',
           $errorObject:TypeError,
           $message:/Invalid structure argument \[0\]\. Invalid property \["dir"\]\. The \[.+\] value has been assigned, while the value of type \[String\] is expected\./i
         }));
 
-        it.apply(this,should.runCallbackTimes({
+        it.apply(this,should.runCallback({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
-          $times:1
+          $callbackTimes:1
         }));
       });
 
@@ -808,16 +833,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \["dir"\] property should define the folder name rather than folder path\. It cannot contain backslashes and forwardslashes\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -837,16 +863,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \["dir"\] property is empty, while it should define the folder name\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -866,16 +893,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $properties:{
               error:null
             }
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -901,16 +929,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -929,16 +958,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
-
-          it.apply(this,should.runCallbackTimes({
+          
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
           
         });
@@ -957,16 +987,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -985,16 +1016,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
 
@@ -1014,16 +1046,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:TypeError,
             $message:/Invalid structure argument \[0\]\. Invalid property \["move"\]\. The \[.+\] value has been assigned, while the value of type \[String\] is expected\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
 
@@ -1045,16 +1078,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. The \["move"\] property is empty, while it should indicate the file\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -1074,16 +1108,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. The \["move"\] property is empty, while it should indicate the folder\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -1111,16 +1146,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. Invalid property \["move"\]\. The path leads to the file, while it should indicate the folder\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
 
@@ -1148,16 +1184,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. Invalid property \["move"\]\. The path leads to the folder, while it should indicate the file\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -1176,16 +1213,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. Invalid property \["move"\]\. The folder of the specified path does not exist\./i
             }));
-
-            it.apply(this,should.runCallbackTimes({
+            
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
             
           });
@@ -1204,16 +1242,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. Invalid property \["move"\]\. The file of the specified path does not exist\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -1239,16 +1278,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
         });
         describe(`but also has 'write' property`,function(){
@@ -1266,16 +1306,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -1294,16 +1335,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
-
-          it.apply(this,should.runCallbackTimes({
+          
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
           
         });
@@ -1322,16 +1364,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:TypeError,
             $message:/Invalid structure argument \[0\]\. Invalid property \["copy"\]\. The \[.+\] value has been assigned, while the value of type \[String\] is expected\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
         });
         describe(`of correct [String] type`,function(){
@@ -1351,16 +1394,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. The \["copy"\] property is empty, while it should indicate the file\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -1380,16 +1424,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. The \["copy"\] property is empty, while it should indicate the folder\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });          
@@ -1417,16 +1462,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. Invalid property \["copy"\]\. The path leads to the file, while it should indicate the folder\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
 
@@ -1454,16 +1500,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. Invalid property \["copy"\]\. The path leads to the folder, while it should indicate the file\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -1482,16 +1529,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. Invalid property \["copy"\]\. The folder of the specified path does not exist\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
             
 
@@ -1511,16 +1559,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. Invalid property \["copy"\]\. The file of the specified path does not exist\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -1545,16 +1594,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
-
-          it.apply(this,should.runCallbackTimes({
+          
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
           
         });
@@ -1572,16 +1622,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
         });
         describe(`but also has 'file' property`,function(){
@@ -1599,16 +1650,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \["merge"\] property can be defined only with \["dir"\] property\./i
           }));
-
-          it.apply(this,should.runCallbackTimes({
+          
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
           
         });
@@ -1627,16 +1679,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:TypeError,
             $message:/Invalid structure argument \[0\]\. Invalid property \["merge"\]\. The \[.+\] value has been assigned, while the value of type \[String\] is expected\./i
           }));
-
-          it.apply(this,should.runCallbackTimes({
+          
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
           
         });
@@ -1657,16 +1710,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. The \["merge"\] property is empty, while it should indicate the folder\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });          
@@ -1695,16 +1749,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. Invalid property \["merge"\]\. The path leads to the file, while it should indicate the folder\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
 
@@ -1725,16 +1780,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. Invalid property \["merge"\]\. The folder of the specified path does not exist\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
             
 
@@ -1761,16 +1817,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -1789,16 +1846,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\. The \["writeFrom"\] property can be defined only with \["file"\] property\./i
           }));
-
-          it.apply(this,should.runCallbackTimes({
+          
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
           
           
@@ -1818,16 +1876,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:TypeError,
             $message:/Invalid structure argument \[0\]\. Invalid property \["writeFrom"\]\. The \[.+\] value has been assigned, while the value of type \[String\] is expected\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -1848,16 +1907,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. The \["writeFrom"\] property is empty, while it should indicate the file\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -1884,16 +1944,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. Invalid property \["writeFrom"\]\. The path leads to the folder, while it should indicate the file\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
           });
           describe(`but it leads to the non existing file`,function(){
@@ -1910,16 +1971,17 @@ describe('When the module function is executed with the [Array] structure argume
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\. Invalid property \["writeFrom"\]\. The file of the specified path does not exist\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
           });
 
@@ -1944,16 +2006,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:TypeError,
             $message:/Invalid structure argument \[0\]\. Invalid property \["write"\]\. The \[.+\] value has been assigned, while the value of type \[String\] is expected\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -1977,16 +2040,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:TypeError,
             $message:/Invalid structure argument \[0\]\. Invalid property \["contents"\]\. The \[.+\] value has been assigned, while the value of type \[Array|String\] is expected\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -2009,16 +2073,17 @@ describe('When the module function is executed with the [Array] structure argume
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:TypeError,
             $message:/Invalid structure argument \[0\]\. Invalid property \["contents"\]\. The \[.+\] value has been assigned, while the value of type \[Array|String\] is expected\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -2042,16 +2107,17 @@ describe('When the module function is executed with the [Array] structure argume
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
+          $callbackTimes:1,
           $propertyName:'error',
           $errorObject:TypeError,
           $message:/Invalid structure argument \[0\]\. Invalid property \["overwrite"\]\. The \[.+\] value has been assigned, while the value of type \[Boolean\] is expected\./i
         }));
-
-        it.apply(this,should.runCallbackTimes({
+        
+        it.apply(this,should.runCallback({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
-          $times:1
+          $callbackTimes:1
         }));
         
       });
@@ -2078,16 +2144,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
+      $callbackTimes:1,
       $properties:{
         error:null
       }
     }));
 
-    it.apply(this,should.runCallbackTimes({
+    it.apply(this,should.runCallback({
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
-      $times:1
+      $callbackTimes:1
     }));
 
   });
@@ -2106,16 +2173,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
+      $callbackTimes:1,
       $propertyName:'error',
       $errorObject:TypeError,
       $message:/Invalid structure argument \[0\]\[0\]\. Each item of \[Array\] structure argument must be of \[Object\] type\./i
     }));
 
-    it.apply(this,should.runCallbackTimes({
+    it.apply(this,should.runCallback({
       $function:testingModule,
       $arguments:{structure:should.context('structure')},
       $callback:'done',
-      $times:1
+      $callbackTimes:1
     }));
 
   });
@@ -2136,16 +2204,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:Error,
         $message:/Invalid structure argument \[0\]\[0\]\. Each item of \[Array\] structure argument must contain either \['file'\] or \['dir'\] property\./i
       }));
 
-      it.apply(this,should.runCallbackTimes({
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
-        $times:1
+        $callbackTimes:1
       }));
 
     });
@@ -2164,16 +2233,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:Error,
         $message:/Invalid structure argument \[0\]\[0\]\. Each item of \[Array\] structure argument must contain either \['file'\] or \['dir'\] property\./i
       }));
-
-      it.apply(this,should.runCallbackTimes({
+      
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
-        $times:1
+        $callbackTimes:1
       }));
       
     });
@@ -2193,16 +2263,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:Error,
         $message:/Invalid structure argument \[0\]\[0\]\. Each item of \[Array\] structure argument must contain either \['file'\] or \['dir'\] property\./i
       }));
 
-      it.apply(this,should.runCallbackTimes({
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
-        $times:1
+        $callbackTimes:1
       }));
     });
     
@@ -2220,16 +2291,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
+        $callbackTimes:1,
         $propertyName:'error',
         $errorObject:Error,
         $message:/Invalid structure argument \[0\]\[0\]\. Each item of \[Array\] structure argument must contain either \['file'\] or \['dir'\] property\./i
       }));
 
-      it.apply(this,should.runCallbackTimes({
+      it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'done',
-        $times:1
+        $callbackTimes:1
       }));
     });
     
@@ -2249,16 +2321,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
+          $callbackTimes:1,
           $propertyName:'error',
           $errorObject:TypeError,
           $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["file"\]\. The \[.+\] value has been assigned, while the value of type \[String\] is expected\./i
         }));
 
-        it.apply(this,should.runCallbackTimes({
+        it.apply(this,should.runCallback({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
-          $times:1
+          $callbackTimes:1
         }));
 
       });
@@ -2279,16 +2352,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \["file"\] property should define the file name rather than file path\. It cannot contain backslashes and forwardslashes\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -2307,16 +2381,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \["file"\] property is empty, while it should define the file name\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -2336,16 +2411,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $properties:{
               error:null
             }
           }));
-
-          it.apply(this,should.runCallbackTimes({
+          
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
           
         });
@@ -2370,16 +2446,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
+          $callbackTimes:1,
           $propertyName:'error',
           $errorObject:TypeError,
           $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["dir"\]\. The \[.+\] value has been assigned, while the value of type \[String\] is expected\./i
         }));
 
-        it.apply(this,should.runCallbackTimes({
+        it.apply(this,should.runCallback({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
-          $times:1
+          $callbackTimes:1
         }));
       });
 
@@ -2399,16 +2476,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \["dir"\] property should define the folder name rather than folder path\. It cannot contain backslashes and forwardslashes\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -2428,16 +2506,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \["dir"\] property is empty, while it should define the folder name\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -2457,16 +2536,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $properties:{
               error:null
             }
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -2492,16 +2572,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -2520,16 +2601,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
-
-          it.apply(this,should.runCallbackTimes({
+          
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
           
         });
@@ -2548,16 +2630,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -2576,16 +2659,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
 
@@ -2605,16 +2689,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:TypeError,
             $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["move"\]\. The \[.+\] value has been assigned, while the value of type \[String\] is expected\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
 
@@ -2636,16 +2721,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. The \["move"\] property is empty, while it should indicate the file\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -2665,16 +2751,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. The \["move"\] property is empty, while it should indicate the folder\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -2702,16 +2789,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["move"\]\. The path leads to the file, while it should indicate the folder\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
 
@@ -2739,16 +2827,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["move"\]\. The path leads to the folder, while it should indicate the file\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -2767,16 +2856,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["move"\]\. The folder of the specified path does not exist\./i
             }));
-
-            it.apply(this,should.runCallbackTimes({
+            
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
             
           });
@@ -2795,16 +2885,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["move"\]\. The file of the specified path does not exist\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -2830,16 +2921,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
         });
         describe(`but also has 'write' property`,function(){
@@ -2857,16 +2949,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -2885,16 +2978,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
-
-          it.apply(this,should.runCallbackTimes({
+          
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
           
         });
@@ -2913,16 +3007,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:TypeError,
             $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["copy"\]\. The \[.+\] value has been assigned, while the value of type \[String\] is expected\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
         });
         describe(`of correct [String] type`,function(){
@@ -2942,16 +3037,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. The \["copy"\] property is empty, while it should indicate the file\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -2971,16 +3067,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. The \["copy"\] property is empty, while it should indicate the folder\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });          
@@ -3008,16 +3105,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["copy"\]\. The path leads to the file, while it should indicate the folder\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
 
@@ -3045,16 +3143,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["copy"\]\. The path leads to the folder, while it should indicate the file\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -3073,16 +3172,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["copy"\]\. The folder of the specified path does not exist\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
             
 
@@ -3102,16 +3202,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["copy"\]\. The file of the specified path does not exist\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -3136,16 +3237,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
-
-          it.apply(this,should.runCallbackTimes({
+          
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
           
         });
@@ -3163,16 +3265,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
         });
         describe(`but also has 'file' property`,function(){
@@ -3190,16 +3293,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \["merge"\] property can be defined only with \["dir"\] property\./i
           }));
-
-          it.apply(this,should.runCallbackTimes({
+          
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
           
         });
@@ -3218,16 +3322,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:TypeError,
             $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["merge"\]\. The \[.+\] value has been assigned, while the value of type \[String\] is expected\./i
           }));
-
-          it.apply(this,should.runCallbackTimes({
+          
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
           
         });
@@ -3248,16 +3353,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. The \["merge"\] property is empty, while it should indicate the folder\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });          
@@ -3286,16 +3392,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["merge"\]\. The path leads to the file, while it should indicate the folder\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
 
@@ -3316,16 +3423,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["merge"\]\. The folder of the specified path does not exist\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
             
 
@@ -3352,16 +3460,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -3380,16 +3489,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \["writeFrom"\] property can be defined only with \["file"\] property\./i
           }));
-
-          it.apply(this,should.runCallbackTimes({
+          
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
           
           
@@ -3409,16 +3519,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:TypeError,
             $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["writeFrom"\]\. The \[.+\] value has been assigned, while the value of type \[String\] is expected\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -3439,16 +3550,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. The \["writeFrom"\] property is empty, while it should indicate the file\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -3475,16 +3587,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["writeFrom"\]\. The path leads to the folder, while it should indicate the file\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
           });
           describe(`but it leads to the non existing file`,function(){
@@ -3501,16 +3614,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["writeFrom"\]\. The file of the specified path does not exist\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
           });
 
@@ -3535,16 +3649,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \[Object\] items cannot contain \["move"], \["copy"\], \["merge"\], \["contents"\], \["write"\] or \["writeFrom"\] properties at the same time\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -3563,16 +3678,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:Error,
             $message:/Invalid structure argument \[0\]\[0\]\. The \["writeFrom"\] property can be defined only with \["file"\] property\./i
           }));
-
-          it.apply(this,should.runCallbackTimes({
+          
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
           
           
@@ -3592,16 +3708,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:TypeError,
             $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["writeFrom"\]\. The \[.+\] value has been assigned, while the value of type \[String\] is expected\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -3622,16 +3739,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. The \["writeFrom"\] property is empty, while it should indicate the file\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
 
           });
@@ -3658,16 +3776,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["writeFrom"\]\. The path leads to the folder, while it should indicate the file\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
           });
           describe(`but it leads to the non existing file`,function(){
@@ -3684,16 +3803,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
+              $callbackTimes:1,
               $propertyName:'error',
               $errorObject:Error,
               $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["writeFrom"\]\. The file of the specified path does not exist\./i
             }));
 
-            it.apply(this,should.runCallbackTimes({
+            it.apply(this,should.runCallback({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
               $callback:'done',
-              $times:1
+              $callbackTimes:1
             }));
           });
 
@@ -3717,16 +3837,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:TypeError,
             $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["write"\]\. The \[.+\] value has been assigned, while the value of type \[String\] is expected\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -3750,16 +3871,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
+            $callbackTimes:1,
             $propertyName:'error',
             $errorObject:TypeError,
             $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["contents"\]\. The \[.+\] value has been assigned, while the value of type \[Array|String\] is expected\./i
           }));
 
-          it.apply(this,should.runCallbackTimes({
+          it.apply(this,should.runCallback({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $callback:'done',
-            $times:1
+            $callbackTimes:1
           }));
 
         });
@@ -3782,16 +3904,17 @@ describe(`contains [Object] item with [Array] 'contents' property that`,function
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
+          $callbackTimes:1,
           $propertyName:'error',
           $errorObject:TypeError,
           $message:/Invalid structure argument \[0\]\[0\]\. Invalid property \["overwrite"\]\. The \[.+\] value has been assigned, while the value of type \[Boolean\] is expected\./i
         }));
-
-        it.apply(this,should.runCallbackTimes({
+        
+        it.apply(this,should.runCallback({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'done',
-          $times:1
+          $callbackTimes:1
         }));
         
       });

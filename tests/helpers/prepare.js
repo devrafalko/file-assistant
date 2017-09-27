@@ -44,7 +44,7 @@ module.exports = {
   },
   writeFile:function(item,data,done){
     args(arguments,[String,String]);
-    return this.utils.writeJson(item,data,done);
+    return this.utils.writeFile(item,data,done);
   },
   utils:{
     remove:function(done){
