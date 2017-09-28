@@ -10,20 +10,6 @@ const should = require(path.resolve(helpers,'should.js'));
 const testingModule = require(path.resolve('./index.js'));
 const data = require(path.resolve(helpers,'structures.json'));
 
-const contentStructure = [
-  {file:paths.name('styles/mixins.scss'), data:paths.from('dist.css'), overwrite:false},
-  {file:paths.name('styles/imports.scss'), copy:paths.from('styles/imports.scss'), overwrite:true},
-  {dir:paths.name('styles/css'),overwrite:true,content:[
-      {file:paths.name('styles/css/main.css')},
-      {file:paths.name('styles/css/extra.css')}
-  ]},
-  {dir:paths.name('styles/scss'),overwrite:false,content:[
-      {file:paths.name('styles/scss/main.scss'),overwrite:false}
-  ]}
-];
-
-const newContent = '#new{color:black;}\n';
-
 describe(`When the file does not exist in the root folder\n`+
          `and the structure contains an item with that file`,function(){
 

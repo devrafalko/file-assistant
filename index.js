@@ -603,8 +603,13 @@ StructureDirs.prototype.appenders = {
       for(let i in level){
         let item = level[i];
         const nextRun = run.bind(this,item.children,item,increase.bind(this));
-        const hasContent = item.folder&&item.children.length ? nextRun:increase.bind(this);
-        this.appenders.createItem.call(this,item,hasContent);
+        const tidyUpEmptyMove = this.appenders.tidyUpFolder.bind(this,item,done);
+        const hasContent = item.folder&&item.children.length;
+        const isMoveEmpty = item.folder&&item.action==='move'&&!item.children.length;
+        const nextAction = isMoveEmpty ? tidyUpEmptyMove:hasContent ? nextRun:increase.bind(this);
+        
+        if(isMoveEmpty||hasContent) item.tidyUp = true;
+        this.appenders.createItem.call(this,item,nextAction);
       }
       function increase(){
         if(++iter===level.length){
@@ -616,11 +621,12 @@ StructureDirs.prototype.appenders = {
   },
   tidyUpFolder:function(item,resolve){
     const funList = [
-      checkIfItemFailed,
+      checkActionSuccess,
       resultForParent,
       removeMovedFolder,
-      computeMessage
+      whenChildrenMessage
     ];
+    
     const userContext = {
       item:item,
       each:this.each,
@@ -630,16 +636,18 @@ StructureDirs.prototype.appenders = {
       messages:this.response.messages,
       computeMessage:this.response.computeMessage
     };
-    moveOn(funList,userContext,resolve,()=>{});
-    
-    function checkIfItemFailed(resolve){
-      this.wasItemFailed = this.item.result.fail!==null;
-      resolve();
+
+    moveOn(funList,userContext,resolve,function(){
+      this.response.prepareEach.call(this);
+      return resolve();
+    });
+
+    function checkActionSuccess(resolve,reject){
+      type(this.item.result.warning,null)&&type(this.item.result.fail,null) ? resolve():reject();
     }
-    
+
     function resultForParent(resolve){
       const countResult = {};
-      //sumResults(this.item.result);
       for(var x in this.item.children){
         sumResults(this.item.children[x].result);
       }
@@ -651,31 +659,27 @@ StructureDirs.prototype.appenders = {
         }
       }
     }
-    
-    function removeMovedFolder(resolve){
-      if(this.wasItemFailed||this.item.action!=='move') return resolve();
+
+    function removeMovedFolder(resolve,reject){
+      if(this.item.action!=='move') return resolve();
+      const addMsg = '. The folder was successfully copied to the target location, but could not be removed from its origin location.';
       emptyFolder(this.item.from,(err)=>{
-        if(err) this.wasMoveFailed = true;
+        if(err){
+          this.computeMessage('fail',false,addMsg);
+          reject();
+        }
         if(!err){
           fs.rmdir(this.item.from,(err)=>{
-            if(err) this.wasMoveFailed = true;
-            if(!err) resolve();
+            if(!err) return resolve();
+            this.computeMessage('fail',false,addMsg);
+            reject();
           });
         }
       });
     }
-    
-    function computeMessage(resolve){
-      if(this.item.result.success!==null||this.item.result.fail!==null||this.item.result.warning!==null){
-        this.response.prepareEach.call(this);
-        return resolve();
-      }
+
+    function whenChildrenMessage(resolve){
       switch(true){
-        case (this.wasItemFailed):
-          return resolve();
-        case (this.item.action==='move',this.wasMoveFailed):
-          this.computeMessage('fail',false,'. The folder was successfully copied to the target location, but could not be removed from its origin location.');
-          break;
         case (this.item.childResults.fail):
           this.computeMessage('warning',true,', but at least one of its child items failed.');
           break;
@@ -715,25 +719,25 @@ StructureDirs.prototype.appenders = {
       messages:this.response.messages,
       computeMessage:this.response.computeMessage
     };
-    
+
     item.result = {
       success:null,
       fail:null,
       warning:null
     };
-    
+
     if(item.file) moveOn(fileList,userContext,onFileResolve,onFileResolve);
     if(item.folder) moveOn(dirList,userContext,onDirResolve,onDirResolve);
-    
+
     function onFileResolve(){
       this.response.prepareEach.call(this);
       done();
     }
 
     function onDirResolve(){
-      if(this.item.children.length===0||this.item.result.fail!==null){
-        this.response.prepareEach.call(this);
-      } 
+      if(this.item.action==='move') return done();
+      if(this.item.children.length) return done();
+      this.response.prepareEach.call(this);
       done();
     }
   },
@@ -807,7 +811,7 @@ StructureDirs.prototype.appenders = {
   
   abortIfFileExists:function(resolve,reject){
     if((this.item.folder&&this.item.alreadyFileExists)){
-      this.computeMessage('fail',false,', because the folder of the same name already exists in this path.');
+      this.computeMessage('fail',false,', because the file of the same name already exists in this path.');
       return reject();
     }
     resolve();
@@ -827,7 +831,7 @@ StructureDirs.prototype.appenders = {
         return reject();
       }
       if(!err){
-        this.computeMessage('success',true);
+        if(!this.item.tidyUp) this.computeMessage('success',true);
         return resolve();
       }
     });
@@ -841,26 +845,26 @@ StructureDirs.prototype.appenders = {
         }
         if(!err){
           this.item.overwritten = true;
-          if(!this.item.children.length) this.computeMessage('success',true);
+          if(!this.item.tidyUp) this.computeMessage('success',true);
           return resolve();
         }
       });
     } else {
-      if(!this.item.children.length) this.computeMessage('success',true);
+      if(!this.item.tidyUp) this.computeMessage('success',true);
       return resolve();
     }
   }
 };
 
 StructureDirs.prototype.response = {
-  onDone:function(context,reject){
+  onDone:function(){
     this.done(this.doneObject);
   },
   onDoneError:function(context,err){
     this.doneObject.error = err;
     this.done(this.doneObject);
   },
-  prepareDoneObject:function(resolve,reject){
+  prepareDoneObject:function(resolve){
     this.doneObject = {
       error:null,
       files:{
@@ -877,7 +881,12 @@ StructureDirs.prototype.response = {
     };
     resolve();
   },
+  passDonePath: function(){
+    const type = this.item.result.success!==null ? 'success':this.item.result.warning!==null ? 'warning':'fail';
+    this.doneObject[this.item.file ? 'files':'dirs'][type].push(this.item.absolute);
+  },
   prepareEach:function(){
+    this.response.passDonePath.call(this);
     if(!this.each) return;
     const eachObject = {
       fail:this.item.result.fail,
@@ -892,11 +901,6 @@ StructureDirs.prototype.response = {
       absolute:this.item.absolute
     };
     this.each(eachObject);
-    this.response.passDonePath.call(this);
-  },
-  passDonePath: function(resolve){
-    const type = this.item.result.success!==null ? 'success':this.item.result.warning!==null ? 'warning':'fail';
-    this.doneObject[this.item.file ? 'files':'dirs'][type].push(this.item.absolute);
   },
   messages:{
     fileNonExist:function(success){
@@ -976,7 +980,6 @@ StructureDirs.prototype.response = {
           break;
       }
     }
-    
     if(msg) this.item.result[type] = this.messages[msg].call(this,isSuccess)+additional;
   }
 };
