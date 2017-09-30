@@ -4,11 +4,14 @@ const fs = require('fs-extra');
 const path = require('path');
 
 const helpers = path.resolve('./tests/helpers');
+const temp = path.resolve('./tests/temp');
 const prepare = require(path.resolve(helpers,'prepare.js'));
 const paths = require(path.resolve(helpers,'paths.js'));
 const should = require(path.resolve(helpers,'should.js'));
 const testingModule = require(path.resolve('./index.js'));
 const data = require(path.resolve(helpers,'structures.json'));
+
+const emptyDirPath = path.resolve(temp,'dist/empty');
 
 describe(`When the file does not exist in the root folder\n`+
          `and the structure contains an item with that file`,function(){
@@ -50,7 +53,7 @@ describe(`When the file does not exist in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The file "${paths.name('prod.css')}" was successfully created.`,
           item: 'file',
@@ -73,12 +76,12 @@ describe(`When the file does not exist in the root folder\n`+
             files:{
               success:[paths.to('prod.css')],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -128,7 +131,7 @@ describe(`When the file does not exist in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The file "${paths.name('prod.css')}" was successfully copied from the "${paths.from('dist.css')}" path.`,
           item: 'file',
@@ -151,12 +154,12 @@ describe(`When the file does not exist in the root folder\n`+
             files:{
               success:[paths.to('prod.css')],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -207,7 +210,7 @@ describe(`When the file does not exist in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The file "${paths.name('prod.css')}" was successfully moved from the "${paths.from('dist.css')}" path.`,
           item: 'file',
@@ -230,12 +233,12 @@ describe(`When the file does not exist in the root folder\n`+
             files:{
               success:[paths.to('prod.css')],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -280,7 +283,7 @@ describe(`When the file does not exist in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The file "${paths.name('prod.css')}" was successfully created with the given content.`,
           item: 'file',
@@ -303,12 +306,12 @@ describe(`When the file does not exist in the root folder\n`+
             files:{
               success:[paths.to('prod.css')],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -358,7 +361,7 @@ describe(`When the file does not exist in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The file "${paths.name('prod.css')}" was successfully created with the content from the "${paths.from('dist.css')}" file.`,
           item: 'file',
@@ -381,12 +384,12 @@ describe(`When the file does not exist in the root folder\n`+
             files:{
               success:[paths.to('prod.css')],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -440,7 +443,7 @@ describe(`When the file already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The already existing file "${paths.name('prod.css')}" was successfully overwritten by the newly created file.`,
           item: 'file',
@@ -463,12 +466,12 @@ describe(`When the file already exists in the root folder\n`+
             files:{
               warning:[],
               success:[paths.to('prod.css')],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -519,7 +522,7 @@ describe(`When the file already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: `The already existing file "${paths.name('prod.css')}" could not be overwritten by the newly created file, due to the "overwrite" property settings.`,
           success: null,
           item: 'file',
@@ -542,12 +545,12 @@ describe(`When the file already exists in the root folder\n`+
             files:{
               warning:[paths.to('prod.css')],
               success:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -604,7 +607,7 @@ describe(`When the file already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The already existing file "${paths.name('prod.css')}" was successfully overwritten by the file copied from the "${paths.from('dist.css')}" path.`,
           item: 'file',
@@ -627,12 +630,12 @@ describe(`When the file already exists in the root folder\n`+
             files:{
               success:[paths.to('prod.css')],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -689,7 +692,7 @@ describe(`When the file already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: `The already existing file "${paths.name('prod.css')}" could not be overwritten by the file copied from the "${paths.from('dist.css')}" path, due to the "overwrite" property settings.`,
           success: null,
           item: 'file',
@@ -712,12 +715,12 @@ describe(`When the file already exists in the root folder\n`+
             files:{
               warning:[paths.to('prod.css')],
               success:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -773,7 +776,7 @@ describe(`When the file already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The already existing file "${paths.name('prod.css')}" was successfully overwritten by the file moved from the "${paths.from('dist.css')}" path.`,
           item: 'file',
@@ -796,12 +799,12 @@ describe(`When the file already exists in the root folder\n`+
             files:{
               success:[paths.to('prod.css')],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -858,7 +861,7 @@ describe(`When the file already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: `The already existing file "${paths.name('prod.css')}" could not be overwritten by the file moved from the "${paths.from('dist.css')}" path, due to the "overwrite" property settings.`,
           success: null,
           item: 'file',
@@ -881,12 +884,12 @@ describe(`When the file already exists in the root folder\n`+
             files:{
               warning:[paths.to('prod.css')],
               success:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -938,7 +941,7 @@ describe(`When the file already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The content of "${paths.name('prod.css')}" file was successfully overwritten with the given content.`,
           item: 'file',
@@ -961,12 +964,12 @@ describe(`When the file already exists in the root folder\n`+
             files:{
               success:[paths.to('prod.css')],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -1018,7 +1021,7 @@ describe(`When the file already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The given content was successfully appended to the "${paths.name('prod.css')}" file.`,
           item: 'file',
@@ -1041,12 +1044,12 @@ describe(`When the file already exists in the root folder\n`+
             files:{
               success:[paths.to('prod.css')],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -1103,7 +1106,7 @@ describe(`When the file already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The already existing file "${paths.rel('prod.css')}" was successfully overwritten with the content from the "${paths.from('dist.css')}" file.`,
           item: 'file',
@@ -1126,12 +1129,12 @@ describe(`When the file already exists in the root folder\n`+
             files:{
               success:[paths.to('prod.css')],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -1188,7 +1191,7 @@ describe(`When the file already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The content from the "${paths.from('dist.css')}" file was successfully appended to the "${paths.rel('prod.css')}" file.`,
           item: 'file',
@@ -1211,12 +1214,12 @@ describe(`When the file already exists in the root folder\n`+
             files:{
               success:[paths.to('prod.css')],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -1265,7 +1268,7 @@ describe(`When the folder does not exist in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The folder "${paths.rel('styles')}" was successfully created.`,
           item: 'dir',
@@ -1288,12 +1291,12 @@ describe(`When the folder does not exist in the root folder\n`+
             files:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[paths.to('styles')],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -1372,7 +1375,7 @@ describe(`When the folder does not exist in the root folder\n`+
         $callback:'each',
         $callbackTimes:3,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The folder "${paths.rel('styles')}" was successfully created with its contents.`,
           item: 'dir',
@@ -1391,7 +1394,7 @@ describe(`When the folder does not exist in the root folder\n`+
         $callback:'each',
         $callbackTimes:3,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The folder "${paths.rel('styles/css')}" was successfully created.`,
           item: 'dir',
@@ -1410,7 +1413,7 @@ describe(`When the folder does not exist in the root folder\n`+
         $callback:'each',
         $callbackTimes:3,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The file "${paths.rel('styles/mixins.scss')}" was successfully created.`,
           item: 'file',
@@ -1433,7 +1436,7 @@ describe(`When the folder does not exist in the root folder\n`+
             files:{
               success:[paths.to('styles/mixins.scss')],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:jasmine.arrayContaining([
@@ -1441,7 +1444,7 @@ describe(`When the folder does not exist in the root folder\n`+
                 paths.to('styles/css')
               ]),
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -1497,7 +1500,7 @@ describe(`When the folder does not exist in the root folder\n`+
           $callback:'each',
           $callbackTimes:9,
           $properties:{
-            fail: null,
+            failure: null,
             warning: null,
             success: `The folder "${paths.rel(loopPath)}" was successfully copied from the "${paths.from(loopPath)}" path.`,
             item: 'dir',
@@ -1531,7 +1534,7 @@ describe(`When the folder does not exist in the root folder\n`+
           $callback:'each',
           $callbackTimes:9,
           $properties:{
-            fail: null,
+            failure: null,
             warning: null,
             success: `The file "${paths.rel(loopPath)}" was successfully copied from the "${paths.from(loopPath)}" path.`,
             item: 'file',
@@ -1562,7 +1565,7 @@ describe(`When the folder does not exist in the root folder\n`+
                 paths.to('styles/mixins.scss')
               ]),
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:jasmine.arrayContaining([
@@ -1570,7 +1573,7 @@ describe(`When the folder does not exist in the root folder\n`+
                 paths.to('styles/css')
               ]),
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -1580,11 +1583,13 @@ describe(`When the folder does not exist in the root folder\n`+
   describe(`and 'move' property, regardless 'overwrite' property is true, false or undefined`,function(){
       beforeEach(function(done){
         this.structure = [
-          {dir:paths.name('styles'),move:paths.from('styles')}
+          {dir:paths.name('styles'),move:paths.from('styles')},
+          {dir:'empty',move:paths.from('empty')}
         ];
         prepare.remove()
         .then(()=>prepare.resetFrom())
         .then(()=>prepare.resetTo())
+        .then(()=>prepare.addFrom('empty'))
         .then(done)
         .catch(done.fail);
       });
@@ -1594,14 +1599,20 @@ describe(`When the folder does not exist in the root folder\n`+
         $arguments:{structure:should.context('structure')},
         $folder:paths.from('styles')
       }));
+      
+      it.apply(this,should.removeFolder({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $folder:paths.from('empty')
+      }));
 
       it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'each',
-        $callbackTimes:9
+        $callbackTimes:10
       }));
-      
+
       it.apply(this,should.runCallback({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
@@ -1609,21 +1620,21 @@ describe(`When the folder does not exist in the root folder\n`+
         $callbackTimes:1
       }));
 
-      for(var loopPath of ['styles', 'styles/css', 'styles/scss']){
-        
+      for(var loopPath of ['styles', 'styles/css', 'styles/scss', 'empty']){
+
         it.apply(this,should.createNewFolder({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $folder:paths.to(loopPath)
         }));
-        
+
         it.apply(this,should.runCallbackWithObject({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'each',
-          $callbackTimes:9,
+          $callbackTimes:10,
           $properties:{
-            fail: null,
+            failure: null,
             warning: null,
             success: `The folder "${paths.rel(loopPath)}" was successfully moved from the "${paths.from(loopPath)}" path.`,
             item: 'dir',
@@ -1655,9 +1666,9 @@ describe(`When the folder does not exist in the root folder\n`+
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'each',
-          $callbackTimes:9,
+          $callbackTimes:10,
           $properties:{
-            fail: null,
+            failure: null,
             warning: null,
             success: `The file "${paths.rel(loopPath)}" was successfully moved from the "${paths.from(loopPath)}" path.`,
             item: 'file',
@@ -1688,15 +1699,17 @@ describe(`When the folder does not exist in the root folder\n`+
                 paths.to('styles/mixins.scss')
               ]),
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:jasmine.arrayContaining([
                 paths.to('styles'),
-                paths.to('styles/css')
+                paths.to('styles/css'),
+                paths.to('styles/scss'),
+                paths.to('empty')
               ]),
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -1750,7 +1763,7 @@ describe(`When the folder does not exist in the root folder\n`+
           $callback:'each',
           $callbackTimes:9,
           $properties:{
-            fail: null,
+            failure: null,
             warning: null,
             success: `The folder "${paths.rel(loopPath)}" was successfully merged with the "${paths.from(loopPath)}" folder.`,
             item: 'dir',
@@ -1784,7 +1797,7 @@ describe(`When the folder does not exist in the root folder\n`+
           $callback:'each',
           $callbackTimes:9,
           $properties:{
-            fail: null,
+            failure: null,
             warning: null,
             success: `The file "${paths.rel(loopPath)}" was successfully copied from the "${paths.from(loopPath)}" path.`,
             item: 'file',
@@ -1815,7 +1828,7 @@ describe(`When the folder does not exist in the root folder\n`+
                 paths.to('styles/mixins.scss')
               ]),
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:jasmine.arrayContaining([
@@ -1823,7 +1836,7 @@ describe(`When the folder does not exist in the root folder\n`+
                 paths.to('styles/css')
               ]),
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -1920,7 +1933,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The already existing folder "${paths.rel('styles')}" was successfully overwritten by the newly created folder.`,
           item: 'dir',
@@ -1943,12 +1956,12 @@ describe(`When the folder already exists in the root folder\n`+
             files:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[paths.to('styles')],
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -2043,7 +2056,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: `The already existing folder "${paths.rel('styles')}" could not be overwritten by the newly created folder, due to the "overwrite" property settings.`,
           success: null,
           item: 'dir',
@@ -2066,12 +2079,12 @@ describe(`When the folder already exists in the root folder\n`+
             files:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[paths.to('styles')],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -2190,7 +2203,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:3,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The already existing folder "${paths.rel('styles')}" was successfully overwritten by the newly created folder and its contents.`,
           item: 'dir',
@@ -2209,13 +2222,13 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:3,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
-          success: `The folder "${paths.rel('styles/css')}" was successfully created.`,
+          success: `The already existing folder "${paths.rel('styles/css')}" was successfully overwritten by the newly created folder.`,
           item: 'dir',
           from: null,
           action: 'create',
-          overwritten: false,
+          overwritten: true,
           root:path.join(paths.rootDir,paths.toDir),
           relative:paths.rel('styles/css'),
           absolute:paths.to('styles/css')
@@ -2228,13 +2241,13 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:3,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
-          success: `The file "${paths.rel('styles/mixins.scss')}" was successfully created.`,
+          success: `The already existing file "${paths.rel('styles/mixins.scss')}" was successfully overwritten by the newly created file.`,
           item: 'file',
           from: null,
           action: 'create',
-          overwritten: false,
+          overwritten: true,
           root:path.join(paths.rootDir,paths.toDir),
           relative:paths.rel('styles/mixins.scss'),
           absolute:paths.to('styles/mixins.scss')
@@ -2251,7 +2264,7 @@ describe(`When the folder already exists in the root folder\n`+
             files:{
               success:[paths.to('styles/mixins.scss')],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:jasmine.arrayContaining([
@@ -2259,7 +2272,7 @@ describe(`When the folder already exists in the root folder\n`+
                 paths.to('styles/css')
               ]),
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -2413,7 +2426,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:8,
         $properties:{
-          fail: null,
+          failure: null,
           warning: `The already existing folder "${paths.rel('styles')}" could not be overwritten by the newly created folder and its contents, due to the "overwrite" property settings.`,
           success: null,
           item: 'dir',
@@ -2432,7 +2445,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:8,
         $properties:{
-          fail: null,
+          failure: null,
           warning: `The already existing folder "${paths.rel('styles/css')}" could not be overwritten by the newly created folder and its contents, due to the "overwrite" property settings.`,
           success: null,
           item: 'dir',
@@ -2451,7 +2464,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:8,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The already existing folder "${paths.rel('styles/scss')}" was successfully overwritten by the newly created folder and its contents.`,
           item: 'dir',
@@ -2470,7 +2483,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:8,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The already existing file "${paths.rel('styles/css/main.css')}" was successfully overwritten by the newly created file.`,
           item: 'file',
@@ -2489,7 +2502,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:8,
         $properties:{
-          fail: null,
+          failure: null,
           warning: `The already existing file "${paths.rel('styles/css/style.css')}" could not be overwritten by the newly created file, due to the "overwrite" property settings.`,
           success: null,
           item: 'file',
@@ -2508,13 +2521,13 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:8,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
-          success: `The file "${paths.rel('styles/scss/main.scss')}" was successfully created.`,
+          success: `The already existing file "${paths.rel('styles/scss/main.scss')}" was successfully overwritten by the newly created file.`,
           item: 'file',
           from: null,
           action: 'create',
-          overwritten: false,
+          overwritten: true,
           root:path.join(paths.rootDir,paths.toDir),
           relative:paths.rel('styles/scss/main.scss'),
           absolute:paths.to('styles/scss/main.scss')
@@ -2527,7 +2540,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:8,
         $properties:{
-          fail: null,
+          failure: null,
           warning: `The already existing file "${paths.rel('styles/mixins.scss')}" could not be overwritten by the newly created file, due to the "overwrite" property settings.`,
           success: null,
           item: 'file',
@@ -2546,7 +2559,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:8,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The already existing file "${paths.rel('styles/imports.scss')}" was successfully overwritten by the newly created file.`,
           item: 'file',
@@ -2576,7 +2589,7 @@ describe(`When the folder already exists in the root folder\n`+
                 paths.to('styles/css/style.css'),
                 paths.to('styles/mixins.scss')
               ]),
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[paths.to('styles/scss')],
@@ -2584,7 +2597,7 @@ describe(`When the folder already exists in the root folder\n`+
                 paths.to('styles'),
                 paths.to('styles/css')
               ]),
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -2726,7 +2739,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:11,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The already existing folder "${paths.rel('styles')}" was successfully overwritten by the folder copied from the "${paths.from('styles')}" path.`,
           item: 'dir',
@@ -2745,7 +2758,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:11,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The folder "${paths.rel('styles/scss')}" was successfully copied from the "${paths.from('styles/scss')}" path.`,
           item: 'dir',
@@ -2764,7 +2777,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:11,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The folder "${paths.rel('styles/css')}" was successfully copied from the "${paths.from('styles/css')}" path.`,
           item: 'dir',
@@ -2777,14 +2790,17 @@ describe(`When the folder already exists in the root folder\n`+
         }
       }));
       
-      for(var loopPath of ['styles/mixins.scss','styles/imports.scss','styles/css/main.css','styles/css/style.css','styles/css/extra.css','styles/scss/main.scss']){
+      
+      
+      
+      for(var loopPath of ['styles/css/main.css','styles/css/style.css','styles/css/extra.css','styles/scss/main.scss']){
         it.apply(this,should.runCallbackWithObject({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'each',
           $callbackTimes:11,
           $properties:{
-            fail: null,
+            failure: null,
             warning: null,
             success: `The file "${paths.rel(loopPath)}" was successfully copied from the "${paths.from(loopPath)}" path.`,
             item: 'file',
@@ -2798,13 +2814,34 @@ describe(`When the folder already exists in the root folder\n`+
         }));
       }
 
+      for(var loopPath of ['styles/mixins.scss','styles/imports.scss']){
+        it.apply(this,should.runCallbackWithObject({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:11,
+          $properties:{
+            failure: null,
+            warning: null,
+            success: `The already existing file "${paths.rel(loopPath)}" was successfully overwritten by the file copied from the "${paths.from(loopPath)}" path.`,
+            item: 'file',
+            from: paths.from(loopPath),
+            action: 'copy',
+            overwritten: true,
+            root:path.join(paths.rootDir,paths.toDir),
+            relative:paths.rel(loopPath),
+            absolute:paths.to(loopPath)
+          }
+        }));
+      }
+
       it.apply(this,should.runCallbackWithObject({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'each',
         $callbackTimes:11,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The already existing file "${paths.rel('prod.css')}" was successfully overwritten by the file copied from the "${paths.from('variables.scss')}" path.`,
           item: 'file',
@@ -2816,14 +2853,14 @@ describe(`When the folder already exists in the root folder\n`+
           absolute:paths.to('prod.css')
         }
       }));
-
+      
       it.apply(this,should.runCallbackWithObject({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $callback:'each',
         $callbackTimes:11,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The already existing file "${paths.rel('variables.scss')}" was successfully overwritten by the file copied from the "${paths.from('prod.css')}" path.`,
           item: 'file',
@@ -2855,7 +2892,7 @@ describe(`When the folder already exists in the root folder\n`+
                 paths.to('variables.scss')
               ]),
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:jasmine.arrayContaining([
@@ -2864,7 +2901,7 @@ describe(`When the folder already exists in the root folder\n`+
                 paths.to('styles/scss')
               ]),
               warning:[],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -2944,7 +2981,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: `The already existing folder "${paths.rel('styles')}" could not be overwritten by the folder copied from the "${paths.from('styles')}" path, due to the "overwrite" property settings.`,
           success: null,
           item: 'dir',
@@ -2967,12 +3004,12 @@ describe(`When the folder already exists in the root folder\n`+
             files:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[paths.to('styles')],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -3130,7 +3167,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:5,
         $properties:{
-          fail: null,
+          failure: null,
           warning: `The already existing folder "${paths.rel('styles')}" could not be overwritten by the newly created folder and its contents, due to the "overwrite" property settings.`,
           success: null,
           item: 'dir',
@@ -3149,7 +3186,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:5,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The already existing folder "${paths.rel('styles/css')}" was successfully overwritten by the folder moved from the "${paths.from('styles/css')}" path.`,
           item: 'dir',
@@ -3162,14 +3199,33 @@ describe(`When the folder already exists in the root folder\n`+
         }
       }));
 
-      for(var loopPath of ['styles/css/main.css','styles/css/style.css','styles/css/extra.css']){
+      it.apply(this,should.runCallbackWithObject({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:5,
+        $properties:{
+          failure: null,
+          warning: null,
+          success: `The already existing file "${paths.rel('styles/css/main.css')}" was successfully overwritten by the file moved from the "${paths.from('styles/css/main.css')}" path.`,
+          item: 'file',
+          from: paths.from('styles/css/main.css'),
+          action: 'move',
+          overwritten: true,
+          root:path.join(paths.rootDir,paths.toDir),
+          relative:paths.rel('styles/css/main.css'),
+          absolute:paths.to('styles/css/main.css')
+        }
+      }));
+      
+      for(var loopPath of ['styles/css/style.css','styles/css/extra.css']){
         it.apply(this,should.runCallbackWithObject({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $callback:'each',
           $callbackTimes:5,
           $properties:{
-            fail: null,
+            failure: null,
             warning: null,
             success: `The file "${paths.rel(loopPath)}" was successfully moved from the "${paths.from(loopPath)}" path.`,
             item: 'file',
@@ -3197,12 +3253,12 @@ describe(`When the folder already exists in the root folder\n`+
                 paths.to('styles/css/extra.css')
               ]),
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[paths.to('styles/css')],
               warning:[paths.to('styles')],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -3287,7 +3343,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:1,
         $properties:{
-          fail: null,
+          failure: null,
           warning: `The already existing folder "${paths.rel('styles')}" could not be overwritten by the folder moved from the "${paths.from('styles')}" path, due to the "overwrite" property settings.`,
           success: null,
           item: 'dir',
@@ -3310,12 +3366,12 @@ describe(`When the folder already exists in the root folder\n`+
             files:{
               success:[],
               warning:[],
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[],
               warning:[paths.to('styles')],
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -3480,7 +3536,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:9,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The folder "${paths.rel('styles/scss')}" was successfully merged with the "${paths.from('styles/scss')}" folder.`,
           item: 'dir',
@@ -3501,7 +3557,7 @@ describe(`When the folder already exists in the root folder\n`+
         $properties:{
           success: `The already existing folder "${paths.rel('styles/css')}" was successfully merged with the "${paths.from('styles/css')}" folder.`,
           warning: null,
-          fail:null,
+          failure:null,
           item: 'dir',
           from: paths.from('styles/css'),
           action: 'merge',
@@ -3520,7 +3576,7 @@ describe(`When the folder already exists in the root folder\n`+
         $properties:{
           success: `The already existing folder "${paths.rel('styles')}" was successfully merged with the "${paths.from('styles')}" folder.`,
           warning: null,
-          fail: null,
+          failure: null,
           item: 'dir',
           from: paths.from('styles'),
           action: 'merge',
@@ -3539,7 +3595,7 @@ describe(`When the folder already exists in the root folder\n`+
         $properties:{
           success: `The file "${paths.rel('styles/scss/main.scss')}" was successfully copied from the "${paths.from('styles/scss/main.scss')}" path.`,
           warning: null,
-          fail: null,
+          failure: null,
           item: 'file',
           from: paths.from('styles/scss/main.scss'),
           action: 'copy',
@@ -3559,7 +3615,7 @@ describe(`When the folder already exists in the root folder\n`+
           $properties:{
             success: `The already existing file "${paths.rel(loopPath)}" was successfully overwritten by the file copied from the "${paths.from(loopPath)}" path.`,
             warning: null,
-            fail: null,
+            failure: null,
             item: 'file',
             from: paths.from(loopPath),
             action: 'copy',
@@ -3589,7 +3645,7 @@ describe(`When the folder already exists in the root folder\n`+
                 paths.to('styles/imports.scss'),
                 paths.to('styles/scss/main.scss')
               ]),
-              fail:[]
+              failure:[]
             },
             dirs:{
               warning:[],
@@ -3598,7 +3654,7 @@ describe(`When the folder already exists in the root folder\n`+
                 paths.to('styles/css'),
                 paths.to('styles/scss')
               ]),
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
@@ -3634,7 +3690,7 @@ describe(`When the folder already exists in the root folder\n`+
           $folder:paths.from(loopPath)
         }));
       }
-      
+
       for(var loopPath of ['styles','styles/css']){
         it.apply(this,should.not.removeFolder({
           $function:testingModule,
@@ -3766,7 +3822,7 @@ describe(`When the folder already exists in the root folder\n`+
         $properties:{
           success: null,
           warning: `The already existing folder "${paths.rel('styles')}" was successfully merged with the "${paths.from('styles')}" folder, but at least one of its child items gave warning.`,
-          fail: null,
+          failure: null,
           item: 'dir',
           from: paths.from('styles'),
           action: 'merge',
@@ -3783,7 +3839,7 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'each',
         $callbackTimes:9,
         $properties:{
-          fail: null,
+          failure: null,
           warning: null,
           success: `The folder "${paths.rel('styles/scss')}" was successfully merged with the "${paths.from('styles/scss')}" folder.`,
           item: 'dir',
@@ -3804,7 +3860,7 @@ describe(`When the folder already exists in the root folder\n`+
         $properties:{
           success: null,
           warning: `The already existing folder "${paths.rel('styles/css')}" was successfully merged with the "${paths.from('styles/css')}" folder, but at least one of its child items gave warning.`,
-          fail:null,
+          failure:null,
           item: 'dir',
           from: paths.from('styles/css'),
           action: 'merge',
@@ -3824,7 +3880,7 @@ describe(`When the folder already exists in the root folder\n`+
         $properties:{
           success: `The file "${paths.rel('styles/scss/main.scss')}" was successfully copied from the "${paths.from('styles/scss/main.scss')}" path.`,
           warning: null,
-          fail: null,
+          failure: null,
           item: 'file',
           from: paths.from('styles/scss/main.scss'),
           action: 'copy',
@@ -3844,7 +3900,7 @@ describe(`When the folder already exists in the root folder\n`+
           $properties:{
             success: null,
             warning: `The already existing file "${paths.rel(loopPath)}" could not be overwritten by the file copied from the "${paths.from(loopPath)}" path, due to the "overwrite" property settings.`,
-            fail: null,
+            failure: null,
             item: 'file',
             from: paths.from(loopPath),
             action: 'copy',
@@ -3872,7 +3928,7 @@ describe(`When the folder already exists in the root folder\n`+
                 paths.to('styles/mixins.scss'),
                 paths.to('styles/imports.scss')
               ]),
-              fail:[]
+              failure:[]
             },
             dirs:{
               success:[paths.to('styles/scss')],
@@ -3880,11 +3936,613 @@ describe(`When the folder already exists in the root folder\n`+
                 paths.to('styles'),
                 paths.to('styles/css')
               ]),
-              fail:[]
+              failure:[]
             },
             root:path.join(paths.rootDir,paths.toDir)
           }
         }));
     
   });
+});
+
+describe(`When the path of the new file or dir is the same as the path of`,function(){
+
+    beforeEach(function(done){
+      prepare.remove()
+      .then(()=>prepare.resetFrom())
+      .then(()=>prepare.resetTo())
+      .then(()=>prepare.addTo('empty'))
+      .then(()=>prepare.addTo('styles'))
+      .then(()=>prepare.addTo('styles/imports.scss'))
+      .then(()=>prepare.addTo('styles/css'))
+      .then(()=>prepare.addTo('styles/css/style.css'))
+      .then(()=>prepare.addTo('variables.scss'))
+      .then(()=>prepare.addTo('dist.css'))
+      .then(done)
+      .catch(done.fail);
+    });
+
+  describe(`'copy' property`,function(){
+    
+      beforeEach(function(){
+        this.structure = [
+          {dir:'styles',copy:paths.to('styles'),overwrite:true},
+          {dir:'empty',copy:paths.to('empty'),overwrite:false},
+          {file:'variables.scss',copy:paths.to('variables.scss'),overwrite:true},
+          {file:'dist.css',copy:paths.to('dist.css'),overwrite:false}
+        ];
+      });
+
+      for(var loopPath of ['styles','empty','styles/css']){
+        it.apply(this,should.not.removeFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to(loopPath)
+        }));
+        
+        it.apply(this,should.keepPreviousContents({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $directory:paths.to(loopPath)
+        }));
+      }
+      
+      for(var loopPath of ['styles/imports.scss','styles/css/style.css','variables.scss','dist.css']){
+        it.apply(this,should.not.removeFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(loopPath)
+        }));
+        
+        it.apply(this,should.not.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(loopPath),
+          $content:''
+        }));
+        it.apply(this,should.keepFileContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(loopPath)
+        }));
+      }
+
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.to('styles'),
+        $files:2,
+        $folders:1
+      }));
+      
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.to('empty'),
+        $files:0,
+        $folders:0
+      }));
+      
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.to('styles/css'),
+        $files:1,
+        $folders:0
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:7
+      }));
+      
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
+      for(var loopPath of ['styles/imports.scss','styles/css/style.css','variables.scss','dist.css']){
+        it.apply(this,should.runCallbackWithObject({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:7,
+          $properties:{
+            success: null,
+            warning: null,
+            failure: `The already existing file "${paths.rel(loopPath)}" could not be overwritten by the file copied from the "${paths.to(loopPath)}" path, because both given paths are equal.`,
+            item: 'file',
+            from: paths.to(loopPath),
+            action: 'copy',
+            overwritten: false,
+            root:path.join(paths.rootDir,paths.toDir),
+            relative:paths.rel(loopPath),
+            absolute:paths.to(loopPath)
+          }
+        }));
+      }
+      
+      for(var loopPath of ['styles','empty','styles/css']){
+        it.apply(this,should.runCallbackWithObject({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:7,
+          $properties:{
+            success: null,
+            warning: null,
+            failure: `The already existing folder "${paths.rel(loopPath)}" could not be overwritten by the folder copied from the "${paths.to(loopPath)}" path, because both given paths are equal.`,
+            item: 'dir',
+            from: paths.to(loopPath),
+            action: 'copy',
+            overwritten: false,
+            root:path.join(paths.rootDir,paths.toDir),
+            relative:paths.rel(loopPath),
+            absolute:paths.to(loopPath)
+          }
+        }));
+      }
+      
+      it.apply(this,should.runCallbackWithObject({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1,
+          $properties:{
+            error:null,
+            files:{
+              success:[],
+              warning:[],
+              failure:jasmine.arrayContaining([
+                paths.to('styles/imports.scss'),
+                paths.to('styles/css/style.css'),
+                paths.to('variables.scss'),
+                paths.to('dist.css')
+              ])
+            },
+            dirs:{
+              success:[],
+              warning:[],
+              failure:jasmine.arrayContaining([
+                paths.to('styles'),
+                paths.to('styles/css'),
+                paths.to('empty')
+              ])
+            },
+            root:path.join(paths.rootDir,paths.toDir)
+          }
+        }));
+  });
+  
+  
+
+  describe(`'move' property`,function(){
+    
+      beforeEach(function(){
+        this.structure = [
+          {dir:'styles',move:paths.to('styles'),overwrite:true},
+          {dir:'empty',move:paths.to('empty'),overwrite:false},
+          {file:'variables.scss',move:paths.to('variables.scss'),overwrite:true},
+          {file:'dist.css',move:paths.to('dist.css'),overwrite:false}
+        ];
+      });
+
+      for(var loopPath of ['styles','empty','styles/css']){
+        it.apply(this,should.not.removeFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to(loopPath)
+        }));
+        
+        it.apply(this,should.keepPreviousContents({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $directory:paths.to(loopPath)
+        }));
+      }
+      
+      for(var loopPath of ['styles/imports.scss','styles/css/style.css','variables.scss','dist.css']){
+        it.apply(this,should.not.removeFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(loopPath)
+        }));
+        
+        it.apply(this,should.not.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(loopPath),
+          $content:''
+        }));
+        it.apply(this,should.keepFileContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(loopPath)
+        }));
+      }
+
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.to('styles'),
+        $files:2,
+        $folders:1
+      }));
+      
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.to('empty'),
+        $files:0,
+        $folders:0
+      }));
+      
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.to('styles/css'),
+        $files:1,
+        $folders:0
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:7
+      }));
+      
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
+      for(var loopPath of ['styles/imports.scss','styles/css/style.css','variables.scss','dist.css']){
+        it.apply(this,should.runCallbackWithObject({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:7,
+          $properties:{
+            success: null,
+            warning: null,
+            failure: `The already existing file "${paths.rel(loopPath)}" could not be overwritten by the file moved from the "${paths.to(loopPath)}" path, because both given paths are equal.`,
+            item: 'file',
+            from: paths.to(loopPath),
+            action: 'move',
+            overwritten: false,
+            root:path.join(paths.rootDir,paths.toDir),
+            relative:paths.rel(loopPath),
+            absolute:paths.to(loopPath)
+          }
+        }));
+      }
+      
+      for(var loopPath of ['styles','empty','styles/css']){
+        it.apply(this,should.runCallbackWithObject({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:7,
+          $properties:{
+            success: null,
+            warning: null,
+            failure: `The already existing folder "${paths.rel(loopPath)}" could not be overwritten by the folder moved from the "${paths.to(loopPath)}" path, because both given paths are equal.`,
+            item: 'dir',
+            from: paths.to(loopPath),
+            action: 'move',
+            overwritten: false,
+            root:path.join(paths.rootDir,paths.toDir),
+            relative:paths.rel(loopPath),
+            absolute:paths.to(loopPath)
+          }
+        }));
+      }
+      
+      it.apply(this,should.runCallbackWithObject({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1,
+          $properties:{
+            error:null,
+            files:{
+              success:[],
+              warning:[],
+              failure:jasmine.arrayContaining([
+                paths.to('styles/imports.scss'),
+                paths.to('styles/css/style.css'),
+                paths.to('variables.scss'),
+                paths.to('dist.css')
+              ])
+            },
+            dirs:{
+              success:[],
+              warning:[],
+              failure:jasmine.arrayContaining([
+                paths.to('styles'),
+                paths.to('styles/css'),
+                paths.to('empty')
+              ])
+            },
+            root:path.join(paths.rootDir,paths.toDir)
+          }
+        }));
+    
+  });
+    
+    
+    
+  
+
+  describe(`'merge' property`,function(){
+    
+      beforeEach(function(){
+        this.structure = [
+          {dir:'styles',merge:paths.to('styles'),overwrite:true},
+          {dir:'empty',merge:paths.to('empty'),overwrite:false}
+        ];
+      });
+
+      for(var loopPath of ['styles','empty','styles/css']){
+        it.apply(this,should.not.removeFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to(loopPath)
+        }));
+        
+        it.apply(this,should.keepPreviousContents({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $directory:paths.to(loopPath)
+        }));
+      }
+      
+      for(var loopPath of ['styles/imports.scss','styles/css/style.css']){
+        it.apply(this,should.not.removeFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(loopPath)
+        }));
+        
+        it.apply(this,should.not.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(loopPath),
+          $content:''
+        }));
+        it.apply(this,should.keepFileContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(loopPath)
+        }));
+      }
+
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.to('styles'),
+        $files:2,
+        $folders:1
+      }));
+      
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.to('empty'),
+        $files:0,
+        $folders:0
+      }));
+      
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.to('styles/css'),
+        $files:1,
+        $folders:0
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:5
+      }));
+      
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
+      for(var loopPath of ['styles/imports.scss','styles/css/style.css']){
+        it.apply(this,should.runCallbackWithObject({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:5,
+          $properties:{
+            success: null,
+            warning: null,
+            failure: `The already existing file "${paths.rel(loopPath)}" could not be overwritten by the file copied from the "${paths.to(loopPath)}" path, because both given paths are equal.`,
+            item: 'file',
+            from: paths.to(loopPath),
+            action: 'copy',
+            overwritten: false,
+            root:path.join(paths.rootDir,paths.toDir),
+            relative:paths.rel(loopPath),
+            absolute:paths.to(loopPath)
+          }
+        }));
+      }
+      
+      for(var loopPath of ['styles','empty','styles/css']){
+        it.apply(this,should.runCallbackWithObject({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:5,
+          $properties:{
+            success: null,
+            warning: null,
+            failure: `The already existing folder "${paths.rel(loopPath)}" could not be merged with the "${paths.to(loopPath)}" folder, because both given paths are equal.`,
+            item: 'dir',
+            from: paths.to(loopPath),
+            action: 'merge',
+            overwritten: false,
+            root:path.join(paths.rootDir,paths.toDir),
+            relative:paths.rel(loopPath),
+            absolute:paths.to(loopPath)
+          }
+        }));
+      }
+      
+      it.apply(this,should.runCallbackWithObject({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1,
+          $properties:{
+            error:null,
+            files:{
+              success:[],
+              warning:[],
+              failure:jasmine.arrayContaining([
+                paths.to('styles/imports.scss'),
+                paths.to('styles/css/style.css')
+              ])
+            },
+            dirs:{
+              success:[],
+              warning:[],
+              failure:jasmine.arrayContaining([
+                paths.to('styles'),
+                paths.to('styles/css'),
+                paths.to('empty')
+              ])
+            },
+            root:path.join(paths.rootDir,paths.toDir)
+          }
+        }));
+  });
+
+
+  describe(`'writeFrom' property`,function(){
+
+      beforeEach(function(){
+        this.structure = [
+          {file:'variables.scss',writeFrom:paths.to('variables.scss'),overwrite:true},
+          {file:'dist.css',writeFrom:paths.to('dist.css'),overwrite:false}
+        ];
+      });
+
+      for(var loopPath of ['variables.scss','dist.css']){
+        it.apply(this,should.not.removeFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(loopPath)
+        }));
+
+        it.apply(this,should.not.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(loopPath),
+          $content:''
+        }));
+
+        it.apply(this,should.keepFileContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(loopPath)
+        }));
+      }
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:2
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
+        it.apply(this,should.runCallbackWithObject({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:2,
+          $properties:{
+            success: null,
+            warning: null,
+            failure: `The already existing file "${paths.rel('variables.scss')}" could not be overwritten with the content from the "${paths.to('variables.scss')}" file, because both given paths are equal.`,
+            item: 'file',
+            from: paths.to('variables.scss'),
+            action: 'writeFrom',
+            overwritten: false,
+            root:path.join(paths.rootDir,paths.toDir),
+            relative:paths.rel('variables.scss'),
+            absolute:paths.to('variables.scss')
+          }
+        }));
+
+        it.apply(this,should.runCallbackWithObject({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:2,
+          $properties:{
+            success: null,
+            warning: null,
+            failure: `The content from the "${paths.to('dist.css')}" file could not be appended to the "${paths.rel('dist.css')}" file, because both given paths are equal.`,
+            item: 'file',
+            from: paths.to('dist.css'),
+            action: 'writeFrom',
+            overwritten: false,
+            root:path.join(paths.rootDir,paths.toDir),
+            relative:paths.rel('dist.css'),
+            absolute:paths.to('dist.css')
+          }
+        }));
+
+      it.apply(this,should.runCallbackWithObject({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1,
+          $properties:{
+            error:null,
+            files:{
+              success:[],
+              warning:[],
+              failure:jasmine.arrayContaining([
+                paths.to('variables.scss'),
+                paths.to('dist.css')
+              ])
+            },
+            dirs:{
+              success:[],
+              warning:[],
+              failure:[]
+            },
+            root:path.join(paths.rootDir,paths.toDir)
+          }
+        }));
+    
+  });
+  
+  
+  
+  
 });

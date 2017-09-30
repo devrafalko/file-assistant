@@ -82,5 +82,10 @@
     "name":"main.scss",
     "path":"styles/scss/main.scss",
     "content":"$blue: #3af;\n"
+  },
+  "empty":{
+    "type":"dir",
+    "name":"empty",
+    "path":"empty"
   }
 }

@@ -1,4 +1,4 @@
-/* global Promise, __dirname, Function */
+/* global Promise, __dirname, Function, this */
 const fs = require('fs');
 const path = require('path');
 const args = require('typeof-arguments');
@@ -50,188 +50,6 @@ function StructureDirs(){
 
 }
 
-StructureDirs.prototype.methods = {
-  structurize:function(dirPath,json,clb){
-    args(arguments,[String,[String,Function],[Function]],(o)=>{
-      if(o.index===2&&type(json,Function)) return;
-      throw new TypeError(`${warn(moduleName+'.structurize')}: ${o.message}`);
-    });
-    const jsonPath = type(json,String) ? json:undefined;
-    const callback = type(json,Function) ? json:type(clb,Function) ? clb:undefined;
-
-    const funList = [
-      isPathValid,
-      generateStructure,
-      ensureDirJSON,
-      validPathJSON,
-      writeFileJSON
-    ];
-    const userContext = {
-      root:dirPath,
-      json:jsonPath,
-      utils:this.utils,
-      prepare:this.preparations
-    };
-
-    moveOn(funList, userContext, onDone, onReject);
-
-    function onDone(){
-      callback(null,this.structure);
-    }
-
-    function onReject(c,err){
-      callback(err);
-    }
-
-    function isPathValid(resolve,reject){
-      this.utils.folderExists(this.root,(err)=>{
-        if(err) return reject(err);
-        if(!err) resolve();
-      });
-    }
-
-    function generateStructure(resolve,reject){
-      const config = {
-        from:this.root,
-        deep:true,
-        action:null,
-        overwrite:null,
-        utils:this.utils
-      };
-      this.prepare.generateContent(config,(gen)=>{
-        this.structure = gen;
-        resolve();
-      },reject);
-    }
-
-    function ensureDirJSON(resolve,reject){
-      if(!this.json) return resolve();
-      const dirPath = path.dirname(path.resolve(this.json));
-      this.utils.createDirs(dirPath,resolve,reject);
-    }
-
-    function validPathJSON(resolve,reject){
-      if(!this.json) return resolve();
-      if(!(/^\.json$/i).test(path.extname(this.json))) this.json += '.json';
-      try{
-        this.data = JSON.stringify(this.structure,null,2);
-        resolve();
-      } catch(err){
-        reject(new Error('Could not generate the JSON content.'));
-      }
-    }
-
-    function writeFileJSON(resolve,reject){
-      if(!this.json) return resolve();
-      fs.writeFile(this.json,this.data,(err)=>{
-        if(err) return reject(new Error(`Could not create JSON file in the '${this.json}' path.`));
-        if(!err) resolve();
-      });
-    }
-
-  },
-  compare:function(model,compared,callback){
-    args(arguments,[String,String,Function],(o)=>{
-      throw new TypeError(`${warn(moduleName+'.compare')}: ${o.message}`);
-    });
-
-    const funList = [
-      isModelValid,
-      isComparedValid,
-      getModelContents,
-      getComparedContents,
-      compareContents,
-      returnObject
-    ];
-
-    const userContext = {
-      modelPath:model,
-      comparedPath:compared,
-      utils:this.utils
-    };
-
-    moveOn(funList,userContext,onDone,onReject);
-
-    function onDone(){
-      callback(null,this.callbackObject);
-    }
-
-    function onReject(c,err){
-      callback(err);
-    }
-
-    function isModelValid(resolve,reject){
-      this.utils.folderExists(this.modelPath,(err)=>{
-        if(err) return reject(err);
-        if(!err) resolve();
-      });
-    }
-
-    function isComparedValid(resolve,reject){
-      this.utils.folderExists(this.comparedPath,(err)=>{
-        if(err) return reject(err);
-        if(!err) resolve();
-      });
-    }
-
-    function getModelContents(resolve,reject){
-      listContent(this.modelPath,(o)=>{
-        if(o.error) reject(new Error(`Could not get the access to the given folder '${this.model}'.`));
-        if(!o.error){
-          this.model = {path:o.path,dirs:o.dirs,files:o.files};
-          resolve();
-        }
-      });
-    }
-    
-    function getComparedContents(resolve,reject){
-      listContent(this.comparedPath,(o)=>{
-        if(o.error) reject(new Error(`Could not get the access to the given folder '${this.compared}'.`));
-        if(!o.error){
-          this.compared = {path:o.path,dirs:o.dirs,files:o.files};
-          resolve();
-        }
-      });
-    }
-    
-    function compareContents(resolve,reject){
-      this.dirs = {};
-      this.files = {};
-      compare(this.model.dirs,this.compared.dirs,this.dirs);
-      compare(this.model.files,this.compared.files,this.files);
-      resolve();
-      function compare(model,compared,result){
-        result.missing = [];
-        result.existing = [];
-        result.extraneous = [];
-        whileLabel:
-        while(model.length){
-          var m = model.shift();
-          for(var y in compared){
-            if(compared[y]===m){
-              result.existing.push(compared.splice(y,1)[0]);
-              continue whileLabel;
-            }
-          }
-          result.missing.push(m);
-        }
-        result.extraneous = compared.slice();
-      }
-    }
-    
-    function returnObject(resolve,reject){
-      this.callbackObject = {
-        model:this.model.path,
-        compared:this.compared.path,
-        dirs:this.dirs,
-        files:this.files
-      };
-      resolve();
-    }
-
-  }
-};
-
 StructureDirs.prototype.validation = {
   isDoneFunction: function(resolve) {
     args(this.args,['any','any',Function,'any'],(o)=>{
@@ -273,57 +91,91 @@ StructureDirs.prototype.validation = {
     ];
 
     this.abstractStructure = [];
-    iterator.call(this,validateList,this.structure,this.abstractStructure,0,[],null,null,()=>{
-      resolve();
+    
+    iterator.call(this,{
+      functionList:validateList,
+      itemsStructure:this.structure,
+      abstractStructure:this.abstractStructure,
+      itemIndex:0,
+      parentsIndeces:[],
+      parentAction:null,
+      parentOverwrite:null,
+      onDone:resolve
     });
 
-     function iterator(validateList,list,abstract,index,parentIndex,parentAction,parentOverwrite,whenDone){
-        const isNext = index<list.length;
-        if(!isNext) whenDone();
+     function iterator(o){
+        const isNext = o.itemIndex<o.itemsStructure.length;
+        if(!isNext) o.onDone();
         if(isNext){
-          this.itemData = {};
-          this.itemData.item = list[index];
-          this.itemData.index = index;
-          this.itemData.from = null;
-          this.itemData.overwritten = false;
-          this.itemData.parentIndices = parentIndex;
-          this.itemData.parentOverwrite = parentOverwrite;
-          moveOn(validateList,this,
-            function(context,reject,item){
-              abstract.push(item);
-
-              const binded = iterator.bind(this,validateList,list,abstract,index+1,parentIndex,parentAction,parentOverwrite,whenDone);
-              const hasContent = item.folder&&item.action === 'contents';
-              const hasJsonContent = type(item.json,Array);
-              const hasOuterContent = item.folder&&this.utils.orEqual(item.action,'move','copy','merge');
-              const overwriteForbidden = item.folder&&item.alreadyDirExists&&!item.overwrite&&(item.action==='copy'||item.action==='move');
-              const newParentOverwrite = item.action==='merge' ? false:!!item.overwrite;
-              if(parentAction!==null&&item.folder) item.action = parentAction;
-              if(hasOuterContent&&!overwriteForbidden){
-                const config = {
-                  from:item.from,
-                  action:item.action,
-                  deep:false,
-                  overwrite:!!item.overwrite,
-                  utils:this.utils
-                };
-                this.prepare.generateContent(config,(gen)=>{
-                  const newParent = parentIndex.slice();
-                  list[index].contents = gen;
-                  newParent.push(index);
-                  iterator.call(this,validateList,gen,item.children,0,newParent,item.action,newParentOverwrite,binded);
-                },reject);
-              } else if(hasContent){
-                  const newParent = parentIndex.slice();
-                  if(hasJsonContent) list[index].contents = item.json;
-                  newParent.push(index);
-                  iterator.call(this,validateList,list[index].contents,item.children,0,newParent,parentAction,newParentOverwrite,binded);
-              } else binded();
-            },
-            function(context,err){
-              reject(err);
-            });
+          this.itemData = {
+            item: o.itemsStructure[o.itemIndex],
+            index: o.itemIndex,
+            from: null,
+            overwritten: false,
+            parentIndices: o.parentsIndeces,
+            parentOverwrite: o.parentOverwrite
+          };
+          moveOn(o.functionList,this,onDone,(c,err)=>reject(err));
         }
+
+          function onDone(c,reject,item){
+            o.abstractStructure.push(item);
+            const nextIterator = iterator.bind(this,{
+              functionList:o.functionList,
+              itemsStructure:o.itemsStructure,
+              abstractStructure:o.abstractStructure,
+              itemIndex:o.itemIndex+1,
+              parentsIndeces:o.parentsIndeces,
+              parentAction:o.parentAction,
+              parentOverwrite:o.parentOverwrite,
+              onDone:o.onDone
+            });
+            const hasAbstractStructure = item.folder && item.action === 'contents';
+            const hasNotAbstractStructure = item.folder && this.utils.orEqual(item.action,'move','copy','merge');
+            const forbideOverwriteFolder = item.folder && item.alreadyDirExists && !item.overwrite && (item.action === 'copy' || item.action === 'move');
+            const passOverwriteForChildren = item.action === 'merge' ? false:!!item.overwrite;
+            if(o.parentAction !== null&&item.folder) item.action = o.parentAction;
+            if(hasNotAbstractStructure && !forbideOverwriteFolder){
+              const config = {
+                from:item.from,
+                action:item.action,
+                deep:false,
+                overwrite:!!item.overwrite,
+                utils:this.utils
+              };
+              this.prepare.generateContent(config,(gen)=>{
+                const nextParentIndex = o.parentsIndeces.slice();
+                o.itemsStructure[o.itemIndex].contents = gen;
+                nextParentIndex.push(o.itemIndex);
+                iterator.call(this,{
+                  functionList:o.functionList,
+                  itemsStructure:gen,
+                  abstractStructure:item.children,
+                  itemIndex:0,
+                  parentsIndeces:nextParentIndex,
+                  parentAction:item.action,
+                  parentOverwrite:passOverwriteForChildren,
+                  onDone:nextIterator
+                });
+              },reject);
+            } else if(hasAbstractStructure){
+                const hasJsonContent = type(item.json,Array);
+                const nextParentIndex = o.parentsIndeces.slice();
+                if(hasJsonContent) o.itemsStructure[o.itemIndex].contents = item.json;
+                nextParentIndex.push(o.itemIndex);
+                iterator.call(this,{
+                  functionList:o.functionList,
+                  itemsStructure:o.itemsStructure[o.itemIndex].contents,
+                  abstractStructure:item.children,
+                  itemIndex:0,
+                  parentsIndeces:nextParentIndex,
+                  parentAction:o.parentAction,
+                  parentOverwrite:passOverwriteForChildren,
+                  onDone:nextIterator
+                });
+            } else nextIterator();
+          }
+        
       }
 
       function isItemObject(resolve,reject){
@@ -334,7 +186,7 @@ StructureDirs.prototype.validation = {
       }
 
       function isFileOrDirDefined(resolve,reject){
-        const cond = this.utils.hasAtLeastItems(this.itemData.item,['file','dir'],1);
+        const cond = this.utils.hasAtLeastItems(this.itemData.item,['file','dir','unrecognized'],1);
         if(cond) resolve();
         if(!cond) reject(new Error(`${this.printMsg} Each item of [Array] structure argument must contain either ['file'] or ['dir'] property.`));
       }
@@ -346,11 +198,12 @@ StructureDirs.prototype.validation = {
       }
 
       function isFileDirString(resolve,reject){
-        const fileOrDir = this.utils.whichPropertyDefined(this.itemData.item,['file','dir'])[0];
+        const fileOrDir = this.utils.whichPropertyDefined(this.itemData.item,['file','dir','unrecognized'])[0];
         this.itemData.itemType = fileOrDir;
-        this.itemData.itemMessage = fileOrDir === 'file' ? 'file':'folder';
+        this.itemData.itemMessage = fileOrDir === 'file' ? 'file':fileOrDir === 'dir' ? 'folder':'unrecognized';
         this.itemData.file = fileOrDir === 'file';
         this.itemData.folder = fileOrDir === 'dir';
+        this.itemData.unrecognized = fileOrDir === 'unrecognized';
         if(prop(this.itemData.item,{[fileOrDir]:String},(o)=>{
           reject(new TypeError(`${this.printMsg} ${o.message}`));
         })){
@@ -361,18 +214,14 @@ StructureDirs.prototype.validation = {
 
       function isFileDirEmpty(resolve,reject){
         const cond = this.itemData.item[this.itemData.itemType].length;
-        if(cond) resolve();
-        if(!cond){
-          reject(new Error(`${this.printMsg} The ["${this.itemData.itemType}"] property is empty, while it should define the ${this.itemData.itemMessage} name.`));
-        }
+        if(cond) return resolve();
+        reject(new Error(`${this.printMsg} The ["${this.itemData.itemType}"] property is empty, while it should define the ${this.itemData.itemMessage} name.`));
       }
 
       function hasFileDirSlashes(resolve,reject){
         const cond = (/[\\\/]/).test(this.itemData.item[this.itemData.itemType]);
-        if(!cond) resolve();
-        if(cond){
-          reject(new Error(`${this.printMsg} The ["${this.itemData.itemType}"] property should define the ${this.itemData.itemMessage} name rather than ${this.itemData.itemMessage} path. It cannot contain backslashes and forwardslashes.`));
-        }
+        if(!cond) return resolve();
+        reject(new Error(`${this.printMsg} The ["${this.itemData.itemType}"] property should define the ${this.itemData.itemMessage} name rather than ${this.itemData.itemMessage} path. It cannot contain backslashes and forwardslashes.`));
       }
 
       function hasIncorrectButValidProps(resolve,reject){
@@ -391,8 +240,8 @@ StructureDirs.prototype.validation = {
 
       function hasMutualExclusiveProps(resolve,reject){
         var cond = this.utils.hasAtLeastItems(this.itemData.item,['move', 'copy', 'merge', 'contents', 'write', 'writeFrom'],2);
-        if(!cond) resolve();
-        if(cond) reject(new Error(`${this.printMsg} The [Object] items cannot contain ["move"], ["copy"], ["merge"], ["contents"], ["write"] or ["writeFrom"] properties at the same time.`));
+        if(!cond) return resolve();
+        reject(new Error(`${this.printMsg} The [Object] items cannot contain ["move"], ["copy"], ["merge"], ["contents"], ["write"] or ["writeFrom"] properties at the same time.`));
       }
 
       function isUsedWithWrongFileDir(resolve,reject){
@@ -424,10 +273,8 @@ StructureDirs.prototype.validation = {
         if(this.itemData.action === 'create') return resolve();
         if(this.utils.orEqual(this.itemData.action,'contents','write')) return resolve();
         const cond = this.itemData.item[this.itemData.action].length;
-        if(cond) resolve();
-        if(!cond){
-          reject(new Error(`${this.printMsg} The ["${this.itemData.action}"] property is empty, while it should indicate the ${this.itemData.itemMessage}.`));
-        }
+        if(cond) return resolve();
+        reject(new Error(`${this.printMsg} The ["${this.itemData.action}"] property is empty, while it should indicate the ${this.itemData.itemMessage}.`));
       }
 
       function isContentsLeadingToJSON(resolve,reject){
@@ -472,11 +319,15 @@ StructureDirs.prototype.validation = {
         if(this.itemData.action === 'create') return resolve();
         if(this.utils.orEqual(this.itemData.action,'contents','write')) return resolve();
         const setPath = this.itemData.item[this.itemData.action];
+        if(this.itemData.itemType==='unrecognized'){
+          this.itemData.from = path.normalize(setPath);
+          return resolve();
+        }
         this.utils.itemExists(setPath,(o)=>{
           var file = this.itemData.file,
               which = ['folder','file'],
               msgInfo = `${this.printMsg} Invalid property ["${this.itemData.action}"].`,
-              msgExist = `The ${which[+file]} of the specified path does not exist.`,
+              msgExist = `The ${which[+file]} of the specified path does not exist or is inaccessible.`,
               msgFileDir = `The path leads to the ${which[+!file]}, while it should indicate the ${which[+file]}.`;
           if(!o.exists) return reject(new Error(`${msgInfo} ${msgExist}`));
           if((!file&&o.file)||(file&&o.dir)) return reject(new Error(`${msgInfo} ${msgFileDir}`));
@@ -494,18 +345,22 @@ StructureDirs.prototype.validation = {
 };
 
 StructureDirs.prototype.preparations = {
-  addItemData:function(resolve,reject){
+  addItemData:function(resolve){
     this.itemData.root = this.root;
     this.itemData.relative = prepareRelative.call(this);
     this.itemData.absolute = path.resolve(this.root,this.itemData.relative);
-    this.itemData.alreadyFileExists = this.itemData.parentOverwrite===true ? false:this.currentPaths.files.some((x)=>x===this.itemData.relative);
-    this.itemData.alreadyDirExists = this.itemData.parentOverwrite===true ? false:this.currentPaths.dirs.some((x)=>x===this.itemData.relative);
+    this.itemData.alreadyUnrecognized = this.currentPaths.inaccessible.some((x)=>x===this.itemData.relative);
+    
+    const findFile = this.currentPaths.files.some((x)=>x===this.itemData.relative);
+    const findDir = this.currentPaths.dirs.some((x)=>x===this.itemData.relative);
+    this.itemData.usedToExist = this.itemData.folder ? findDir:findFile;
+    this.itemData.alreadyFileExists = this.itemData.parentOverwrite===true ? false:findFile;
+    this.itemData.alreadyDirExists = this.itemData.parentOverwrite===true ? false:findDir;
     if(this.itemData.folder) this.itemData.children = [];
     if(this.itemData.action==='write') this.itemData.content = this.itemData.item.write;
     if(this.itemData.item.contents) this.itemData.action === 'create';
-    
     resolve(this.itemData);
-    
+
       function prepareRelative(){
         const p = this.itemData.parentIndices;
         var chainItems = this.structure;
@@ -518,11 +373,9 @@ StructureDirs.prototype.preparations = {
         pathElements.push(this.itemData.name);
         return path.join.apply(null,pathElements);
       }
-
   },
   generateContent:function(config,resolve,reject){
     run(null,null,[],resolve,reject);
-    
     function run(getPath,newItem,getStructure,resolve,reject){
       const resPath = !getPath ? config.from:getPath;
       const errMsg = `Could not get the access to the ${resPath} contents.`;
@@ -531,55 +384,59 @@ StructureDirs.prototype.preparations = {
         parseLevel(getItems,resPath,newItem,getStructure,resolve,reject);
       });
 
-          function parseLevel(getItems,getPath,previousItem,getStructure,done){
-            var iter = 0;
-            if(!getItems.length) done(getStructure);
-            if(getItems.length&&previousItem!==null&&config.deep) previousItem.contents = getStructure;
-            for(let i in getItems){
-              let resolvePath = path.join(getPath,getItems[i]);
-              config.utils.itemExists(resolvePath,(o)=>{
-                if(o.error) return reject(errMsg);
-                if(!o.exists||!(o.file||o.dir)) return;
-                const newItem = {};
-                if(config.overwrite!==null) newItem.overwrite = config.overwrite;
-                if(o.dir){
-                  newItem.dir = getItems[i];
-                  getStructure.push(newItem);
-                  if(config.deep){
-                    run(resolvePath,newItem,[],isFinish);
-                  } else {
-                    if(config.action!==null){
-                      newItem[config.action] = resolvePath;
-                    }
-                    isFinish();
-                  }
-                }
-                if(o.file){
-                  newItem.file = getItems[i];
-                  if(config.action!==null) newItem[config.action==='merge'?'copy':config.action] = resolvePath;
-                  getStructure.push(newItem);
-                  isFinish();
-                };
-                
-              });
+      function parseLevel(getItems,getPath,previousItem,getStructure,done){
+        var iter = 0;
+        if(!getItems.length) done(getStructure);
+        if(getItems.length&&previousItem!==null&&config.deep) previousItem.contents = getStructure;
+        for(let i in getItems){
+          let resolvePath = path.join(getPath,getItems[i]);
+          config.utils.itemExists(resolvePath,(o)=>{
+            const newItem = {};
+            if(config.overwrite!==null) newItem.overwrite = config.overwrite;
+
+            if(!o.dir&&!o.file){
+              newItem.unrecognized = getItems[i];
+              newItem[config.action] = resolvePath;
+              getStructure.push(newItem);
+              isFinish();
             }
-            function isFinish(){
-              if(++iter===getItems.length) done(getStructure);
+
+            if(o.dir){
+              newItem.dir = getItems[i];
+              getStructure.push(newItem);
+              if(config.deep){
+                run(resolvePath,newItem,[],isFinish);
+              } else {
+                if(config.action!==null) newItem[config.action] = resolvePath;
+                isFinish();
+              }
             }
+            
+            if(o.file){
+              newItem.file = getItems[i];
+              if(config.action!==null) newItem[config.action==='merge'?'copy':config.action] = resolvePath;
+              getStructure.push(newItem);
+              isFinish();
+            };
+
+          });
+        }
+        function isFinish(){
+          if(++iter===getItems.length){
+            done(getStructure);
           }
+        }
+      }
     }
   },  
   
-  prepareCurrentContentsList:function(resolve,reject){
+  prepareCurrentContentsList:function(resolve){
     this.currentPaths = {};
     listContent(this.root,(o)=>{
-      if(o.error){
-        return reject(o.error);
-      } else {
-        this.currentPaths.files = o.files.sort((a,b)=>a.length-b.length);
-        this.currentPaths.dirs = o.dirs.sort((a,b)=>a.length-b.length);
-        resolve();
-      }
+      this.currentPaths.inaccessible = o.inaccessible.sort((a,b)=>a.length-b.length);
+      this.currentPaths.files = o.files.sort((a,b)=>a.length-b.length);
+      this.currentPaths.dirs = o.dirs.sort((a,b)=>a.length-b.length);
+      resolve();
     });
   },
   convertStructureJSON:function(resolve,reject){
@@ -596,25 +453,30 @@ StructureDirs.prototype.preparations = {
 
 StructureDirs.prototype.appenders = {
   initActions:function(resolve){
-    run.call(this,this.abstractStructure,null,resolve);
-    function run(level,parent,done){
+    run.call(this,{
+      currentItem:this.abstractStructure,
+      parentItem:null,
+      onDone:resolve
+    });
+    
+    function run(o){
       var iter = 0;
-      if(!level.length) return done();
-      for(let i in level){
-        let item = level[i];
-        const nextRun = run.bind(this,item.children,item,increase.bind(this));
-        const tidyUpEmptyMove = this.appenders.tidyUpFolder.bind(this,item,done);
-        const hasContent = item.folder&&item.children.length;
-        const isMoveEmpty = item.folder&&item.action==='move'&&!item.children.length;
-        const nextAction = isMoveEmpty ? tidyUpEmptyMove:hasContent ? nextRun:increase.bind(this);
-        
-        if(isMoveEmpty||hasContent) item.tidyUp = true;
+      if(!o.currentItem.length) return increase.call(this);
+      for(let i in o.currentItem){
+        let item = o.currentItem[i];
+        const nextRun = run.bind(this,{
+          currentItem:item.children,
+          parentItem:item,
+          onDone:increase.bind(this)
+        });
+        item.tidyUp = item.folder && (item.children.length||item.action==='move');
+        const nextAction = item.tidyUp ? nextRun:increase.bind(this);
         this.appenders.createItem.call(this,item,nextAction);
       }
       function increase(){
-        if(++iter===level.length){
-          if(parent) this.appenders.tidyUpFolder.call(this,parent,done);
-          if(!parent) done();
+        if(++iter>=o.currentItem.length){
+          if(o.parentItem) this.appenders.tidyUpFolder.call(this,o.parentItem,o.onDone);
+          if(!o.parentItem) o.onDone();
         }
       }
     }
@@ -626,7 +488,7 @@ StructureDirs.prototype.appenders = {
       removeMovedFolder,
       whenChildrenMessage
     ];
-    
+
     const userContext = {
       item:item,
       each:this.each,
@@ -643,50 +505,42 @@ StructureDirs.prototype.appenders = {
     });
 
     function checkActionSuccess(resolve,reject){
-      type(this.item.result.warning,null)&&type(this.item.result.fail,null) ? resolve():reject();
+      type(this.item.result.warning,null)&&type(this.item.result.failure,null) ? resolve():reject();
     }
 
     function resultForParent(resolve){
       const countResult = {};
-      for(var x in this.item.children){
-        sumResults(this.item.children[x].result);
+      const ch = this.item.children;
+      for(var x in ch){
+        for(var y in ch[x].result){
+          countResult[y] = ch[x].result[y]!==null ? true:countResult[y] ? countResult[y]:false;
+        }
       }
       this.item.childResults = countResult;
       resolve();
-      function sumResults(obj){
-        for(var y in obj){
-          countResult[y] = obj[y]!==null ? true:countResult[y] ? countResult[y]:false;
-        }
-      }
     }
 
     function removeMovedFolder(resolve,reject){
       if(this.item.action!=='move') return resolve();
       const addMsg = '. The folder was successfully copied to the target location, but could not be removed from its origin location.';
-      emptyFolder(this.item.from,(err)=>{
-        if(err){
-          this.computeMessage('fail',false,addMsg);
+      emptyFolder(this.item.from,true,(o)=>{
+        if(!o.error) return resolve();
+        if(o.error){
+          this.computeMessage('failure',false,addMsg);
           reject();
-        }
-        if(!err){
-          fs.rmdir(this.item.from,(err)=>{
-            if(!err) return resolve();
-            this.computeMessage('fail',false,addMsg);
-            reject();
-          });
-        }
+        };
       });
     }
 
     function whenChildrenMessage(resolve){
       switch(true){
-        case (this.item.childResults.fail):
+        case (this.item.childResults.failure):
           this.computeMessage('warning',true,', but at least one of its child items failed.');
           break;
         case (this.item.childResults.warning):
           this.computeMessage('warning',true,', but at least one of its child items gave warning.');
           break;
-        case (this.item.childResults.success):
+        default:
           this.computeMessage('success',true);
           break;
       }
@@ -698,6 +552,8 @@ StructureDirs.prototype.appenders = {
   createItem:function(item,done){
     const fileList = [
       this.appenders.abortIfDirExists,
+      this.appenders.abortIfPathInaccessible,
+      this.appenders.abortIfTheSamePaths,
       this.appenders.abortIfFileOverwrite,
       this.appenders.readContent,
       this.appenders.writeFile,
@@ -705,11 +561,22 @@ StructureDirs.prototype.appenders = {
     ];
     const dirList = [
       this.appenders.abortIfFileExists,
+      this.appenders.abortIfPathInaccessible,
+      this.appenders.abortIfTheSamePaths,
       this.appenders.abortIfDirOverwrite,
       this.appenders.createFolder,
       this.appenders.emptyContent
     ];
+    const unrecognizedList = [
+      this.appenders.handleUnrecognized
+    ];
 
+    item.result = {
+      success:null,
+      failure:null,
+      warning:null
+    };
+    
     const userContext = {
       item:item,
       doneObject:this.doneObject,
@@ -720,30 +587,46 @@ StructureDirs.prototype.appenders = {
       computeMessage:this.response.computeMessage
     };
 
-    item.result = {
-      success:null,
-      fail:null,
-      warning:null
-    };
+    if(item.file) moveOn(fileList,userContext,onFileDone,onFileDone);
+    if(item.folder) moveOn(dirList,userContext,onDirDone,onDirDone);
+    if(item.unrecognized) moveOn(unrecognizedList,userContext,onUnrecognizeDone,onUnrecognizeDone);
 
-    if(item.file) moveOn(fileList,userContext,onFileResolve,onFileResolve);
-    if(item.folder) moveOn(dirList,userContext,onDirResolve,onDirResolve);
-
-    function onFileResolve(){
+    function onFileDone(){
       this.response.prepareEach.call(this);
       done();
     }
 
-    function onDirResolve(){
+    function onDirDone(){
       if(this.item.action==='move') return done();
       if(this.item.children.length) return done();
       this.response.prepareEach.call(this);
       done();
     }
+
+    function onUnrecognizeDone(){
+      this.response.prepareEach.call(this);
+      done();
+    }
+    
   },
   abortIfDirExists:function(resolve,reject){
-    if((this.item.file&&this.item.alreadyDirExists)){
-      this.computeMessage('fail',false,', because the folder of the same name already exists in this path.');
+    if((this.item.alreadyDirExists)){
+      this.computeMessage('failure',false,', because the folder of the same name already exists in this path.');
+      return reject();
+    }
+    resolve();
+  },
+  abortIfPathInaccessible:function(resolve,reject){
+    if(this.item.alreadyUnrecognized){
+      this.computeMessage('failure',false,`, because the "${this.item.absolute}" path is inaccessible.`);
+      return reject();
+    }
+    resolve();
+  },
+  abortIfTheSamePaths:function(resolve,reject){
+    if(this.item.from===null) return resolve();
+    if(!path.relative(this.item.absolute,this.item.from).length){
+      this.computeMessage('failure',false,`, because both given paths are equal.`);
       return reject();
     }
     resolve();
@@ -761,7 +644,7 @@ StructureDirs.prototype.appenders = {
     } else if(this.item.from){
       fs.readFile(this.item.from,(err,data)=>{
         if(err){
-          this.computeMessage('fail',false,`. Could not read the content of the '${this.item.from}' file.`);
+          this.computeMessage('failure',false,`. Could not read the content of the '${this.item.from}' file.`);
           return reject();
         }
         if(!err){
@@ -782,14 +665,9 @@ StructureDirs.prototype.appenders = {
     if(!meth) return resolve();
     const stringifyContent = this.item.content || '';
     fs[meth](this.item.absolute,stringifyContent,(err)=>{
-      if(err){
-        this.computeMessage('fail',false);
-        return reject();
-      }
-      if(!err){
-        if(this.item.alreadyFileExists&&this.item.overwrite) this.item.overwritten = true;
-        resolve();
-      }
+      if(!err) return resolve();
+      this.computeMessage('failure',false);
+      return reject();
     });
   },
   removeFile:function(resolve,reject){
@@ -799,7 +677,7 @@ StructureDirs.prototype.appenders = {
     }
     fs.unlink(this.item.from,(err)=>{
       if(err){
-        this.computeMessage('fail',false,'. The file was successfully copied to the target location, but could not be removed from its origin location.');
+        this.computeMessage('failure',false,'. The file was successfully copied to the target location, but could not be removed from its origin location.');
         return reject();
       }
       if(!err){
@@ -808,10 +686,9 @@ StructureDirs.prototype.appenders = {
       }
     });
   },
-  
   abortIfFileExists:function(resolve,reject){
     if((this.item.folder&&this.item.alreadyFileExists)){
-      this.computeMessage('fail',false,', because the file of the same name already exists in this path.');
+      this.computeMessage('failure',false,', because the file of the same name already exists in this path.');
       return reject();
     }
     resolve();
@@ -827,7 +704,7 @@ StructureDirs.prototype.appenders = {
     if(this.item.alreadyDirExists) return resolve();
     fs.mkdir(this.item.absolute,(err)=>{
       if(err){
-        this.computeMessage('fail',false,);
+        this.computeMessage('failure',false);
         return reject();
       }
       if(!err){
@@ -838,13 +715,12 @@ StructureDirs.prototype.appenders = {
   },
   emptyContent:function(resolve,reject){
     if(this.item.alreadyDirExists&&this.item.overwrite&&this.item.action!=='merge'){
-      emptyFolder(this.item.absolute,(err)=>{
-        if(err){
-          this.computeMessage('fail',false);
+      emptyFolder(this.item.absolute,false,(o)=>{
+        if(o.error){
+          this.computeMessage('failure',false);
           return reject();
         }
-        if(!err){
-          this.item.overwritten = true;
+        if(!o.error){
           if(!this.item.tidyUp) this.computeMessage('success',true);
           return resolve();
         }
@@ -853,6 +729,10 @@ StructureDirs.prototype.appenders = {
       if(!this.item.tidyUp) this.computeMessage('success',true);
       return resolve();
     }
+  },
+  handleUnrecognized:function(resolve){
+    this.computeMessage('failure',false);
+    return resolve();
   }
 };
 
@@ -868,28 +748,32 @@ StructureDirs.prototype.response = {
     this.doneObject = {
       error:null,
       files:{
-        fail:[],
+        failure:[],
         success:[],
         warning:[]
       },
       dirs:{
-        fail:[],
+        failure:[],
         success:[],
         warning:[]
+      },
+      unrecognized:{
+        failure:[]
       },
       root:this.root
     };
     resolve();
   },
   passDonePath: function(){
-    const type = this.item.result.success!==null ? 'success':this.item.result.warning!==null ? 'warning':'fail';
-    this.doneObject[this.item.file ? 'files':'dirs'][type].push(this.item.absolute);
+    const type = this.item.result.success!==null ? 'success':this.item.result.warning!==null ? 'warning':'failure';
+    const defineProperty = this.item.file ? 'files':this.item.folder ? 'dirs':'unrecognized';
+    this.doneObject[defineProperty][type].push(this.item.absolute);
   },
   prepareEach:function(){
     this.response.passDonePath.call(this);
     if(!this.each) return;
     const eachObject = {
-      fail:this.item.result.fail,
+      failure:this.item.result.failure,
       warning:this.item.result.warning,
       success:this.item.result.success,
       item:this.item.itemType,
@@ -952,6 +836,14 @@ StructureDirs.prototype.response = {
         merge:`merged with the "${this.item.from}" folder`
       };
       return `The already existing folder "${this.item.relative}" ${success?'was successfully':'could not be'} ${message[this.item.action]}`;
+    },
+    unrecognized:function(){
+      const message = {
+        copy:`copied into the "${this.item.relative}" path`,
+        move:`moved into the "${this.item.relative}" path`,
+        merge:`merged with the "${this.item.relative}"`
+      };
+      return `The item of the path "${this.item.from}" is inaccessible and could not be ${message[this.item.action]}`;
     }
   },
   computeMessage:function(type,isSuccess,additional,doubled){
@@ -959,26 +851,31 @@ StructureDirs.prototype.response = {
     var msg;
     if(this.item.file){
       switch(true){
-        case (doubled||this.item.alreadyFileExists&&this.item.overwrite):
+        case (this.item.alreadyFileExists&&!this.item.overwrite&&(this.item.action==='write'||this.item.action==='writeFrom')):
+          msg = 'fileAppend';
+          break;
+        case (doubled||this.item.alreadyFileExists||this.item.usedToExist):
+          if(isSuccess) this.item.overwritten = true;
           msg = 'fileOverwrite';
           break;
         case (!this.item.alreadyFileExists):
           msg = 'fileNonExist';
           break;
-        case (this.item.alreadyFileExists&&!this.item.overwrite):
-          msg = 'fileAppend';
-          break;
       }
     }
     if(this.item.folder){
       switch(true){
-        case (doubled||this.item.alreadyDirExists):
+        case (this.item.usedToExist||doubled||this.item.alreadyDirExists):
+          if(isSuccess&&this.item.action!=='merge') this.item.overwritten = true;
           msg = 'dirOverwrite';
           break;
         case (!this.item.alreadyDirExists):
           msg = 'dirNonExist';
           break;
       }
+    }
+    if(this.item.unrecognized){
+      msg = 'unrecognized';
     }
     if(msg) this.item.result[type] = this.messages[msg].call(this,isSuccess)+additional;
   }
@@ -999,7 +896,7 @@ StructureDirs.prototype.utils = {
   },
   jsonExists:function(getPath,callback){
     this.itemExists(getPath,(o)=>{
-      if(!o.exists) return callback('The file of the specified path does not exist.');
+      if(!o.exists) return callback('The file of the specified path does not exist or is inaccessible.');
       var jsonExt = !(/^\.json$/i).test(path.extname(getPath));
       if(o.exists&&o.file&&jsonExt) return callback('The path should indicate the JSON file.');
       if(o.exists&&!o.file&&o.dir) return callback('The path leads to the folder, while it should indicate the JSON file.');
@@ -1008,7 +905,7 @@ StructureDirs.prototype.utils = {
   },
   folderExists:function(getPath,callback){
     this.itemExists(getPath,(o)=>{
-      if(!o.exists) return callback(new Error(`The given path '${getPath}' does not exist.`));
+      if(!o.exists) return callback(new Error(`The given path '${getPath}' does not exist or is inaccessible.`));
       if(o.exists&&o.file) return callback(new Error(`The given path '${getPath}' leads to the file, while it should indicate the folder.`));
       if(!(o.exists&&o.dir)) return callback(new Error(`Could not get the access to the given path '${getPath}'.`));
       if(o.exists&&o.dir) return callback(null);
@@ -1092,5 +989,198 @@ StructureDirs.prototype.utils = {
         }
       }
     });    
+  }
+};
+
+
+
+
+
+StructureDirs.prototype.methods = {
+  structurize:function(dirPath,json,clb){
+    args(arguments,[String,[String,Function],[Function]],(o)=>{
+      if(o.index===2&&type(json,Function)) return;
+      throw new TypeError(`${warn(moduleName+'.structurize')}: ${o.message}`);
+    });
+    const jsonPath = type(json,String) ? json:undefined;
+    const callback = type(json,Function) ? json:type(clb,Function) ? clb:undefined;
+
+    const funList = [
+      isPathValid,
+      generateStructure,
+      ensureDirJSON,
+      validPathJSON,
+      writeFileJSON
+    ];
+    const userContext = {
+      root:dirPath,
+      json:jsonPath,
+      utils:this.utils,
+      prepare:this.preparations,
+      structure:[]
+    };
+
+    moveOn(funList, userContext, onDone, onReject);
+
+    function onDone(){
+      callback(null,this.structure);
+    }
+
+    function onReject(c,err){
+      callback(err,this.structure);
+    }
+
+    function isPathValid(resolve,reject){
+      this.utils.folderExists(this.root,(err)=>{
+        if(err) return reject(err);
+        if(!err) resolve();
+      });
+    }
+
+    function generateStructure(resolve,reject){
+      const config = {
+        from:this.root,
+        deep:true,
+        action:null,
+        overwrite:null,
+        utils:this.utils
+      };
+      this.prepare.generateContent(config,(gen)=>{
+        this.structure = gen;
+        resolve();
+      },reject);
+    }
+
+    function ensureDirJSON(resolve,reject){
+      if(!this.json) return resolve();
+      const dirPath = path.dirname(path.resolve(this.json));
+      this.utils.createDirs(dirPath,resolve,reject);
+    }
+
+    function validPathJSON(resolve,reject){
+      if(!this.json) return resolve();
+      if(!(/^\.json$/i).test(path.extname(this.json))) this.json += '.json';
+      try{
+        this.data = JSON.stringify(this.structure,null,2);
+        resolve();
+      } catch(err){
+        reject(new Error('Could not generate the JSON content.'));
+      }
+    }
+
+    function writeFileJSON(resolve,reject){
+      if(!this.json) return resolve();
+      fs.writeFile(this.json,this.data,(err)=>{
+        if(err) return reject(new Error(`Could not create JSON file in the '${this.json}' path.`));
+        if(!err) resolve();
+      });
+    }
+
+  },
+  compare:function(model,compared,callback){
+    args(arguments,[String,String,Function],(o)=>{
+      throw new TypeError(`${warn(moduleName+'.compare')}: ${o.message}`);
+    });
+
+    const funList = [
+      isModelValid,
+      isComparedValid,
+      getModelContents,
+      getComparedContents,
+      addInnaccessiblePaths,
+      compareContents
+    ];
+
+    const userContext = {
+      modelPath:model,
+      comparedPath:compared,
+      utils:this.utils,
+      compareObject:{
+        model:{},
+        compared:{}
+      },
+      returnObject:{
+        model:model,
+        compared:compared,
+        dirs:{missing:[],existing:[],extraneous:[]},
+        files:{missing:[],existing:[],extraneous:[]},
+        inaccessible:[]
+      }
+    };
+
+    moveOn(funList,userContext,onDone,onReject);
+
+    function onDone(){
+      callback(null,this.returnObject);
+    }
+
+    function onReject(c,err){
+      callback(err,this.returnObject);
+    }
+
+    function isModelValid(resolve,reject){
+      this.utils.folderExists(this.modelPath,(err)=>{
+        if(err) return reject(err);
+        this.returnObject.model = path.resolve(this.modelPath);
+        resolve();
+      });
+    }
+
+    function isComparedValid(resolve,reject){
+      this.utils.folderExists(this.comparedPath,(err)=>{
+        if(err) return reject(err);
+        this.returnObject.compared = path.resolve(this.comparedPath);
+        resolve();
+      });
+    }
+
+    function getModelContents(resolve,reject){
+      listContent(this.modelPath,(o)=>{
+        if(o.error) return reject(new Error(`Could not get the access to the given folder '${this.modelPath}'.`));
+        this.compareObject.model = {path:o.path,dirs:o.dirs,files:o.files,inaccessible:o.inaccessible};
+        resolve();
+      });
+    }
+    
+    function getComparedContents(resolve,reject){
+      listContent(this.comparedPath,(o)=>{
+        if(o.error) return reject(new Error(`Could not get the access to the given folder '${this.comparedPath}'.`));
+        this.compareObject.compared = {path:o.path,dirs:o.dirs,files:o.files,inaccessible:o.inaccessible};
+        resolve();
+      });
+    }
+    
+    function addInnaccessiblePaths(resolve){
+      for(var pth of this.compareObject.model.inaccessible){
+        this.returnObject.inaccessible.push(path.resolve(this.modelPath,pth));
+      }
+      for(var pth of this.compareObject.compared.inaccessible){
+        this.returnObject.inaccessible.push(path.resolve(this.comparedPath,pth));
+      }
+      resolve();
+    }
+
+    function compareContents(resolve){
+      const c = this.compareObject;
+      const r = this.returnObject;
+      compare(c.model.dirs,c.compared.dirs,r.dirs);
+      compare(c.model.files,c.compared.files,r.files);
+      resolve();
+      
+      function compare(model,compared,result){
+        whileLabel:
+        while(model.length){
+          var m = model.shift();
+          for(var y in compared){
+            if(compared[y]===m){
+              result.existing.push(compared.splice(y,1)[0]);
+              continue whileLabel;
+            }
+          }
+          result.missing.push(m);
+        }
+        result.extraneous = compared.slice();
+      }
+    }
   }
 };

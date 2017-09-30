@@ -134,9 +134,11 @@ function each(o){
   Returns `null` if all files and foldes have been succesfully created.  
   Returns [Error] if something went wrong and the continuation of creating folders and files was aborted.
   * **`dirs`**  
-  Returns the [Array] list of the absolute paths of all created/moved/merged/copied folders.
+  Returns the [Array] `fail`, `success` and `warning` lists of the absolute paths of all *(not)* created/moved/merged/copied folders.
   * **`files`**  
-  Returns the [Array] list of the absolute paths of all created/moved/copied/modified files.
+  Returns the [Array] `fail`, `success` and `warning` lists of the absolute paths of all *(not)* created/moved/copied/modified files.
+  * **`unrecognized`**  
+  Returns the [Array] `fail` list of the absolute paths of all files or dirs that could not be accessed.
   * **`root`**  
   Returns the `root` path argument passed through the module function [see above]()
 
@@ -154,7 +156,7 @@ function each(o){
     Returns [String] message, if the action was failed and the file or folder could not be created, copied, moved, etc, eg. `"Could not move the file from the './dist/styles.css' path into the path './prod/styles.css'."`.  
     Otherwise returns `null`.
   * **`item`**  
-  Returns [String] `'file'` value when the file was created or `'dir'` value when the folder was created.
+  Returns [String] `'file'` value when the file was created, `'dir'` value when the folder was created or `unrecognized` when the item was inaccessible.
   * **`action`**  
   For `item:file` returns the [String] action undertaken for the file: `'create'`, `'move'`, `'copy'`, `'write'`, `'writeFrom'`, 
   For `item:dir` returns the [String] action undertaken for the folder: `'create'`, `'move'`, `'copy'`, `'merge'`
