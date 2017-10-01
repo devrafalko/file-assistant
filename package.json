@@ -1,6 +1,6 @@
 {
   "name": "file-assistant",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Create the folders and files contents according to the given [Array] structure.",
   "main": "index.js",
   "scripts": {
