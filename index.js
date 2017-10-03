@@ -87,6 +87,8 @@ StructureDirs.prototype.validation = {
       hasJsonValidSyntax,
       isOverwriteOfCorrectType,
       isLeadingToCorrectPath,
+      isBeforeWriteOfCorrectType,
+      isBeforeWriteWithCorrectActionProperty,
       this.prepare.addItemData
     ];
 
@@ -227,6 +229,7 @@ StructureDirs.prototype.validation = {
       function hasIncorrectButValidProps(resolve,reject){
         var content = this.utils.hasAtLeastItems(this.itemData.item,['content'],1);
         var writefrom = this.utils.hasAtLeastItems(this.itemData.item,['writefrom'],1);
+        var beforewrite = this.utils.hasAtLeastItems(this.itemData.item,['beforewrite'],1);
         if(content){
           this.itemData.item.contents = this.itemData.item.content;
           delete this.itemData.item.content;
@@ -234,6 +237,10 @@ StructureDirs.prototype.validation = {
         if(writefrom){
           this.itemData.item.writeFrom = this.itemData.item.writefrom;
           delete this.itemData.item.writefrom;
+        }
+        if(beforewrite){
+          this.itemData.item.beforeWrite = this.itemData.item.beforewrite;
+          delete this.itemData.item.beforewrite;
         }
         resolve();
       }
@@ -305,8 +312,8 @@ StructureDirs.prototype.validation = {
       }
 
       function isOverwriteOfCorrectType(resolve,reject){
-        const hasOverwrite = this.utils.hasAtLeastItems(this.itemData.item,['overwrite'],1);
-        if(!hasOverwrite) return resolve();
+        const hasProperty = this.utils.hasAtLeastItems(this.itemData.item,['overwrite'],1);
+        if(!hasProperty) return resolve();
         if(prop(this.itemData.item,{overwrite:Boolean},(o)=>{
           reject(new TypeError(`${this.printMsg} ${o.message}`));
         })) {
@@ -334,6 +341,24 @@ StructureDirs.prototype.validation = {
           this.itemData.from = path.normalize(setPath);
           resolve();
         });
+      }
+
+      function isBeforeWriteOfCorrectType(resolve,reject){
+        const hasProperty = this.utils.hasAtLeastItems(this.itemData.item,['beforeWrite'],1);
+        if(!hasProperty) return resolve();
+        if(prop(this.itemData.item,{beforeWrite:Function},(o)=>{
+          reject(new TypeError(`${this.printMsg} ${o.message}`));
+        })) {
+          this.itemData.beforeWrite = this.itemData.item.beforeWrite;
+          resolve();
+        }
+      }
+
+      function isBeforeWriteWithCorrectActionProperty(resolve,reject){
+        if(!this.itemData.beforeWrite) return resolve();
+        if(this.itemData.folder) return reject(new Error(`${this.printMsg} The ["beforeWrite"] property can be defined only with ["file"] property.`));
+        if(this.itemData.action === 'create') return reject(new Error(`${this.printMsg} The ["beforeWrite"] property can be defined only with ["copy"], ["move"], ["write"] or ["writeFrom"] property.`));
+        resolve();
       }
 
   },
@@ -556,6 +581,7 @@ StructureDirs.prototype.appenders = {
       this.appenders.abortIfTheSamePaths,
       this.appenders.abortIfFileOverwrite,
       this.appenders.readContent,
+      this.appenders.modifyContent,
       this.appenders.writeFile,
       this.appenders.removeFile
     ];
@@ -607,7 +633,7 @@ StructureDirs.prototype.appenders = {
       this.response.prepareEach.call(this);
       done();
     }
-    
+
   },
   abortIfDirExists:function(resolve,reject){
     if((this.item.alreadyDirExists)){
@@ -656,11 +682,37 @@ StructureDirs.prototype.appenders = {
       return resolve();
     }
   },
+  modifyContent:function(resolve,reject){
+    var callbackIter = 0;
+    if(!this.item.beforeWrite) return resolve();
+    if(type(this.item.content,Buffer)) this.item.content = this.item.content.toString('utf8');
+
+    this.item.beforeWrite(this.item.content,onResolve.bind(this),onReject.bind(this));
+
+    function onResolve(data){
+      if(++callbackIter>1) return;
+      if(args(arguments,[[Buffer,String]],(o)=>{
+        callbackIter++;
+        this.computeMessage('failure',false,`. Could not read the ${this.item.from? `modified data of the '${this.item.from}' file`:'given modified data'}. The [${o.expected}] type of data is expected, while the [${o.actual}] data has been passed.`);
+        return reject();
+      })){
+        this.item.content = data;
+        this.item.modified = true;
+        resolve();
+      }
+    }
+
+    function onReject(getErr){
+      if(++callbackIter>1) return;
+      this.computeMessage('failure',false,`.${type(getErr,String) ? ' '+getErr:''}`);
+      return reject();
+    }
+  },
   writeFile:function(resolve,reject){
     var nonExist = !this.item.alreadyFileExists;
     var overwrite = this.item.alreadyFileExists&&this.item.overwrite;
     var append = this.item.alreadyFileExists&&!this.item.overwrite;
-    
+
     const meth = append ? 'appendFile':(nonExist||overwrite) ? 'writeFile':null;
     if(!meth) return resolve();
     const stringifyContent = this.item.content || '';
@@ -779,6 +831,7 @@ StructureDirs.prototype.response = {
       item:this.item.itemType,
       from:this.item.from,
       action:this.item.action,
+      modified:!!this.item.modified,
       overwritten:this.item.overwritten,
       root:this.item.root,
       relative:this.item.relative,
@@ -790,10 +843,10 @@ StructureDirs.prototype.response = {
     fileNonExist:function(success){
       const message = {
         create:`created`,
-        copy:`copied from the "${this.item.from}" path`,
-        move:`moved from the "${this.item.from}" path`,
-        write:`created with the given content`,
-        writeFrom:`created with the content from the "${this.item.from}" file`
+        copy:`copied${this.item.beforeWrite?' with modified content ':' '}from the "${this.item.from}" path`,
+        move:`moved${this.item.beforeWrite?' with modified content ':' '}from the "${this.item.from}" path`,
+        write:`created with the given${this.item.beforeWrite?' modified ':' '}content`,
+        writeFrom:`created with the${this.item.beforeWrite?' modified ':' '}content from the "${this.item.from}" file`
       };
       return `The file "${this.item.relative}" ${success?'was successfully':'could not be'} ${message[this.item.action]}`;
     },
@@ -803,17 +856,17 @@ StructureDirs.prototype.response = {
         `The already existing file "${this.item.relative}"`;
       const message = {
         create:`by the newly created file`,
-        copy:`by the file copied from the "${this.item.from}" path`,
-        move:`by the file moved from the "${this.item.from}" path`,
-        write:`with the given content`,
-        writeFrom:`with the content from the "${this.item.from}" file`
+        copy:`by the file copied${this.item.beforeWrite?' with modified content ':' '}from the "${this.item.from}" path`,
+        move:`by the file moved${this.item.beforeWrite?' with modified content ':' '}from the "${this.item.from}" path`,
+        write:`with the given${this.item.beforeWrite?' modified ':' '}content`,
+        writeFrom:`with the${this.item.beforeWrite?' modified ':' '}content from the "${this.item.from}" file`
       };
       return `${actionMsg} ${success?'was successfully':'could not be'} overwritten ${message[this.item.action]}`;
     },
     fileAppend:function(success){
       const message = {
-        write:`The given content`,
-        writeFrom:`The content from the "${this.item.from}" file`
+        write:`The given${this.item.beforeWrite?' modified ':' '}content`,
+        writeFrom:`The${this.item.beforeWrite?' modified ':' '}content from the "${this.item.from}" file`
       };
       return `${message[this.item.action]} ${success?'was successfully':'could not be'} appended to the "${this.item.relative}" file`;
     },

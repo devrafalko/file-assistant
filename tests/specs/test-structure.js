@@ -7,6 +7,7 @@ const should = require(path.resolve(helpers,'should.js'));
 const prepare = require(path.resolve(helpers,'prepare.js'));
 const paths = require(path.resolve(helpers,'paths.js'));
 const testingModule = require(path.resolve('./index.js'));
+const data = require(path.resolve(helpers,'structures.json'));
 
 
 describe('When the module function',function(){
@@ -3936,8 +3937,3003 @@ describe('When the module function',function(){
 
       });
 
-    });
+      describe(`that contains 'beforeWrite' property`,function(){
+        beforeAll(function(done){
+          prepare.remove()
+          .then(()=>prepare.resetFrom())
+          .then(()=>prepare.resetTo())
+          .then(done)
+          .catch(done.fail);
+        });
 
+        describe(`and 'dir' property`,function(){
+          beforeAll(function(){
+            this.structure = [{dir:'styles',beforeWrite:function(){}}];
+          });
+          
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.toDir)
+          }));
+          
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.fromDir)
+          }));
+          
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:0
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1
+          }));
+          
+          it.apply(this,should.not.throwError({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')}
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1,
+            $properties:{
+              files:{
+                success:[],
+                warning:[],
+                failure:[]
+              },
+              dirs:{
+                success:[],
+                warning:[],
+                failure:[]
+              },
+              root:path.join(paths.rootDir,paths.toDir)
+            }
+          }));
+
+          it.apply(this,should.runCallbackError({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1,
+            $propertyName:'error',
+            $errorObject:Error,
+            $message:/Invalid structure argument \[0\]\. The \["beforeWrite"\] property can be defined only with \["file"\] property\./i
+          }));
+
+        });
+        
+        describe(`and 'file' property`,function(){
+          beforeAll(function(){
+            this.structure = [{file:'styles.css',beforeWrite:function(){}}];
+          });
+          
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.toDir)
+          }));
+          
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.fromDir)
+          }));
+          
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:0
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1
+          }));
+          
+          it.apply(this,should.not.throwError({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')}
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1,
+            $properties:{
+              files:{
+                success:[],
+                warning:[],
+                failure:[]
+              },
+              dirs:{
+                success:[],
+                warning:[],
+                failure:[]
+              },
+              root:path.join(paths.rootDir,paths.toDir)
+            }
+          }));
+
+          it.apply(this,should.runCallbackError({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1,
+            $propertyName:'error',
+            $errorObject:Error,
+            $message:/Invalid structure argument \[0\]\. The \["beforeWrite"\] property can be defined only with \["copy"\], \["move"\], \["write"\] or \["writeFrom"\] property\./i
+          }));
+
+        });
+
+        describe(`and 'file' and 'merge' property`,function(){
+          beforeAll(function(){
+            this.structure = [{file:'styles.css',beforeWrite:function(){},merge:paths.from('styles')}];
+          });
+
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.toDir)
+          }));
+
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.fromDir)
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:0
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1
+          }));
+
+          it.apply(this,should.not.throwError({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')}
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1,
+            $properties:{
+              files:{
+                success:[],
+                warning:[],
+                failure:[]
+              },
+              dirs:{
+                success:[],
+                warning:[],
+                failure:[]
+              },
+              root:path.join(paths.rootDir,paths.toDir)
+            }
+          }));
+
+          it.apply(this,should.runCallbackError({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1,
+            $propertyName:'error',
+            $errorObject:Error,
+            $message:/Invalid structure argument \[0\]\. The \["merge"\] property can be defined only with \["dir"\] property\./i
+          }));
+
+        });
+
+        describe(`and 'file' and 'contents' property`,function(){
+          beforeAll(function(){
+            this.structure = [
+              {file:'styles.css',beforeWrite:function(){},contents:[
+                {file:'index.html'}
+              ]}
+            ];
+          });
+
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.toDir)
+          }));
+
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.fromDir)
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:0
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1
+          }));
+
+          it.apply(this,should.not.throwError({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')}
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1,
+            $properties:{
+              files:{
+                success:[],
+                warning:[],
+                failure:[]
+              },
+              dirs:{
+                success:[],
+                warning:[],
+                failure:[]
+              },
+              root:path.join(paths.rootDir,paths.toDir)
+            }
+          }));
+
+          it.apply(this,should.runCallbackError({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1,
+            $propertyName:'error',
+            $errorObject:Error,
+            $message:/Invalid structure argument \[0\]\. The \["contents"\] property can be defined only with \["dir"\] property\./i
+          }));
+
+        });
+
+        describe(`and 'file' and 'copy', 'move', or 'writeFrom' property`,function(){
+
+          describe(`but 'beforeWrite' is of incorrect type`,function(){
+            beforeAll(function(){
+              this.structure = [{file:'styles.css',copy:paths.from('variables.scss'),beforeWrite:10}];
+            });
+
+            it.apply(this,should.keepPreviousContents({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $directory:path.join(paths.rootDir,paths.toDir)
+            }));
+
+            it.apply(this,should.keepPreviousContents({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $directory:path.join(paths.rootDir,paths.fromDir)
+            }));
+            
+            it.apply(this,should.keepFileContent({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $file:paths.from('variables.scss')
+            }));
+
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'each',
+              $callbackTimes:0
+            }));
+
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:1
+            }));
+
+            it.apply(this,should.not.throwError({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')}
+            }));
+
+            it.apply(this,should.runCallbackWithObject({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:1,
+              $properties:{
+                files:{
+                  success:[],
+                  warning:[],
+                  failure:[]
+                },
+                dirs:{
+                  success:[],
+                  warning:[],
+                  failure:[]
+                },
+                root:path.join(paths.rootDir,paths.toDir)
+              }
+            }));
+
+            it.apply(this,should.runCallbackError({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:1,
+              $propertyName:'error',
+              $errorObject:TypeError,
+              $message:/Invalid structure argument \[0\]\. Invalid property \["beforeWrite"\]\. The \[Number\] value has been assigned, while the value of type \[Function\] is expected\./i
+            }));
+
+          });
+
+          describe(`but 'beforeWrite' function does not call neither resolve nor reject callback`,function(){
+            beforeAll(function(){
+              this.structure = [{file:paths.name('prod.css'),writeFrom:paths.from('dist.css'),beforeWrite:before}];
+              function before(data,resolve,reject){}
+            });
+      
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'each',
+              $callbackTimes:0
+            }));
+
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:0
+            }));
+
+            it.apply(this,should.not.throwError({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')}
+            }));
+            
+          });
+          
+          describe(`and 'beforeWrite' function calls both resolve and then reject callback`,function(){
+            beforeEach(function(done){
+              this.structure = [{file:paths.name('prod.css'),writeFrom:paths.from('dist.css'),beforeWrite:before}];
+              function before(data,resolve,reject){
+                resolve(data);
+                reject();
+              }
+              
+              prepare.remove()
+              .then(()=>prepare.resetFrom())
+              .then(()=>prepare.resetTo())
+              .then(done)
+              .catch(done.fail);
+            });
+
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'each',
+              $callbackTimes:1
+            }));
+
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:1
+            }));
+
+            it.apply(this,should.not.throwError({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')}
+            }));
+
+            it.apply(this,should.runCallbackWithObject({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'each',
+              $callbackTimes:1,
+              $properties:{
+                failure: null,
+                warning: null,
+                success: `The file "${paths.rel('prod.css')}" was successfully created with the modified content from the "${paths.from('dist.css')}" file.`,
+                item: 'file',
+                from: paths.from('dist.css'),
+                action: 'writeFrom',
+                modified:true,
+                overwritten: false,
+                root:path.join(paths.rootDir,paths.toDir),
+                relative:paths.rel('prod.css'),
+                absolute:paths.to('prod.css')
+              }
+            }));
+
+            it.apply(this,should.runCallbackWithObject({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:1,
+              $properties:{
+                error:null,
+                files:{
+                  success:[paths.to('prod.css')],
+                  warning:[],
+                  failure:[]
+                },
+                dirs:{
+                  success:[],
+                  warning:[],
+                  failure:[]
+                },
+                root:path.join(paths.rootDir,paths.toDir)
+              }
+            }));
+
+          });
+          
+          describe(`and 'beforeWrite' function calls both reject and then resolve callback`,function(){
+            beforeEach(function(done){
+              this.structure = [{file:paths.name('prod.css'),writeFrom:paths.from('dist.css'),beforeWrite:before}];
+              function before(data,resolve,reject){
+                reject();
+                resolve(data);
+              }
+
+              prepare.remove()
+              .then(()=>prepare.resetFrom())
+              .then(()=>prepare.resetTo())
+              .then(done)
+              .catch(done.fail);
+            });
+
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'each',
+              $callbackTimes:1
+            }));
+
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:1
+            }));
+
+            it.apply(this,should.not.throwError({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')}
+            }));
+
+            it.apply(this,should.runCallbackWithObject({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'each',
+              $callbackTimes:1,
+              $properties:{
+                failure: `The file "${paths.rel('prod.css')}" could not be created with the modified content from the "${paths.from('dist.css')}" file.`,
+                success: null,
+                warning: null,
+                item: 'file',
+                from: paths.from('dist.css'),
+                action: 'writeFrom',
+                modified:false,
+                overwritten: false,
+                root:path.join(paths.rootDir,paths.toDir),
+                relative:paths.rel('prod.css'),
+                absolute:paths.to('prod.css')
+              }
+            }));
+
+            it.apply(this,should.runCallbackWithObject({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:1,
+              $properties:{
+                error:null,
+                files:{
+                  success:[],
+                  warning:[],
+                  failure:[paths.to('prod.css')]
+                },
+                dirs:{
+                  success:[],
+                  warning:[],
+                  failure:[]
+                },
+                root:path.join(paths.rootDir,paths.toDir)
+              }
+            }));
+
+          });
+
+          describe(`and 'beforeWrite' function calls resolve`,function(){
+            beforeEach(function(done){
+              prepare.remove()
+              .then(()=>prepare.resetFrom())
+              .then(()=>prepare.resetTo())
+              .then(done)
+              .catch(done.fail);
+            });
+
+            describe(`without any arguments`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),writeFrom:paths.from('dist.css'),beforeWrite:before}];
+                function before(data,resolve,reject){
+                  resolve();
+                }
+              });
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.not.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  failure: `The file "${paths.rel('prod.css')}" could not be created with the modified content from the "${paths.from('dist.css')}" file. Could not read the modified data of the '${paths.from('dist.css')}' file. The [Buffer|String] type of data is expected, while the [undefined] data has been passed.`,
+                  success: null,
+                  warning: null,
+                  item: 'file',
+                  from: paths.from('dist.css'),
+                  action: 'writeFrom',
+                  modified:false,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[],
+                    warning:[],
+                    failure:[paths.to('prod.css')]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+
+            });
+
+            describe(`with [String] argument`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),writeFrom:paths.from('dist.css'),beforeWrite:before}];
+                function before(data,resolve,reject){
+                  resolve('Hello world!');
+                }
+              });
+
+              it.apply(this,should.not.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  success: `The file "${paths.rel('prod.css')}" was successfully created with the modified content from the "${paths.from('dist.css')}" file.`,
+                  failure: null,
+                  warning: null,
+                  item: 'file',
+                  from: paths.from('dist.css'),
+                  action: 'writeFrom',
+                  modified:true,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[paths.to('prod.css')],
+                    warning:[],
+                    failure:[]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+            });
+
+            describe(`with [Buffer] argument`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),writeFrom:paths.from('dist.css'),beforeWrite:before}];
+                function before(data,resolve,reject){
+                  var buffer = new Buffer('Hello world!');
+                  resolve(buffer);
+                }
+              });
+
+              it.apply(this,should.not.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  success: `The file "${paths.rel('prod.css')}" was successfully created with the modified content from the "${paths.from('dist.css')}" file.`,
+                  failure: null,
+                  warning: null,
+                  item: 'file',
+                  from: paths.from('dist.css'),
+                  action: 'writeFrom',
+                  modified:true,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[paths.to('prod.css')],
+                    warning:[],
+                    failure:[]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+
+            });
+
+            describe(`with [Number] argument`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),writeFrom:paths.from('dist.css'),beforeWrite:before}];
+                function before(data,resolve,reject){
+                  resolve(10);
+                }
+              });
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.not.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  failure: `The file "${paths.rel('prod.css')}" could not be created with the modified content from the "${paths.from('dist.css')}" file. Could not read the modified data of the '${paths.from('dist.css')}' file. The [Buffer|String] type of data is expected, while the [Number] data has been passed.`,
+                  success: null,
+                  warning: null,
+                  item: 'file',
+                  from: paths.from('dist.css'),
+                  action: 'writeFrom',
+                  modified:false,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[],
+                    warning:[],
+                    failure:[paths.to('prod.css')]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+
+            });
+
+            describe(`with [Array] argument`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),writeFrom:paths.from('dist.css'),beforeWrite:before}];
+                function before(data,resolve,reject){
+                  resolve([1,2,3]);
+                }
+              });
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.not.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  failure: `The file "${paths.rel('prod.css')}" could not be created with the modified content from the "${paths.from('dist.css')}" file. Could not read the modified data of the '${paths.from('dist.css')}' file. The [Buffer|String] type of data is expected, while the [Array] data has been passed.`,
+                  success: null,
+                  warning: null,
+                  item: 'file',
+                  from: paths.from('dist.css'),
+                  action: 'writeFrom',
+                  modified:false,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[],
+                    warning:[],
+                    failure:[paths.to('prod.css')]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+
+            });
+
+          });
+
+          describe(`and 'beforeWrite' function calls reject callback function`,function(){
+            
+            beforeEach(function(done){
+              prepare.remove()
+              .then(()=>prepare.resetFrom())
+              .then(()=>prepare.resetTo())
+              .then(done)
+              .catch(done.fail);
+            });
+            
+            describe(`without any arguments`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),writeFrom:paths.from('dist.css'),beforeWrite:before}];
+                function before(data,resolve,reject){
+                  reject();
+                }
+              });
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.not.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  failure: `The file "${paths.rel('prod.css')}" could not be created with the modified content from the "${paths.from('dist.css')}" file.`,
+                  success: null,
+                  warning: null,
+                  item: 'file',
+                  from: paths.from('dist.css'),
+                  action: 'writeFrom',
+                  modified:false,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[],
+                    warning:[],
+                    failure:[paths.to('prod.css')]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+
+            });
+
+            describe(`with [Number] argument`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),writeFrom:paths.from('dist.css'),beforeWrite:before}];
+                function before(data,resolve,reject){
+                  reject(10);
+                }
+              });
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.not.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  failure: `The file "${paths.rel('prod.css')}" could not be created with the modified content from the "${paths.from('dist.css')}" file.`,
+                  success: null,
+                  warning: null,
+                  item: 'file',
+                  from: paths.from('dist.css'),
+                  action: 'writeFrom',
+                  modified:false,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[],
+                    warning:[],
+                    failure:[paths.to('prod.css')]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+
+            });
+
+            describe(`with [String] message`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),writeFrom:paths.from('dist.css'),beforeWrite:before}];
+                function before(data,resolve,reject){
+                  reject('This is additional error message.');
+                }
+              });
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.not.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  failure: `The file "${paths.rel('prod.css')}" could not be created with the modified content from the "${paths.from('dist.css')}" file. This is additional error message.`,
+                  success: null,
+                  warning: null,
+                  item: 'file',
+                  from: paths.from('dist.css'),
+                  action: 'writeFrom',
+                  modified:false,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[],
+                    warning:[],
+                    failure:[paths.to('prod.css')]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+            });
+          });
+        });
+
+        describe(`and 'file' and 'write' property`,function(){
+
+          describe(`but 'beforeWrite' is of incorrect type`,function(){
+            beforeAll(function(){
+              this.structure = [{file:'styles.css',write:'Hello world!',beforeWrite:10}];
+            });
+
+            it.apply(this,should.keepPreviousContents({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $directory:path.join(paths.rootDir,paths.toDir)
+            }));
+
+            it.apply(this,should.keepPreviousContents({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $directory:path.join(paths.rootDir,paths.fromDir)
+            }));
+            
+            it.apply(this,should.keepFileContent({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $file:paths.from('variables.scss')
+            }));
+
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'each',
+              $callbackTimes:0
+            }));
+
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:1
+            }));
+
+            it.apply(this,should.not.throwError({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')}
+            }));
+
+            it.apply(this,should.runCallbackWithObject({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:1,
+              $properties:{
+                files:{
+                  success:[],
+                  warning:[],
+                  failure:[]
+                },
+                dirs:{
+                  success:[],
+                  warning:[],
+                  failure:[]
+                },
+                root:path.join(paths.rootDir,paths.toDir)
+              }
+            }));
+
+            it.apply(this,should.runCallbackError({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:1,
+              $propertyName:'error',
+              $errorObject:TypeError,
+              $message:/Invalid structure argument \[0\]\. Invalid property \["beforeWrite"\]\. The \[Number\] value has been assigned, while the value of type \[Function\] is expected\./i
+            }));
+
+          });
+
+          describe(`but 'beforeWrite' function does not call neither resolve nor reject callback`,function(){
+            beforeAll(function(){
+              this.structure = [{file:paths.name('prod.css'),write:'Hello world!',beforeWrite:before}];
+              function before(data,resolve,reject){}
+            });
+      
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'each',
+              $callbackTimes:0
+            }));
+
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:0
+            }));
+
+            it.apply(this,should.not.throwError({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')}
+            }));
+            
+          });
+          
+          describe(`and 'beforeWrite' function calls both resolve and then reject callback`,function(){
+            beforeEach(function(done){
+              this.structure = [{file:paths.name('prod.css'),write:'Hello world!',beforeWrite:before}];
+              function before(data,resolve,reject){
+                resolve(data);
+                reject();
+              }
+              
+              prepare.remove()
+              .then(()=>prepare.resetFrom())
+              .then(()=>prepare.resetTo())
+              .then(done)
+              .catch(done.fail);
+            });
+
+
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'each',
+              $callbackTimes:1
+            }));
+
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:1
+            }));
+
+            it.apply(this,should.not.throwError({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')}
+            }));
+
+            it.apply(this,should.runCallbackWithObject({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'each',
+              $callbackTimes:1,
+              $properties:{
+                failure: null,
+                warning: null,
+                success: `The file "${paths.rel('prod.css')}" was successfully created with the given modified content.`,
+                item: 'file',
+                from: null,
+                action: 'write',
+                modified:true,
+                overwritten: false,
+                root:path.join(paths.rootDir,paths.toDir),
+                relative:paths.rel('prod.css'),
+                absolute:paths.to('prod.css')
+              }
+            }));
+
+            it.apply(this,should.runCallbackWithObject({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:1,
+              $properties:{
+                error:null,
+                files:{
+                  success:[paths.to('prod.css')],
+                  warning:[],
+                  failure:[]
+                },
+                dirs:{
+                  success:[],
+                  warning:[],
+                  failure:[]
+                },
+                root:path.join(paths.rootDir,paths.toDir)
+              }
+            }));
+
+          });
+          
+          describe(`and 'beforeWrite' function calls both reject and then resolve callback`,function(){
+            beforeEach(function(done){
+              this.structure = [{file:paths.name('prod.css'),write:'Hello world!',beforeWrite:before}];
+              function before(data,resolve,reject){
+                reject();
+                resolve(data);
+              }
+
+              prepare.remove()
+              .then(()=>prepare.resetFrom())
+              .then(()=>prepare.resetTo())
+              .then(done)
+              .catch(done.fail);
+            });
+
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'each',
+              $callbackTimes:1
+            }));
+
+            it.apply(this,should.runCallback({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:1
+            }));
+
+            it.apply(this,should.not.throwError({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')}
+            }));
+
+            it.apply(this,should.runCallbackWithObject({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'each',
+              $callbackTimes:1,
+              $properties:{
+                failure: `The file "${paths.rel('prod.css')}" could not be created with the given modified content.`,
+                success: null,
+                warning: null,
+                item: 'file',
+                from: null,
+                action: 'write',
+                modified:false,
+                overwritten: false,
+                root:path.join(paths.rootDir,paths.toDir),
+                relative:paths.rel('prod.css'),
+                absolute:paths.to('prod.css')
+              }
+            }));
+
+            it.apply(this,should.runCallbackWithObject({
+              $function:testingModule,
+              $arguments:{structure:should.context('structure')},
+              $callback:'done',
+              $callbackTimes:1,
+              $properties:{
+                error:null,
+                files:{
+                  success:[],
+                  warning:[],
+                  failure:[paths.to('prod.css')]
+                },
+                dirs:{
+                  success:[],
+                  warning:[],
+                  failure:[]
+                },
+                root:path.join(paths.rootDir,paths.toDir)
+              }
+            }));
+
+          });
+
+          describe(`and 'beforeWrite' function calls resolve`,function(){
+            beforeEach(function(done){
+              prepare.remove()
+              .then(()=>prepare.resetFrom())
+              .then(()=>prepare.resetTo())
+              .then(done)
+              .catch(done.fail);
+            });
+
+            describe(`without any arguments`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),write:'Hello world!',beforeWrite:before}];
+                function before(data,resolve,reject){
+                  resolve();
+                }
+              });
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.not.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  failure: `The file "${paths.rel('prod.css')}" could not be created with the given modified content. Could not read the given modified data. The [Buffer|String] type of data is expected, while the [undefined] data has been passed.`,
+                  success: null,
+                  warning: null,
+                  item: 'file',
+                  from: null,
+                  action: 'write',
+                  modified:false,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[],
+                    warning:[],
+                    failure:[paths.to('prod.css')]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+
+            });
+
+            describe(`with [String] argument`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),write:'Hello world!',beforeWrite:before}];
+                function before(data,resolve,reject){
+                  resolve('Hello world!');
+                }
+              });
+
+              it.apply(this,should.not.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  success: `The file "${paths.rel('prod.css')}" was successfully created with the given modified content.`,
+                  failure: null,
+                  warning: null,
+                  item: 'file',
+                  from: null,
+                  action: 'write',
+                  modified:true,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[paths.to('prod.css')],
+                    warning:[],
+                    failure:[]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+            });
+
+            describe(`with [Buffer] argument`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),write:'Hello world!',beforeWrite:before}];
+                function before(data,resolve,reject){
+                  var buffer = new Buffer('Hello world!');
+                  resolve(buffer);
+                }
+              });
+
+              it.apply(this,should.not.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  success: `The file "${paths.rel('prod.css')}" was successfully created with the given modified content.`,
+                  failure: null,
+                  warning: null,
+                  item: 'file',
+                  from: null,
+                  action: 'write',
+                  modified:true,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[paths.to('prod.css')],
+                    warning:[],
+                    failure:[]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+
+            });
+
+            describe(`with [Number] argument`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),write:'Hello world!',beforeWrite:before}];
+                function before(data,resolve,reject){
+                  resolve(10);
+                }
+              });
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.not.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  failure: `The file "${paths.rel('prod.css')}" could not be created with the given modified content. Could not read the given modified data. The [Buffer|String] type of data is expected, while the [Number] data has been passed.`,
+                  success: null,
+                  warning: null,
+                  item: 'file',
+                  from: null,
+                  action: 'write',
+                  modified:false,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[],
+                    warning:[],
+                    failure:[paths.to('prod.css')]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+
+            });
+
+            describe(`with [Array] argument`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),write:'Hello world!',beforeWrite:before}];
+                function before(data,resolve,reject){
+                  resolve([1,2,3]);
+                }
+              });
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.not.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  failure: `The file "${paths.rel('prod.css')}" could not be created with the given modified content. Could not read the given modified data. The [Buffer|String] type of data is expected, while the [Array] data has been passed.`,
+                  success: null,
+                  warning: null,
+                  item: 'file',
+                  from: null,
+                  action: 'write',
+                  modified:false,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[],
+                    warning:[],
+                    failure:[paths.to('prod.css')]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+            });
+          });
+
+          describe(`and 'beforeWrite' function calls reject callback function`,function(){
+            
+            beforeEach(function(done){
+              prepare.remove()
+              .then(()=>prepare.resetFrom())
+              .then(()=>prepare.resetTo())
+              .then(done)
+              .catch(done.fail);
+            });
+            
+            describe(`without any arguments`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),write:'Hello world!',beforeWrite:before}];
+                function before(data,resolve,reject){
+                  reject();
+                }
+              });
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.not.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  failure: `The file "${paths.rel('prod.css')}" could not be created with the given modified content.`,
+                  success: null,
+                  warning: null,
+                  item: 'file',
+                  from: null,
+                  action: 'write',
+                  modified:false,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[],
+                    warning:[],
+                    failure:[paths.to('prod.css')]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+            });
+
+            describe(`with [Number] argument`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),write:'Hello world!',beforeWrite:before}];
+                function before(data,resolve,reject){
+                  reject(10);
+                }
+              });
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.not.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  failure: `The file "${paths.rel('prod.css')}" could not be created with the given modified content.`,
+                  success: null,
+                  warning: null,
+                  item: 'file',
+                  from: null,
+                  action: 'write',
+                  modified:false,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[],
+                    warning:[],
+                    failure:[paths.to('prod.css')]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+            });
+
+            describe(`with [String] message`,function(){
+              beforeEach(function(){
+                this.structure = [{file:paths.name('prod.css'),write:'Hello world!',beforeWrite:before}];
+                function before(data,resolve,reject){
+                  reject('This is additional error message.');
+                }
+              });
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.toDir)
+              }));
+
+              it.apply(this,should.keepPreviousContents({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $directory:path.join(paths.rootDir,paths.fromDir)
+              }));
+
+              it.apply(this,should.not.createNewFile({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.to('prod.css')
+              }));
+
+              it.apply(this,should.keepFileContent({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $file:paths.from('dist.css')
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.runCallback({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1
+              }));
+
+              it.apply(this,should.not.throwError({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')}
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'each',
+                $callbackTimes:1,
+                $properties:{
+                  failure: `The file "${paths.rel('prod.css')}" could not be created with the given modified content. This is additional error message.`,
+                  success: null,
+                  warning: null,
+                  item: 'file',
+                  from: null,
+                  action: 'write',
+                  modified:false,
+                  overwritten: false,
+                  root:path.join(paths.rootDir,paths.toDir),
+                  relative:paths.rel('prod.css'),
+                  absolute:paths.to('prod.css')
+                }
+              }));
+
+              it.apply(this,should.runCallbackWithObject({
+                $function:testingModule,
+                $arguments:{structure:should.context('structure')},
+                $callback:'done',
+                $callbackTimes:1,
+                $properties:{
+                  files:{
+                    success:[],
+                    warning:[],
+                    failure:[paths.to('prod.css')]
+                  },
+                  dirs:{
+                    success:[],
+                    warning:[],
+                    failure:[]
+                  },
+                  root:path.join(paths.rootDir,paths.toDir)
+                }
+              }));
+            });
+          });
+        });
+
+        describe(`and 'file' and 'copy' property`,function(){
+          
+          beforeEach(function(done){
+            this.structure = [{file:paths.name('prod.css'),copy:paths.from('prod.css'),beforeWrite:before}];
+            function before(getContent,resolve,reject){
+              resolve(getContent+data['styles/css/main.css'].content);
+            }
+            prepare.remove()
+            .then(()=>prepare.resetFrom())
+            .then(()=>prepare.resetTo())
+            .then(done)
+            .catch(done.fail);
+          });
+
+          it.apply(this,should.not.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.toDir)
+          }));
+
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.fromDir)
+          }));
+
+          it.apply(this,should.createNewFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css')
+          }));
+
+          it.apply(this,should.not.removeFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.from('prod.css')
+          }));
+
+          it.apply(this,should.keepFileContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.from('prod.css')
+          }));
+
+          it.apply(this,should.haveContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css'),
+            $content:data['prod.css'].content+data['styles/css/main.css'].content
+          }));
+          
+          it.apply(this,should.not.haveTheSameContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $model:paths.from('prod.css'),
+            $compared:paths.to('prod.css')
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:1
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1
+          }));
+
+          it.apply(this,should.not.throwError({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')}
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:1,
+            $properties:{
+              success: `The file "${paths.rel('prod.css')}" was successfully copied with modified content from the "${paths.from('prod.css')}" path.`,
+              failure: null,
+              warning: null,
+              item: 'file',
+              from: paths.from('prod.css'),
+              action: 'copy',
+              modified:true,
+              overwritten: false,
+              root:path.join(paths.rootDir,paths.toDir),
+              relative:paths.rel('prod.css'),
+              absolute:paths.to('prod.css')
+            }
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1,
+            $properties:{
+              files:{
+                success:[paths.to('prod.css')],
+                warning:[],
+                failure:[]
+              },
+              dirs:{
+                success:[],
+                warning:[],
+                failure:[]
+              },
+              root:path.join(paths.rootDir,paths.toDir)
+            }
+          }));
+        });
+
+        describe(`and 'file' and 'move' property`,function(){
+
+          beforeEach(function(done){
+            this.structure = [{file:paths.name('prod.css'),move:paths.from('prod.css'),beforeWrite:before}];
+            function before(getContent,resolve,reject){
+              resolve(getContent+data['styles/css/main.css'].content);
+            }
+            prepare.remove()
+            .then(()=>prepare.resetFrom())
+            .then(()=>prepare.resetTo())
+            .then(done)
+            .catch(done.fail);
+          });
+
+          it.apply(this,should.not.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.toDir)
+          }));
+
+          it.apply(this,should.not.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.fromDir)
+          }));
+
+          it.apply(this,should.createNewFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css')
+          }));
+
+          it.apply(this,should.removeFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.from('prod.css')
+          }));
+
+          it.apply(this,should.haveContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css'),
+            $content:data['prod.css'].content+data['styles/css/main.css'].content
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:1
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1
+          }));
+
+          it.apply(this,should.not.throwError({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')}
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:1,
+            $properties:{
+              success: `The file "${paths.rel('prod.css')}" was successfully moved with modified content from the "${paths.from('prod.css')}" path.`,
+              failure: null,
+              warning: null,
+              item: 'file',
+              from: paths.from('prod.css'),
+              action: 'move',
+              modified:true,
+              overwritten: false,
+              root:path.join(paths.rootDir,paths.toDir),
+              relative:paths.rel('prod.css'),
+              absolute:paths.to('prod.css')
+            }
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1,
+            $properties:{
+              files:{
+                success:[paths.to('prod.css')],
+                warning:[],
+                failure:[]
+              },
+              dirs:{
+                success:[],
+                warning:[],
+                failure:[]
+              },
+              root:path.join(paths.rootDir,paths.toDir)
+            }
+          }));
+        });
+        
+        describe(`and 'file' and 'write' and overwrite:true property (while the file already exists)`,function(){
+
+          beforeEach(function(done){
+            this.structure = [{file:paths.name('prod.css'),write:data['dist.css'].content,beforeWrite:before,overwrite:true}];
+            function before(getContent,resolve,reject){
+              resolve(getContent+data['styles/css/main.css'].content);
+            }
+            prepare.remove()
+            .then(()=>prepare.resetFrom())
+            .then(()=>prepare.resetTo())
+            .then(()=>prepare.addTo('prod.css'))
+            .then(done)
+            .catch(done.fail);
+          });
+
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.toDir)
+          }));
+
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.fromDir)
+          }));
+
+          it.apply(this,should.not.createNewFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css')
+          }));
+
+          it.apply(this,should.not.keepFileContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css')
+          }));
+
+          it.apply(this,should.haveContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css'),
+            $content:data['dist.css'].content+data['styles/css/main.css'].content
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:1
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1
+          }));
+
+          it.apply(this,should.not.throwError({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')}
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:1,
+            $properties:{
+              success: `The content of "${paths.rel('prod.css')}" file was successfully overwritten with the given modified content.`,
+              failure: null,
+              warning: null,
+              item: 'file',
+              from: null,
+              action: 'write',
+              modified:true,
+              overwritten: true,
+              root:path.join(paths.rootDir,paths.toDir),
+              relative:paths.rel('prod.css'),
+              absolute:paths.to('prod.css')
+            }
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1,
+            $properties:{
+              files:{
+                success:[paths.to('prod.css')],
+                warning:[],
+                failure:[]
+              },
+              dirs:{
+                success:[],
+                warning:[],
+                failure:[]
+              },
+              root:path.join(paths.rootDir,paths.toDir)
+            }
+          }));
+        });
+        
+        describe(`and 'file' and 'write' and overwrite:false property (while the file already exists)`,function(){
+
+          beforeEach(function(done){
+            this.structure = [{file:paths.name('prod.css'),write:data['dist.css'].content,beforeWrite:before,overwrite:false}];
+            function before(getContent,resolve,reject){
+              resolve(getContent+data['styles/css/main.css'].content);
+            }
+            prepare.remove()
+            .then(()=>prepare.resetFrom())
+            .then(()=>prepare.resetTo())
+            .then(()=>prepare.addTo('prod.css'))
+            .then(done)
+            .catch(done.fail);
+          });
+
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.toDir)
+          }));
+
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.fromDir)
+          }));
+
+          it.apply(this,should.not.createNewFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css')
+          }));
+
+          it.apply(this,should.not.keepFileContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css')
+          }));
+
+          it.apply(this,should.haveContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css'),
+            $content:data['prod.css'].content+data['dist.css'].content+data['styles/css/main.css'].content
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:1
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1
+          }));
+
+          it.apply(this,should.not.throwError({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')}
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:1,
+            $properties:{
+              success: `The given modified content was successfully appended to the "${paths.rel('prod.css')}" file.`,
+              failure: null,
+              warning: null,
+              item: 'file',
+              from: null,
+              action: 'write',
+              modified:true,
+              overwritten: false,
+              root:path.join(paths.rootDir,paths.toDir),
+              relative:paths.rel('prod.css'),
+              absolute:paths.to('prod.css')
+            }
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1,
+            $properties:{
+              files:{
+                success:[paths.to('prod.css')],
+                warning:[],
+                failure:[]
+              },
+              dirs:{
+                success:[],
+                warning:[],
+                failure:[]
+              },
+              root:path.join(paths.rootDir,paths.toDir)
+            }
+          }));
+        });
+        
+        describe(`and 'file' and 'writeFrom' and overwrite:false property (while the file already exists)`,function(){
+
+          beforeEach(function(done){
+            this.structure = [{file:paths.name('prod.css'),writeFrom:paths.from('dist.css'),beforeWrite:before,overwrite:false}];
+            function before(getContent,resolve,reject){
+              resolve(getContent+data['styles/css/main.css'].content);
+            }
+            prepare.remove()
+            .then(()=>prepare.resetFrom())
+            .then(()=>prepare.resetTo())
+            .then(()=>prepare.addTo('prod.css'))
+            .then(done)
+            .catch(done.fail);
+          });
+
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.toDir)
+          }));
+
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.fromDir)
+          }));
+
+          it.apply(this,should.not.createNewFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css')
+          }));
+
+          it.apply(this,should.not.removeFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.from('dist.css')
+          }));
+
+          it.apply(this,should.keepFileContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.from('dist.css')
+          }));
+          it.apply(this,should.not.keepFileContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css')
+          }));
+
+          it.apply(this,should.haveContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css'),
+            $content:data['prod.css'].content+data['dist.css'].content+data['styles/css/main.css'].content
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:1
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1
+          }));
+
+          it.apply(this,should.not.throwError({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')}
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:1,
+            $properties:{
+              success: `The modified content from the "${paths.from('dist.css')}" file was successfully appended to the "${paths.rel('prod.css')}" file.`,
+              failure: null,
+              warning: null,
+              item: 'file',
+              from: paths.from('dist.css'),
+              action: 'writeFrom',
+              modified:true,
+              overwritten: false,
+              root:path.join(paths.rootDir,paths.toDir),
+              relative:paths.rel('prod.css'),
+              absolute:paths.to('prod.css')
+            }
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1,
+            $properties:{
+              files:{
+                success:[paths.to('prod.css')],
+                warning:[],
+                failure:[]
+              },
+              dirs:{
+                success:[],
+                warning:[],
+                failure:[]
+              },
+              root:path.join(paths.rootDir,paths.toDir)
+            }
+          }));
+        });
+        
+        describe(`and 'file' and 'writeFrom' and overwrite:true property (while the file already exists)`,function(){
+
+          beforeEach(function(done){
+            this.structure = [{file:paths.name('prod.css'),writeFrom:paths.from('dist.css'),beforeWrite:before,overwrite:true}];
+            function before(getContent,resolve,reject){
+              resolve(getContent+data['styles/css/main.css'].content);
+            }
+            prepare.remove()
+            .then(()=>prepare.resetFrom())
+            .then(()=>prepare.resetTo())
+            .then(()=>prepare.addTo('prod.css'))
+            .then(done)
+            .catch(done.fail);
+          });
+
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.toDir)
+          }));
+
+          it.apply(this,should.keepPreviousContents({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $directory:path.join(paths.rootDir,paths.fromDir)
+          }));
+
+          it.apply(this,should.not.createNewFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css')
+          }));
+
+          it.apply(this,should.not.removeFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.from('dist.css')
+          }));
+
+          it.apply(this,should.keepFileContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.from('dist.css')
+          }));
+          it.apply(this,should.not.keepFileContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css')
+          }));
+
+          it.apply(this,should.haveContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to('prod.css'),
+            $content:data['dist.css'].content+data['styles/css/main.css'].content
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:1
+          }));
+
+          it.apply(this,should.runCallback({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1
+          }));
+
+          it.apply(this,should.not.throwError({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')}
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'each',
+            $callbackTimes:1,
+            $properties:{
+              success: `The content of "${paths.rel('prod.css')}" file was successfully overwritten with the modified content from the "${paths.from('dist.css')}" file.`,
+              failure: null,
+              warning: null,
+              item: 'file',
+              from: paths.from('dist.css'),
+              action: 'writeFrom',
+              modified:true,
+              overwritten: true,
+              root:path.join(paths.rootDir,paths.toDir),
+              relative:paths.rel('prod.css'),
+              absolute:paths.to('prod.css')
+            }
+          }));
+
+          it.apply(this,should.runCallbackWithObject({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $callback:'done',
+            $callbackTimes:1,
+            $properties:{
+              files:{
+                success:[paths.to('prod.css')],
+                warning:[],
+                failure:[]
+              },
+              dirs:{
+                success:[],
+                warning:[],
+                failure:[]
+              },
+              root:path.join(paths.rootDir,paths.toDir)
+            }
+          }));
+        });
+      });
+    });
   });
-  
 });

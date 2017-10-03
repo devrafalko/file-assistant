@@ -41,7 +41,8 @@ The `fileAssistant` contains 3 methods:
       6. [`merge`](#merge)
       7. [`write`](#write)
       8. [`writeFrom`](#writefrom)
-      9. [`overwrite`](#overwrite)
+      9. [`beforeWrite`](#beforewrite)
+      10. [`overwrite`](#overwrite)
 8. [`fileAssistant.structurize` method](#fileassistantstructurizepathjsoncallback)
 9. [`fileAssistant.compare` method](#fileassistantcomparemodelcomparedcallback)
 10. [Samples](#samples)
@@ -168,9 +169,11 @@ function each(o){
     * for the **folder**: [`'create'`](#dir), [`contents`](#contents), [`'move'`](#move), [`'copy'`](#copy), [`'merge'`](#merge)
   * **`overwritten`**  
   Returns [Boolean] `true` if the file or folder has been overwritten. Otherwise returns `false`.
+  * **`modified`**  
+  Returns [Boolean] `true` if the [`beforeWrite`](#beforewrite) property was used and the [`file`](#file) was created/overwritten with the modified content. Otherwise returns `false.`
   * **`from`**  
   Returns the [String] path to the element from which the file, folder or content was copied, moved or merged *(when the property [`copy`](#copy), [`move`](#move), [`merge`](#merge) or [`writeFrom`](#writefrom) was defined in the [`structure object`](#structure-object))*.
-  Returns `null` if the file or folder was created or modified *(when the property [`contents`](#contents), [`write`](#write) or **none** property was defined in the [`structure object`](#structure-object))*
+  Returns `null` if the file or folder was created or modified *(when the property [`contents`](#contents), [`write`](#write) or **none** property was defined in the [`structure object`](#structure-object))*.
   * **`absolute`**  
   Returns [String] absolute path to the current element.
   * **`relative`**  
@@ -402,6 +405,42 @@ It creates a new `style.css` file in the specified [`root`](#root-string) path w
 * **`{file:'style.css', writeFrom:'./dist/main.css'}`**  
 It creates a new `style.css` file in the specified [`root`](#root-string) path with the content read from the `./dist/main.css` file.
 * See also the [samples list](#samples)
+
+#### `beforeWrite`
+###### `beforewrite` is also valid
+**Type:** [Function]  
+**Default:** *undefined*  
+**Target:** `file`  
+**Description:**
+  * This property allows to modify the **content** for the [`file`](#file) before this file is created/overwritten.
+  * This property can be used in combination with the following properties:
+    * [**`write`**](#write): the value content is taken and passed through the `beforeWrite` function
+    * [**`writeFrom`**](#writefrom), [**`copy`**](#copy), [**`move`**](#move): the content is read from the file and passed through the `beforeWrite` function
+    * **Mind** that if the `beforeWrite` property is used in combination with [`write`](#write) or [`writeFrom`](#writefrom) and [`overwrite`](#overwrite):`true` properties, the new modified content is appended to the [`file`](#file) rather than overwrite the current content.
+  * If the [Function] `beforeWrite` is defined, this function is executed with the following arguments:
+    * [0] **`content`**: It gives the access to the *(utf8)* content taken from [`write`](#write), [`writeFrom`](#writefrom), [`move`](#move) or [`copy`](#copy)
+    * [1] **`resolve`** This is callback function. When the new content is already modified, call `resolve` to continue the process of handling files and folder by the `file-assistant` package. **Remember** to pass [String|Buffer] `modified` data through `resolve` callback function: `resolve(modified)`, othwerwise the action will be failed for this file.
+    * [2] **`reject`** This is callback function. If something went wrong with modifying the content and you want to abort the action of creating the file with the new modified content, call `reject` callback function. Then the [`each`](#each-function-optional) callback will be called with [`failure`](#each-function-optional) message. The additional [String] `message` can be passed through `reject` callback function. It will be appended to the [`each`](#each-function-optional) callback [`failure`](#each-function-optional) message: `reject(message)`
+  * The origin [`write`](#write), [`writeFrom`](#writefrom), [`move`](#move) or [`copy`](#copy) file's content **is not affected** by this function. The modified content is used only to modify the [`file`](#file) content.
+```javascript
+const fileAssistant = require('file-assistant');
+const destination = './prod';
+const structure = [
+  {file:'data.txt', writeFrom:'./dist/data.txt', beforeWrite:parseData}
+];
+
+fileAssistant(destination, structure, (done)=>{/*...*/}, (each)=>{/*...*/});
+
+function parseData(getData, resolve, reject){
+  //getData is the utf-8 content taken from './dist/data.txt' file
+  if(getData.length>100) {
+    reject('The text is too long!');
+  } else {
+    const modifiedData = getData.toUpperCase();
+    resolve(modifiedData);
+  }
+}
+```
 
 #### `overwrite`
 **Type:** [Boolean]  
