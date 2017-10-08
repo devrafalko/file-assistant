@@ -23,7 +23,7 @@ function StructureDirs(){
     const p = this.prototype;
     const validation = [
       p.validation.isDoneFunction,
-      p.response.prepareDoneObject,
+      p.preparations.prepareDoneObject,
       p.validation.validArgs,
       p.validation.createRootFolder,
       p.preparations.prepareCurrentContentsList,
@@ -38,6 +38,7 @@ function StructureDirs(){
       structure:arguments[1],
       done:arguments[2],
       each:arguments[3],
+      validation:p.validation,
       response:p.response,
       prepare:p.preparations,
       appenders:p.appenders,
@@ -63,6 +64,11 @@ StructureDirs.prototype.validation = {
       });
       if(validOk) resolve();
   },
+  createRootFolder: function(resolve,reject){
+    this.root = path.resolve(this.root);
+    this.doneObject.root = this.root;
+    this.utils.createDirs(this.root,resolve,reject);
+  },
   validateStructureJSON: function(resolve,reject){
     if(!type(this.structure,String)) return resolve();
     this.utils.jsonExists(this.structure,(err)=>{
@@ -71,339 +77,342 @@ StructureDirs.prototype.validation = {
     });
   },
   validStructure: function(resolve,reject){
-    const validateList = [
-      isItemObject,
-      isFileOrDirDefined,
-      isBothFileAndDirDefined,
-      isFileDirString,
-      isFileDirEmpty,
-      hasFileDirSlashes,
-      hasIncorrectButValidProps,
-      hasMutualExclusiveProps,
-      isUsedWithWrongFileDir,
-      hasAddonPropOfCorrectType,
-      isAddonPropEmpty,
-      isContentsLeadingToJSON,
-      hasJsonValidSyntax,
-      isOverwriteOfCorrectType,
-      isLeadingToCorrectPath,
-      isBeforeWriteOfCorrectType,
-      isBeforeWriteWithCorrectActionProperty,
-      this.prepare.addItemData
-    ];
+    const methodsList = Object.getOwnPropertyNames(this.validation.methods);
+    const functionList = [];
+    
+    for(var method of methodsList){
+      functionList.push(this.validation.methods[method]);
+    }
 
     this.abstractStructure = [];
+    const globalData = {
+      execution:true,
+      root:this.root,
+      invalidMessage:(indeces)=>`Invalid structure argument ${indeces}.`
+    };
     
-    iterator.call(this,{
-      functionList:validateList,
-      itemsStructure:this.structure,
-      abstractStructure:this.abstractStructure,
-      itemIndex:0,
-      parentsIndeces:[],
-      parentAction:null,
-      parentOverwrite:null,
-      onDone:resolve
+    exploreStructure.call(this,{
+      currentLevel:this.structure,
+      abstract:this.abstractStructure,
+      parent:null,
+      siblings:this.firstLevelSiblings,
+      indeces:'',
+      whenDone:resolve
     });
 
-     function iterator(o){
-        const isNext = o.itemIndex<o.itemsStructure.length;
-        if(!isNext) o.onDone();
-        if(isNext){
-          this.itemData = {
-            item: o.itemsStructure[o.itemIndex],
-            index: o.itemIndex,
-            from: null,
-            overwritten: false,
-            parentIndices: o.parentsIndeces,
-            parentOverwrite: o.parentOverwrite
-          };
-          moveOn(o.functionList,this,onDone,(c,err)=>reject(err));
-        }
+    function exploreStructure(o){
+      if(!o.currentLevel.length) o.whenDone.call(this.globalData);
+      
+      const levelData = {
+        iterator:0,
+        abstract:o.abstract,
+        elementsNumber:o.currentLevel.length,
+        parent:o.parent,
+        siblings:o.siblings,
+        whenDone:o.whenDone
+      };
 
-          function onDone(c,reject,item){
-            o.abstractStructure.push(item);
-            const nextIterator = iterator.bind(this,{
-              functionList:o.functionList,
-              itemsStructure:o.itemsStructure,
-              abstractStructure:o.abstractStructure,
-              itemIndex:o.itemIndex+1,
-              parentsIndeces:o.parentsIndeces,
-              parentAction:o.parentAction,
-              parentOverwrite:o.parentOverwrite,
-              onDone:o.onDone
-            });
-            const hasAbstractStructure = item.folder && item.action === 'contents';
-            const hasNotAbstractStructure = item.folder && this.utils.orEqual(item.action,'move','copy','merge');
-            const forbideOverwriteFolder = item.folder && item.alreadyDirExists && !item.overwrite && (item.action === 'copy' || item.action === 'move');
-            const passOverwriteForChildren = item.action === 'merge' ? false:!!item.overwrite;
-            if(o.parentAction !== null&&item.folder) item.action = o.parentAction;
-            if(hasNotAbstractStructure && !forbideOverwriteFolder){
-              const config = {
-                from:item.from,
-                action:item.action,
-                deep:false,
-                overwrite:!!item.overwrite,
-                utils:this.utils
-              };
-              this.prepare.generateContent(config,(gen)=>{
-                const nextParentIndex = o.parentsIndeces.slice();
-                o.itemsStructure[o.itemIndex].contents = gen;
-                nextParentIndex.push(o.itemIndex);
-                iterator.call(this,{
-                  functionList:o.functionList,
-                  itemsStructure:gen,
-                  abstractStructure:item.children,
-                  itemIndex:0,
-                  parentsIndeces:nextParentIndex,
-                  parentAction:item.action,
-                  parentOverwrite:passOverwriteForChildren,
-                  onDone:nextIterator
-                });
-              },reject);
-            } else if(hasAbstractStructure){
-                const hasJsonContent = type(item.json,Array);
-                const nextParentIndex = o.parentsIndeces.slice();
-                if(hasJsonContent) o.itemsStructure[o.itemIndex].contents = item.json;
-                nextParentIndex.push(o.itemIndex);
-                iterator.call(this,{
-                  functionList:o.functionList,
-                  itemsStructure:o.itemsStructure[o.itemIndex].contents,
-                  abstractStructure:item.children,
-                  itemIndex:0,
-                  parentsIndeces:nextParentIndex,
-                  parentAction:o.parentAction,
-                  parentOverwrite:passOverwriteForChildren,
-                  onDone:nextIterator
-                });
-            } else nextIterator();
+      for(var i in o.currentLevel){
+        const userContext = {
+          utils:this.utils,
+          prepare:this.prepare,
+          globalData:globalData,
+          levelData:levelData,
+          itemData:{
+            item:o.currentLevel[i],
+            indeces:`${o.indeces}[${i}]`
           }
-        
+        };
+        moveOn(functionList,userContext,onItemDone,onItemFail);
       }
+    }
 
-      function isItemObject(resolve,reject){
-        this.printMsg = `Invalid structure argument ${this.utils.indexPath.call(this)}.`;
-        const cond = type(this.itemData.item,Object);
-        if(cond) resolve();
-        if(!cond) reject(new TypeError(`${this.printMsg} Each item of [Array] structure argument must be of [Object] type.`));
-      }
+      function onItemDone(){
+        if(this.globalData.execution === false) return;
+        const hasAbstractStructure = type(this.itemData.item.contents,Array);
+        this.levelData.abstract.push(this.itemData);
 
-      function isFileOrDirDefined(resolve,reject){
-        const cond = this.utils.hasAtLeastItems(this.itemData.item,['file','dir','unrecognized'],1);
-        if(cond) resolve();
-        if(!cond) reject(new Error(`${this.printMsg} Each item of [Array] structure argument must contain either ['file'] or ['dir'] property.`));
-      }
+        if(!hasAbstractStructure) return moveIterator.call(this);
 
-      function isBothFileAndDirDefined(resolve,reject){
-        const cond = this.utils.hasAtLeastItems(this.itemData.item,['file','dir'],2);
-        if(!cond) resolve();
-        if(cond) reject(new Error(`${this.printMsg} Each item of [Array] structure argument must contain either ['file'] or ['dir'] property.`));
-      }
-
-      function isFileDirString(resolve,reject){
-        const fileOrDir = this.utils.whichPropertyDefined(this.itemData.item,['file','dir','unrecognized'])[0];
-        this.itemData.itemType = fileOrDir;
-        this.itemData.itemMessage = fileOrDir === 'file' ? 'file':fileOrDir === 'dir' ? 'folder':'unrecognized';
-        this.itemData.file = fileOrDir === 'file';
-        this.itemData.folder = fileOrDir === 'dir';
-        this.itemData.unrecognized = fileOrDir === 'unrecognized';
-        if(prop(this.itemData.item,{[fileOrDir]:String},(o)=>{
-          reject(new TypeError(`${this.printMsg} ${o.message}`));
-        })){
-          this.itemData.name = this.itemData.item[fileOrDir];
-          resolve();
-        }
-      }
-
-      function isFileDirEmpty(resolve,reject){
-        const cond = this.itemData.item[this.itemData.itemType].length;
-        if(cond) return resolve();
-        reject(new Error(`${this.printMsg} The ["${this.itemData.itemType}"] property is empty, while it should define the ${this.itemData.itemMessage} name.`));
-      }
-
-      function hasFileDirSlashes(resolve,reject){
-        const cond = (/[\\\/]/).test(this.itemData.item[this.itemData.itemType]);
-        if(!cond) return resolve();
-        reject(new Error(`${this.printMsg} The ["${this.itemData.itemType}"] property should define the ${this.itemData.itemMessage} name rather than ${this.itemData.itemMessage} path. It cannot contain backslashes and forwardslashes.`));
-      }
-
-      function hasIncorrectButValidProps(resolve,reject){
-        var content = this.utils.hasAtLeastItems(this.itemData.item,['content'],1);
-        var writefrom = this.utils.hasAtLeastItems(this.itemData.item,['writefrom'],1);
-        var beforewrite = this.utils.hasAtLeastItems(this.itemData.item,['beforewrite'],1);
-        if(content){
-          this.itemData.item.contents = this.itemData.item.content;
-          delete this.itemData.item.content;
-        }
-        if(writefrom){
-          this.itemData.item.writeFrom = this.itemData.item.writefrom;
-          delete this.itemData.item.writefrom;
-        }
-        if(beforewrite){
-          this.itemData.item.beforeWrite = this.itemData.item.beforewrite;
-          delete this.itemData.item.beforewrite;
-        }
-        resolve();
-      }
-
-      function hasMutualExclusiveProps(resolve,reject){
-        var cond = this.utils.hasAtLeastItems(this.itemData.item,['move', 'copy', 'merge', 'contents', 'write', 'writeFrom'],2);
-        if(!cond) return resolve();
-        reject(new Error(`${this.printMsg} The [Object] items cannot contain ["move"], ["copy"], ["merge"], ["contents"], ["write"] or ["writeFrom"] properties at the same time.`));
-      }
-
-      function isUsedWithWrongFileDir(resolve,reject){
-        this.itemData.action = this.utils.whichPropertyDefined(this.itemData.item, ['move', 'copy', 'merge', 'contents', 'write', 'writeFrom'])[0];
-        if(!type(this.itemData.action,String)) this.itemData.action = 'create';
-        const a = this.utils.orEqual(this.itemData.action,'merge','contents') && this.itemData.file;
-        const b = this.utils.orEqual(this.itemData.action,'write','writeFrom') && this.itemData.folder;
-        if(!(a||b)) resolve();
-        if(a||b){
-          var msgProp = this.itemData.itemType==='file'?'dir':'file';
-          reject(new Error(`${this.printMsg} The ["${this.itemData.action}"] property can be defined only with ["${msgProp}"] property.`));
-        }
-      }
-
-      function hasAddonPropOfCorrectType(resolve,reject){
-        if(this.itemData.action === 'create') return resolve();
-        const isContent = this.itemData.action === 'contents';
-        const setType = isContent ? [Array,String]:String;
-        const expected = {};
-        expected[this.itemData.action] = setType;
-        if(prop(this.itemData.item,expected,(o)=>{
-          reject(new TypeError(`${this.printMsg} ${o.message}`));
-        })) {
-          resolve();
-        }
-      }
-
-      function isAddonPropEmpty(resolve,reject){
-        if(this.itemData.action === 'create') return resolve();
-        if(this.utils.orEqual(this.itemData.action,'contents','write')) return resolve();
-        const cond = this.itemData.item[this.itemData.action].length;
-        if(cond) return resolve();
-        reject(new Error(`${this.printMsg} The ["${this.itemData.action}"] property is empty, while it should indicate the ${this.itemData.itemMessage}.`));
-      }
-
-      function isContentsLeadingToJSON(resolve,reject){
-        const contents = this.itemData.item.contents;
-        if(!(this.itemData.action==='contents'&&type(contents,String))) return resolve();
-        this.utils.jsonExists(contents,(err)=>{
-          if(err){
-            var msgInfo = `${this.printMsg} Invalid property ["${this.itemData.action}"].`;
-            return reject(new Error(`${msgInfo} ${err}`));
-          } else {
-            this.itemData.json = contents;
-            resolve();
+        exploreStructure.call(this,{
+          currentLevel:this.itemData.item.contents,
+          abstract:this.itemData.abstractScope,
+          parent:this.itemData,
+          siblings:this.itemData.childrenList,
+          indeces:this.itemData.indeces,
+          whenDone:()=>{
+            moveIterator.call(this);
           }
         });
-      }
 
-      function hasJsonValidSyntax(resolve,reject){
-        if(!this.itemData.json) return resolve();
-        this.utils.convertJSON(this.itemData.json,(err,data)=>{
-          if(err) {
-            var msgInfo = `${this.printMsg} Invalid property ["${this.itemData.action}"].`;
-            return reject(new Error(`${msgInfo} ${err}`));
-          } else {
-            this.itemData.json = data;
-            return resolve();
+        function moveIterator(){
+          this.levelData.iterator++;
+          if(this.levelData.iterator>=this.levelData.elementsNumber){
+            //after all children are done - use tidyUp property for their parent:
+            const parent = this.levelData.parent;
+            if(parent&&parent.folder&&(parent.abstractScope.length)) parent.tidyUp = true;
+            return this.levelData.whenDone.call(this.globalData);
           }
-        });
-      }
-
-      function isOverwriteOfCorrectType(resolve,reject){
-        const hasProperty = this.utils.hasAtLeastItems(this.itemData.item,['overwrite'],1);
-        if(!hasProperty) return resolve();
-        if(prop(this.itemData.item,{overwrite:Boolean},(o)=>{
-          reject(new TypeError(`${this.printMsg} ${o.message}`));
-        })) {
-          this.itemData.overwrite = !!this.itemData.item.overwrite;
-          resolve();
         }
       }
 
-      function isLeadingToCorrectPath(resolve,reject){
-        if(this.itemData.action === 'create') return resolve();
-        if(this.utils.orEqual(this.itemData.action,'contents','write')) return resolve();
-        const setPath = this.itemData.item[this.itemData.action];
-        if(this.itemData.itemType==='unrecognized'){
-          this.itemData.from = path.normalize(setPath);
+      function onItemFail(userContext,err){
+        if(this.globalData.execution === false) return;
+        this.globalData.execution = false;
+        reject(err);
+      }
+    
+  },
+  methods:{
+    defineInvalidMessage:function(resolve){
+      this.itemData.invalidMessage = this.globalData.invalidMessage(this.itemData.indeces);
+      resolve();
+    },
+    isItemObject:function(resolve,reject){
+      const condition = type(this.itemData.item,Object);
+      if(condition) return resolve();
+      reject(new TypeError(`${this.itemData.invalidMessage} Each item of [Array] structure argument must be of [Object] type.`));
+    },
+    isFileOrDirDefined:function(resolve,reject){
+      const condition = this.utils.hasAtLeastItems(this.itemData.item,['file','dir','unrecognized'],1);
+      if(condition) return resolve();
+      reject(new Error(`${this.itemData.invalidMessage} Each item of [Array] structure argument must contain either ['file'] or ['dir'] property.`));
+    },
+    isBothFileAndDirDefined:function(resolve,reject){
+      const condition = this.utils.hasAtLeastItems(this.itemData.item,['file','dir'],2);
+      if(!condition) return resolve();
+      reject(new Error(`${this.itemData.invalidMessage} Each item of [Array] structure argument must contain either ['file'] or ['dir'] property.`));
+    },
+    defineItemType:function(resolve){
+      const fileOrDir = this.utils.whichPropertyDefined(this.itemData.item,['file','dir','unrecognized'])[0];
+      this.itemData.itemType = fileOrDir;
+      this.itemData.itemMessage = fileOrDir === 'file' ? 'file':fileOrDir === 'dir' ? 'folder':'unrecognized';
+      this.itemData.file = fileOrDir === 'file';
+      this.itemData.folder = fileOrDir === 'dir';
+      this.itemData.unrecognized = fileOrDir === 'unrecognized';
+      resolve();
+    },
+    isFileDirString:function(resolve,reject){
+      if(prop(this.itemData.item,{[this.itemData.itemType]:String},(o)=>{
+        reject(new TypeError(`${this.itemData.invalidMessage} ${o.message}`));
+      })) resolve();
+    },
+    defineItemName:function(resolve){
+      this.itemData.name = this.itemData.item[this.itemData.itemType];
+      resolve();
+    },
+    isFileDirEmpty:function(resolve,reject){
+      const condition = this.itemData.item[this.itemData.itemType].length;
+      if(condition) return resolve();
+      reject(new Error(`${this.itemData.invalidMessage} The ["${this.itemData.itemType}"] property is empty, while it should define the ${this.itemData.itemMessage} name.`));
+    },
+    hasFileDirSlashes:function(resolve,reject){
+      const condition = (/[\\\/]/).test(this.itemData.item[this.itemData.itemType]);
+      if(!condition) return resolve();
+      reject(new Error(`${this.itemData.invalidMessage} The ["${this.itemData.itemType}"] property should define the ${this.itemData.itemMessage} name rather than ${this.itemData.itemMessage} path. It cannot contain backslashes and forwardslashes.`));
+    },
+    defineCorrectProperties:function(resolve){
+      var content = this.utils.hasAtLeastItems(this.itemData.item,['content'],1);
+      var writefrom = this.utils.hasAtLeastItems(this.itemData.item,['writefrom'],1);
+      var beforewrite = this.utils.hasAtLeastItems(this.itemData.item,['beforewrite'],1);
+      if(content){
+        this.itemData.item.contents = this.itemData.item.content;
+        delete this.itemData.item.content;
+      }
+      if(writefrom){
+        this.itemData.item.writeFrom = this.itemData.item.writefrom;
+        delete this.itemData.item.writefrom;
+      }
+      if(beforewrite){
+        this.itemData.item.beforeWrite = this.itemData.item.beforewrite;
+        delete this.itemData.item.beforewrite;
+      }
+      resolve();
+    },
+    hasMutualExclusiveProps:function(resolve,reject){
+      var condition = this.utils.hasAtLeastItems(this.itemData.item,['move', 'copy', 'merge', 'contents', 'write', 'writeFrom'],2);
+      if(!condition) return resolve();
+      reject(new Error(`${this.itemData.invalidMessage} The [Object] items cannot contain ["move"], ["copy"], ["merge"], ["contents"], ["write"] or ["writeFrom"] properties at the same time.`));
+    },
+    defineAction:function(resolve){
+      const action = this.utils.whichPropertyDefined(this.itemData.item, ['move', 'copy', 'merge', 'contents', 'write', 'writeFrom'])[0];
+      this.itemData.action = type(action,String) ? action:'create';
+      resolve();
+    },
+    isUsedWithWrongFileDir:function(resolve,reject){
+      const nonFile = this.utils.orEqual(this.itemData.action,'merge','contents') && this.itemData.file;
+      const nonDir = this.utils.orEqual(this.itemData.action,'write','writeFrom') && this.itemData.folder;
+      if(!nonFile&&!nonDir) return resolve();
+      var msgProp = this.itemData.itemType==='file'?'dir':'file';
+      reject(new Error(`${this.itemData.invalidMessage} The ["${this.itemData.action}"] property can be defined only with ["${msgProp}"] property.`));
+    },
+    isContentsLeadingToJSON:function(resolve,reject){
+      const contents = this.itemData.item.contents;
+      if(this.itemData.action!=='contents'||!type(contents,String)) return resolve();
+      this.utils.jsonExists(contents,(err)=>{
+        if(!err) return resolve();
+        var msgInfo = `${this.itemData.invalidMessage} Invalid property ["${this.itemData.action}"].`;
+        reject(new Error(`${msgInfo} ${err}`));
+      });
+    },
+    hasJsonValidSyntax:function(resolve,reject){
+      const contents = this.itemData.item.contents;
+      if(this.itemData.action!=='contents'||!type(contents,String)) return resolve();
+      this.utils.convertJSON(contents,(err,data)=>{
+        if(err) {
+          var msgInfo = `${this.itemData.invalidMessage} Invalid property ["${this.itemData.action}"].`;
+          return reject(new Error(`${msgInfo} ${err}`));
+        } else {
+          this.itemData.item.contents = data;
           return resolve();
         }
-        this.utils.itemExists(setPath,(o)=>{
-          var file = this.itemData.file,
-              which = ['folder','file'],
-              msgInfo = `${this.printMsg} Invalid property ["${this.itemData.action}"].`,
-              msgExist = `The ${which[+file]} of the specified path does not exist or is inaccessible.`,
-              msgFileDir = `The path leads to the ${which[+!file]}, while it should indicate the ${which[+file]}.`;
-          if(!o.exists) return reject(new Error(`${msgInfo} ${msgExist}`));
-          if((!file&&o.file)||(file&&o.dir)) return reject(new Error(`${msgInfo} ${msgFileDir}`));
-          this.itemData.from = path.normalize(setPath);
-          resolve();
-        });
+      });
+    },
+    hasAddonPropOfCorrectType:function(resolve,reject){
+      if(this.itemData.action === 'create') return resolve();
+      const isContent = this.itemData.action === 'contents';
+      const expected = {};
+      expected[this.itemData.action] = isContent ? Array:String;
+      if(prop(this.itemData.item, expected, (o)=>{
+        reject(new TypeError(`${this.itemData.invalidMessage} ${o.message}`));
+      })) resolve();
+    },
+    isAddonPropEmpty:function(resolve,reject){
+      if(this.itemData.action === 'create') return resolve();
+      if(this.utils.orEqual(this.itemData.action,'contents','write')) return resolve();
+      const condition = this.itemData.item[this.itemData.action].length;
+      if(condition) return resolve();
+      reject(new Error(`${this.itemData.invalidMessage} The ["${this.itemData.action}"] property is empty, while it should indicate the ${this.itemData.itemMessage}.`));
+    },
+    isOverwriteOfCorrectType:function(resolve,reject){
+      if(!this.utils.hasAtLeastItems(this.itemData.item,['overwrite'],1)){
+        this.itemData.overwrite = false;
+        return resolve();
       }
-
-      function isBeforeWriteOfCorrectType(resolve,reject){
-        const hasProperty = this.utils.hasAtLeastItems(this.itemData.item,['beforeWrite'],1);
-        if(!hasProperty) return resolve();
-        if(prop(this.itemData.item,{beforeWrite:Function},(o)=>{
-          reject(new TypeError(`${this.printMsg} ${o.message}`));
-        })) {
-          this.itemData.beforeWrite = this.itemData.item.beforeWrite;
-          resolve();
-        }
-      }
-
-      function isBeforeWriteWithCorrectActionProperty(resolve,reject){
-        if(!this.itemData.beforeWrite) return resolve();
-        if(this.itemData.folder) return reject(new Error(`${this.printMsg} The ["beforeWrite"] property can be defined only with ["file"] property.`));
-        if(this.itemData.action === 'create') return reject(new Error(`${this.printMsg} The ["beforeWrite"] property can be defined only with ["copy"], ["move"], ["write"] or ["writeFrom"] property.`));
+      if(prop(this.itemData.item,{overwrite:Boolean},(o)=>{
+        reject(new TypeError(`${this.itemData.invalidMessage} ${o.message}`));
+      })) {
+        this.itemData.overwrite = !!this.itemData.item.overwrite;
         resolve();
       }
+    },
+    isLeadingToCorrectPath:function(resolve,reject){
+      if(this.utils.orEqual(this.itemData.action,'create','contents','write')){
+        this.itemData.from = null;
+        return resolve();
+      }
+      const setPath = this.itemData.item[this.itemData.action];
+      if(this.itemData.itemType==='unrecognized'){
+        this.itemData.from = path.normalize(setPath);
+        return resolve();
+      }
+      this.utils.itemExists(setPath,(o)=>{
+        var file = this.itemData.file,
+            which = ['folder','file'],
+            msgInfo = `${this.itemData.invalidMessage} Invalid property ["${this.itemData.action}"].`,
+            msgExist = `The ${which[+file]} of the specified path does not exist or is inaccessible.`,
+            msgFileDir = `The path leads to the ${which[+!file]}, while it should indicate the ${which[+file]}.`;
+        if(!o.exists) return reject(new Error(`${msgInfo} ${msgExist}`));
+        if((!file&&o.file)||(file&&o.dir)) return reject(new Error(`${msgInfo} ${msgFileDir}`));
+        this.itemData.from = path.normalize(setPath);
+        resolve();
+      });
+    },
+    defineIfAlreadyExists:function(resolve){
+      this.itemData.alreadyUnrecognized = this.levelData.siblings.inaccessible.some((x)=>x===this.itemData.name);
+      const file = this.levelData.siblings.files.some((x)=>x===this.itemData.name);
+      const dir = this.levelData.siblings.dirs.some((x)=>x===this.itemData.name);
+      const parentOverwrite = this.itemData.action === 'merge' ? false:this.levelData.parent && this.levelData.parent.overwrite;
+      this.itemData.usedToExist = this.itemData.folder ? dir:file;
+      this.itemData.alreadyFileExists = parentOverwrite ? false:file;
+      this.itemData.alreadyDirExists = parentOverwrite ? false:dir;
+      resolve();
+    },
+    isLeadingToOuterStructure:function(resolve,reject){
+      const hasNotAbstractStructure = this.itemData.folder && this.utils.orEqual(this.itemData.action,'move','copy','merge');
+      const forbideOverwriteFolder = this.itemData.folder && this.itemData.alreadyDirExists && !this.itemData.overwrite && (this.itemData.action === 'copy' || this.itemData.action === 'move');
+      if(!hasNotAbstractStructure || forbideOverwriteFolder) return resolve();
 
-  },
-  createRootFolder: function(resolve,reject){
-      this.root = path.resolve(this.root);
-      this.doneObject.root = this.root;
-      this.utils.createDirs(this.root,resolve,reject);
+      const config = {
+        from:this.itemData.from,
+        action:this.itemData.action,
+        deep:false,
+        overwrite:this.itemData.overwrite,
+        utils:this.utils
+      };
+
+      this.prepare.generateContent(config,(generatedStructure)=>{
+        this.itemData.item.contents = generatedStructure;
+        delete this.itemData.item[this.itemData.action];
+        resolve();
+      },(err)=>{
+        reject(new Error(`${this.itemData.invalidMessage} ${err}`));
+      });
+    },
+    isBeforeWriteOfCorrectType:function(resolve,reject){
+      if(!this.utils.hasAtLeastItems(this.itemData.item,['beforeWrite'],1)) return resolve();
+      if(prop(this.itemData.item,{beforeWrite:Function},(o)=>{
+        reject(new TypeError(`${this.itemData.invalidMessage} ${o.message}`));
+      })) resolve();
+    },
+    isBeforeWriteWithCorrectActionProperty:function(resolve,reject){
+      if(!this.utils.hasAtLeastItems(this.itemData.item,['beforeWrite'],1)) return resolve();
+      if(this.itemData.folder) return reject(new Error(`${this.itemData.invalidMessage} The ["beforeWrite"] property can be defined only with ["file"] property.`));
+      if(this.itemData.action === 'create') return reject(new Error(`${this.itemData.invalidMessage} The ["beforeWrite"] property can be defined only with ["copy"], ["move"], ["write"] or ["writeFrom"] property.`));
+      this.itemData.beforeWrite = this.itemData.item.beforeWrite;
+      resolve();
+    },
+    defineItemPaths:function(resolve){
+      const hasParentPath = this.levelData.parent&&type(this.levelData.parent.relative,String);
+      this.itemData.relative = hasParentPath ? path.join(this.levelData.parent.relative,this.itemData.name):this.itemData.name;
+      this.itemData.absolute = path.resolve(this.globalData.root,this.itemData.relative);
+      this.itemData.root = this.globalData.root;
+      resolve();
+    },
+    defineChildrenPaths:function(resolve){
+      if(!this.itemData.folder){
+        this.itemData.childrenList = null;
+        return resolve();
+      }
+      listContent(this.itemData.absolute,{deep: 1},(o)=>{
+        this.itemData.childrenList = o;
+        resolve();
+      });
+    },
+    defineAbstractScope:function(resolve){
+      this.itemData.abstractScope = [];
+      resolve();
+    },
+    defineTidyUpFolder:function(resolve){
+      this.itemData.tidyUp = this.itemData.folder && this.itemData.action==='move';
+      resolve();
+    }
   }
 };
 
 StructureDirs.prototype.preparations = {
-  addItemData:function(resolve){
-    this.itemData.root = this.root;
-    this.itemData.relative = prepareRelative.call(this);
-    this.itemData.absolute = path.resolve(this.root,this.itemData.relative);
-    this.itemData.alreadyUnrecognized = this.currentPaths.inaccessible.some((x)=>x===this.itemData.relative);
-    
-    const findFile = this.currentPaths.files.some((x)=>x===this.itemData.relative);
-    const findDir = this.currentPaths.dirs.some((x)=>x===this.itemData.relative);
-    this.itemData.usedToExist = this.itemData.folder ? findDir:findFile;
-    this.itemData.alreadyFileExists = this.itemData.parentOverwrite===true ? false:findFile;
-    this.itemData.alreadyDirExists = this.itemData.parentOverwrite===true ? false:findDir;
-    if(this.itemData.folder) this.itemData.children = [];
-    if(this.itemData.action==='write') this.itemData.content = this.itemData.item.write;
-    if(this.itemData.item.contents) this.itemData.action === 'create';
-    resolve(this.itemData);
-
-      function prepareRelative(){
-        const p = this.itemData.parentIndices;
-        var chainItems = this.structure;
-        var chainPath = [];
-        for(var i in p){
-          chainPath.push(chainItems[p[i]].dir);
-          chainItems = chainItems[p[i]].contents;
-        }
-        var pathElements = chainPath.slice();
-        pathElements.push(this.itemData.name);
-        return path.join.apply(null,pathElements);
+  prepareCurrentContentsList:function(resolve){
+    this.firstLevelSiblings = {};
+    listContent(this.root,{deep: 1},(o)=>{
+      this.firstLevelSiblings = o;
+      resolve();
+    });
+  },
+  convertStructureJSON:function(resolve,reject){
+    if(!type(this.structure,String)) return resolve();
+    this.utils.convertJSON(this.structure,(err,data)=>{
+      if(err) return reject(new Error(`Invalid structure argument. ${err}`));
+      if(!err){
+        this.structure = data;
+        return resolve();
       }
+    });
   },
   generateContent:function(config,resolve,reject){
     run(null,null,[],resolve,reject);
     function run(getPath,newItem,getStructure,resolve,reject){
       const resPath = !getPath ? config.from:getPath;
-      const errMsg = `Could not get the access to the ${resPath} contents.`;
+      const errMsg = `Could not get the access to the '${resPath}' contents.`;
       fs.readdir(resPath,(err,getItems)=>{
         if(err) return reject(errMsg);
         parseLevel(getItems,resPath,newItem,getStructure,resolve,reject);
@@ -453,348 +462,6 @@ StructureDirs.prototype.preparations = {
         }
       }
     }
-  },  
-  
-  prepareCurrentContentsList:function(resolve){
-    this.currentPaths = {};
-    listContent(this.root,(o)=>{
-      this.currentPaths.inaccessible = o.inaccessible.sort((a,b)=>a.length-b.length);
-      this.currentPaths.files = o.files.sort((a,b)=>a.length-b.length);
-      this.currentPaths.dirs = o.dirs.sort((a,b)=>a.length-b.length);
-      resolve();
-    });
-  },
-  convertStructureJSON:function(resolve,reject){
-    if(!type(this.structure,String)) return resolve();
-    this.utils.convertJSON(this.structure,(err,data)=>{
-      if(err) return reject(new Error(`Invalid structure argument. ${err}`));
-      if(!err){
-        this.structure = data;
-        return resolve();
-      }
-    });
-  }
-};
-
-StructureDirs.prototype.appenders = {
-  initActions:function(resolve){
-    run.call(this,{
-      currentItem:this.abstractStructure,
-      parentItem:null,
-      onDone:resolve
-    });
-    
-    function run(o){
-      var iter = 0;
-      if(!o.currentItem.length) return increase.call(this);
-      for(let i in o.currentItem){
-        let item = o.currentItem[i];
-        const nextRun = run.bind(this,{
-          currentItem:item.children,
-          parentItem:item,
-          onDone:increase.bind(this)
-        });
-        item.tidyUp = item.folder && (item.children.length||item.action==='move');
-        const nextAction = item.tidyUp ? nextRun:increase.bind(this);
-        this.appenders.createItem.call(this,item,nextAction);
-      }
-      function increase(){
-        if(++iter>=o.currentItem.length){
-          if(o.parentItem) this.appenders.tidyUpFolder.call(this,o.parentItem,o.onDone);
-          if(!o.parentItem) o.onDone();
-        }
-      }
-    }
-  },
-  tidyUpFolder:function(item,resolve){
-    const funList = [
-      checkActionSuccess,
-      resultForParent,
-      removeMovedFolder,
-      whenChildrenMessage
-    ];
-
-    const userContext = {
-      item:item,
-      each:this.each,
-      doneObject:this.doneObject,
-      response:this.response,
-      utils:this.utils,
-      messages:this.response.messages,
-      computeMessage:this.response.computeMessage
-    };
-
-    moveOn(funList,userContext,resolve,function(){
-      this.response.prepareEach.call(this);
-      return resolve();
-    });
-
-    function checkActionSuccess(resolve,reject){
-      type(this.item.result.warning,null)&&type(this.item.result.failure,null) ? resolve():reject();
-    }
-
-    function resultForParent(resolve){
-      const countResult = {};
-      const ch = this.item.children;
-      for(var x in ch){
-        for(var y in ch[x].result){
-          countResult[y] = ch[x].result[y]!==null ? true:countResult[y] ? countResult[y]:false;
-        }
-      }
-      this.item.childResults = countResult;
-      resolve();
-    }
-
-    function removeMovedFolder(resolve,reject){
-      if(this.item.action!=='move') return resolve();
-      const addMsg = '. The folder was successfully copied to the target location, but could not be removed from its origin location.';
-      emptyFolder(this.item.from,true,(o)=>{
-        if(!o.error) return resolve();
-        if(o.error){
-          this.computeMessage('failure',false,addMsg);
-          reject();
-        };
-      });
-    }
-
-    function whenChildrenMessage(resolve){
-      switch(true){
-        case (this.item.childResults.failure):
-          this.computeMessage('warning',true,', but at least one of its child items failed.');
-          break;
-        case (this.item.childResults.warning):
-          this.computeMessage('warning',true,', but at least one of its child items gave warning.');
-          break;
-        default:
-          this.computeMessage('success',true);
-          break;
-      }
-      this.response.prepareEach.call(this);
-      resolve();
-    }
-
-  },
-  createItem:function(item,done){
-    const fileList = [
-      this.appenders.abortIfDirExists,
-      this.appenders.abortIfPathInaccessible,
-      this.appenders.abortIfTheSamePaths,
-      this.appenders.abortIfFileOverwrite,
-      this.appenders.readContent,
-      this.appenders.modifyContent,
-      this.appenders.writeFile,
-      this.appenders.removeFile
-    ];
-    const dirList = [
-      this.appenders.abortIfFileExists,
-      this.appenders.abortIfPathInaccessible,
-      this.appenders.abortIfTheSamePaths,
-      this.appenders.abortIfDirOverwrite,
-      this.appenders.createFolder,
-      this.appenders.emptyContent
-    ];
-    const unrecognizedList = [
-      this.appenders.handleUnrecognized
-    ];
-
-    item.result = {
-      success:null,
-      failure:null,
-      warning:null
-    };
-    
-    const userContext = {
-      item:item,
-      doneObject:this.doneObject,
-      each:this.each,
-      response:this.response,
-      utils:this.utils,
-      messages:this.response.messages,
-      computeMessage:this.response.computeMessage
-    };
-
-    if(item.file) moveOn(fileList,userContext,onFileDone,onFileDone);
-    if(item.folder) moveOn(dirList,userContext,onDirDone,onDirDone);
-    if(item.unrecognized) moveOn(unrecognizedList,userContext,onUnrecognizeDone,onUnrecognizeDone);
-
-    function onFileDone(){
-      this.response.prepareEach.call(this);
-      done();
-    }
-
-    function onDirDone(){
-      if(this.item.action==='move') return done();
-      if(this.item.children.length) return done();
-      this.response.prepareEach.call(this);
-      done();
-    }
-
-    function onUnrecognizeDone(){
-      this.response.prepareEach.call(this);
-      done();
-    }
-
-  },
-  abortIfDirExists:function(resolve,reject){
-    if((this.item.alreadyDirExists)){
-      this.computeMessage('failure',false,', because the folder of the same name already exists in this path.');
-      return reject();
-    }
-    resolve();
-  },
-  abortIfPathInaccessible:function(resolve,reject){
-    if(this.item.alreadyUnrecognized){
-      this.computeMessage('failure',false,`, because the "${this.item.absolute}" path is inaccessible.`);
-      return reject();
-    }
-    resolve();
-  },
-  abortIfTheSamePaths:function(resolve,reject){
-    if(this.item.from===null) return resolve();
-    if(!path.relative(this.item.absolute,this.item.from).length){
-      this.computeMessage('failure',false,`, because both given paths are equal.`);
-      return reject();
-    }
-    resolve();
-  },
-  abortIfFileOverwrite:function(resolve,reject){
-    if(this.item.alreadyFileExists&&!this.item.overwrite&&!this.item.content&&this.item.action!=='writeFrom'){
-      this.computeMessage('warning',false,', due to the "overwrite" property settings.',true);
-      return reject();
-    }
-    resolve();
-  },
-  readContent:function(resolve,reject){
-    if(type(this.item.content,String)){
-      return resolve();
-    } else if(this.item.from){
-      fs.readFile(this.item.from,(err,data)=>{
-        if(err){
-          this.computeMessage('failure',false,`. Could not read the content of the '${this.item.from}' file.`);
-          return reject();
-        }
-        if(!err){
-          this.item.content = data;
-          return resolve();
-        }
-      });
-    } else {
-      return resolve();
-    }
-  },
-  modifyContent:function(resolve,reject){
-    var callbackIter = 0;
-    if(!this.item.beforeWrite) return resolve();
-    if(type(this.item.content,Buffer)) this.item.content = this.item.content.toString('utf8');
-
-    this.item.beforeWrite(this.item.content,onResolve.bind(this),onReject.bind(this));
-
-    function onResolve(data){
-      if(++callbackIter>1) return;
-      if(args(arguments,[[Buffer,String]],(o)=>{
-        callbackIter++;
-        this.computeMessage('failure',false,`. Could not read the ${this.item.from? `modified data of the '${this.item.from}' file`:'given modified data'}. The [${o.expected}] type of data is expected, while the [${o.actual}] data has been passed.`);
-        return reject();
-      })){
-        this.item.content = data;
-        this.item.modified = true;
-        resolve();
-      }
-    }
-
-    function onReject(getErr){
-      if(++callbackIter>1) return;
-      this.computeMessage('failure',false,`.${type(getErr,String) ? ' '+getErr:''}`);
-      return reject();
-    }
-  },
-  writeFile:function(resolve,reject){
-    var nonExist = !this.item.alreadyFileExists;
-    var overwrite = this.item.alreadyFileExists&&this.item.overwrite;
-    var append = this.item.alreadyFileExists&&!this.item.overwrite;
-
-    const meth = append ? 'appendFile':(nonExist||overwrite) ? 'writeFile':null;
-    if(!meth) return resolve();
-    const stringifyContent = this.item.content || '';
-    fs[meth](this.item.absolute,stringifyContent,(err)=>{
-      if(!err) return resolve();
-      this.computeMessage('failure',false);
-      return reject();
-    });
-  },
-  removeFile:function(resolve,reject){
-    if(this.item.action!=='move'){
-      this.computeMessage('success',true);
-      return resolve();
-    }
-    fs.unlink(this.item.from,(err)=>{
-      if(err){
-        this.computeMessage('failure',false,'. The file was successfully copied to the target location, but could not be removed from its origin location.');
-        return reject();
-      }
-      if(!err){
-        this.computeMessage('success',true);
-        resolve();
-      }
-    });
-  },
-  abortIfFileExists:function(resolve,reject){
-    if((this.item.folder&&this.item.alreadyFileExists)){
-      this.computeMessage('failure',false,', because the file of the same name already exists in this path.');
-      return reject();
-    }
-    resolve();
-  },
-  abortIfDirOverwrite:function(resolve,reject){
-    if(this.item.alreadyDirExists&&!this.item.overwrite&&this.item.action!=='merge'){
-      this.computeMessage('warning',false,', due to the "overwrite" property settings.',true);
-      return reject();
-    }
-    resolve();
-  },
-  createFolder:function(resolve,reject){
-    if(this.item.alreadyDirExists) return resolve();
-    fs.mkdir(this.item.absolute,(err)=>{
-      if(err){
-        this.computeMessage('failure',false);
-        return reject();
-      }
-      if(!err){
-        if(!this.item.tidyUp) this.computeMessage('success',true);
-        return resolve();
-      }
-    });
-  },
-  emptyContent:function(resolve,reject){
-    if(this.item.alreadyDirExists&&this.item.overwrite&&this.item.action!=='merge'){
-      emptyFolder(this.item.absolute,false,(o)=>{
-        if(o.error){
-          this.computeMessage('failure',false);
-          return reject();
-        }
-        if(!o.error){
-          if(!this.item.tidyUp) this.computeMessage('success',true);
-          return resolve();
-        }
-      });
-    } else {
-      if(!this.item.tidyUp) this.computeMessage('success',true);
-      return resolve();
-    }
-  },
-  handleUnrecognized:function(resolve){
-    this.computeMessage('failure',false);
-    return resolve();
-  }
-};
-
-StructureDirs.prototype.response = {
-  onDone:function(){
-    this.done(this.doneObject);
-  },
-  onDoneError:function(context,err){
-    this.doneObject.error = err;
-    this.done(this.doneObject);
   },
   prepareDoneObject:function(resolve){
     this.doneObject = {
@@ -815,27 +482,349 @@ StructureDirs.prototype.response = {
       root:this.root
     };
     resolve();
+  }
+};
+
+StructureDirs.prototype.appenders = {
+  initActions:function(resolve){
+    run.call(this,{
+      abstractScope:this.abstractStructure,
+      parent:null,
+      onDone:resolve
+    });
+    
+    function run(o){
+      var iterator = 0;
+      if(!o.abstractScope.length) return increase.call(this);
+      for(let itemData of o.abstractScope){
+        const nextRun = run.bind(this,{
+          abstractScope:itemData.abstractScope,
+          parent:itemData,
+          onDone:increase.bind(this)
+        });
+        const nextAction = itemData.tidyUp ? nextRun:increase.bind(this);
+        this.appenders.createItem.call(this,itemData,nextAction);
+      }
+      function increase(){
+        if(++iterator>=o.abstractScope.length){
+          if(o.parent) this.appenders.tidyUpFolder.call(this,o.parent,o.onDone);
+          if(!o.parent) o.onDone();
+        }
+      }
+    }
+  },
+  tidyUpFolder:function(itemData,resolve){
+    const functionList = [
+      checkActionSuccess,
+      removeMovedFolder,
+      checkIfChildrenFailed,
+      computeFolderSummaryMessage
+    ];
+
+    const userContext = {
+      itemData:itemData,
+      each:this.each,
+      doneObject:this.doneObject,
+      response:this.response,
+      utils:this.utils,
+      messages:this.response.messages,
+      computeMessage:this.response.computeMessage
+    };
+
+    moveOn(functionList,userContext,resolve,function(){
+      this.response.onEach.call(this);
+      return resolve();
+    });
+
+      function checkActionSuccess(resolve,reject){
+        type(this.itemData.result.warning,null)&&type(this.itemData.result.failure,null) ? resolve():reject();
+      }
+
+      function removeMovedFolder(resolve,reject){
+        if(this.itemData.action!=='move') return resolve();
+        const addMsg = '. The folder was successfully copied to the target location, but could not be removed from its origin location.';
+        emptyFolder(this.itemData.from,true,(o)=>{
+          if(!o.error) return resolve();
+          if(o.error){
+            this.computeMessage('failure',false,addMsg);
+            reject();
+          };
+        });
+      }
+
+      function checkIfChildrenFailed(resolve){
+        const countResult = {};
+        const ch = this.itemData.abstractScope;
+        for(var x in ch){
+          for(var y in ch[x].result){
+            countResult[y] = ch[x].result[y]!==null ? true:countResult[y] ? countResult[y]:false;
+          }
+        }
+        this.itemData.childResults = countResult;
+        resolve();
+      }
+
+      function computeFolderSummaryMessage(resolve){
+        switch(true){
+          case (this.itemData.childResults.failure):
+            this.computeMessage('warning',true,', but at least one of its child items failed.');
+            break;
+          case (this.itemData.childResults.warning):
+            this.computeMessage('warning',true,', but at least one of its child items gave warning.');
+            break;
+          default:
+            this.computeMessage('success',true);
+            break;
+        }
+        this.response.onEach.call(this);
+        resolve();
+      }
+  },
+  createItem:function(itemData,done){
+    const ap = this.appenders.methods;
+    
+    const fileList = [
+      ap.abortIfDirExists,
+      ap.abortIfPathInaccessible,
+      ap.abortIfTheSamePaths,
+      ap.abortIfFileOverwrite,
+      ap.readContent,
+      ap.modifyContent,
+      ap.writeFile,
+      ap.removeFile
+    ];
+    
+    const dirList = [
+      ap.abortIfFileExists,
+      ap.abortIfPathInaccessible,
+      ap.abortIfTheSamePaths,
+      ap.abortIfDirOverwrite,
+      ap.createFolder,
+      ap.emptyContent
+    ];
+    
+    const unrecognizedList = [
+      ap.handleUnrecognized
+    ];
+
+    itemData.result = {
+      success:null,
+      failure:null,
+      warning:null
+    };
+    
+    const userContext = {
+      itemData:itemData,
+      doneObject:this.doneObject,
+      each:this.each,
+      response:this.response,
+      utils:this.utils,
+      messages:this.response.messages,
+      computeMessage:this.response.computeMessage
+    };
+
+    if(itemData.file) moveOn(fileList,userContext,onFileDone,onFileDone);
+    if(itemData.folder) moveOn(dirList,userContext,onDirDone,onDirDone);
+    if(itemData.unrecognized) moveOn(unrecognizedList,userContext,onUnrecognizeDone,onUnrecognizeDone);
+
+      function onFileDone(){
+        this.response.onEach.call(this);
+        done();
+      }
+
+      function onDirDone(){
+        if(this.itemData.action==='move') return done();
+        if(this.itemData.abstractScope.length) return done();
+        this.response.onEach.call(this);
+        done();
+      }
+
+      function onUnrecognizeDone(){
+        this.response.onEach.call(this);
+        done();
+      }
+  },
+  methods:{
+    abortIfDirExists:function(resolve,reject){
+      if((this.itemData.alreadyDirExists)){
+        this.computeMessage('failure',false,', because the folder of the same name already exists in this path.');
+        return reject();
+      }
+      resolve();
+    },
+    abortIfPathInaccessible:function(resolve,reject){
+      if(this.itemData.alreadyUnrecognized){
+        this.computeMessage('failure',false,`, because the "${this.itemData.absolute}" path is inaccessible.`);
+        return reject();
+      }
+      resolve();
+    },
+    abortIfTheSamePaths:function(resolve,reject){
+      if(type(this.itemData.from,null)) return resolve();
+      if(!path.relative(this.itemData.absolute,this.itemData.from).length){
+        this.computeMessage('failure',false,`, because both given paths are equal.`);
+        return reject();
+      }
+      resolve();
+    },
+    abortIfFileOverwrite:function(resolve,reject){
+      if(this.itemData.alreadyFileExists&&!this.itemData.overwrite&&this.itemData.action!=='writeFrom'&&this.itemData.action!=='write'){
+        this.computeMessage('warning',false,', due to the "overwrite" property settings.',true);
+        return reject();
+      }
+      resolve();
+    },
+    readContent:function(resolve,reject){
+       if(type(this.itemData.from,String)){
+        fs.readFile(this.itemData.from,(err,data)=>{
+          if(err){
+            this.computeMessage('failure',false,`. Could not read the content of the '${this.itemData.from}' file.`);
+            return reject();
+          }
+          if(!err){
+            this.itemData.content = data;
+            return resolve();
+          }
+        });
+      } else if(this.itemData.action==='write'){
+        this.itemData.content = this.itemData.item.write;
+        return resolve();
+      } else resolve();
+    },
+    modifyContent:function(resolve,reject){
+      if(!this.itemData.beforeWrite) return resolve();
+      if(type(this.itemData.content,Buffer)) this.itemData.content = this.itemData.content.toString('utf8');
+      var callbackIter = 0;
+
+      this.itemData.beforeWrite(this.itemData.content,onResolve.bind(this),onReject.bind(this));
+
+        function onResolve(data){
+          if(++callbackIter>1) return;
+          if(args(arguments,[[Buffer,String]],(o)=>{
+            callbackIter++;
+            this.computeMessage('failure',false,`. Could not read the ${this.itemData.from? `modified data of the '${this.itemData.from}' file`:'given modified data'}. The [${o.expected}] type of data is expected, while the [${o.actual}] data has been passed.`);
+            return reject();
+          })){
+            this.itemData.content = data;
+            this.itemData.modified = true;
+            resolve();
+          }
+        }
+
+        function onReject(getErr){
+          if(++callbackIter>1) return;
+          this.computeMessage('failure',false,`.${type(getErr,String) ? ' '+getErr:''}`);
+          return reject();
+        }
+    },
+    writeFile:function(resolve,reject){
+      var nonExist = !this.itemData.alreadyFileExists;
+      var overwrite = this.itemData.alreadyFileExists&&this.itemData.overwrite;
+      var append = this.itemData.alreadyFileExists&&!this.itemData.overwrite;
+      const setMethod = append ? 'appendFile':(nonExist||overwrite) ? 'writeFile':null;
+      if(!setMethod) return resolve();
+      const stringifyContent = this.itemData.content || '';
+      fs[setMethod](this.itemData.absolute,stringifyContent,(err)=>{
+        if(!err) return resolve();
+        this.computeMessage('failure',false);
+        return reject();
+      });
+    },
+    removeFile:function(resolve,reject){
+      if(this.itemData.action!=='move'){
+        this.computeMessage('success',true);
+        return resolve();
+      }
+      fs.unlink(this.itemData.from,(err)=>{
+        if(err){
+          this.computeMessage('failure',false,'. The file was successfully copied to the target location, but could not be removed from its origin location.');
+          return reject();
+        }
+        if(!err){
+          this.computeMessage('success',true);
+          resolve();
+        }
+      });
+    },
+    abortIfFileExists:function(resolve,reject){
+      if((this.itemData.folder&&this.itemData.alreadyFileExists)){
+        this.computeMessage('failure',false,', because the file of the same name already exists in this path.');
+        return reject();
+      }
+      resolve();
+    },
+    abortIfDirOverwrite:function(resolve,reject){
+      if(this.itemData.alreadyDirExists&&!this.itemData.overwrite&&this.itemData.action!=='merge'){
+        this.computeMessage('warning',false,', due to the "overwrite" property settings.',true);
+        return reject();
+      }
+      resolve();
+    },
+    createFolder:function(resolve,reject){
+      if(this.itemData.alreadyDirExists) return resolve();
+      fs.mkdir(this.itemData.absolute,(err)=>{
+        if(err){
+          this.computeMessage('failure',false);
+          return reject();
+        }
+        if(!err){
+          if(!this.itemData.tidyUp) this.computeMessage('success',true);
+          return resolve();
+        }
+      });
+    },
+    emptyContent:function(resolve,reject){
+      if(this.itemData.alreadyDirExists && this.itemData.overwrite && this.itemData.action!=='merge'){
+        emptyFolder(this.itemData.absolute,false,(o)=>{
+          if(o.error){
+            this.computeMessage('failure',false);
+            return reject();
+          }
+          if(!o.error){
+            if(!this.itemData.tidyUp) this.computeMessage('success',true);
+            return resolve();
+          }
+        });
+      } else {
+        if(!this.itemData.tidyUp) this.computeMessage('success',true);
+        return resolve();
+      }
+    },
+    handleUnrecognized:function(resolve){
+      this.computeMessage('failure',false);
+      return resolve();
+    }
+  }
+};
+
+StructureDirs.prototype.response = {
+  onDone:function(){
+    this.done(this.doneObject);
+  },
+  onDoneError:function(context,err){
+    this.doneObject.error = err;
+    this.done(this.doneObject);
   },
   passDonePath: function(){
-    const type = this.item.result.success!==null ? 'success':this.item.result.warning!==null ? 'warning':'failure';
-    const defineProperty = this.item.file ? 'files':this.item.folder ? 'dirs':'unrecognized';
-    this.doneObject[defineProperty][type].push(this.item.absolute);
+    const type = this.itemData.result.success!==null ? 'success':this.itemData.result.warning!==null ? 'warning':'failure';
+    const defineProperty = this.itemData.file ? 'files':this.itemData.folder ? 'dirs':'unrecognized';
+    this.doneObject[defineProperty][type].push(this.itemData.absolute);
   },
-  prepareEach:function(){
+  onEach:function(){
     this.response.passDonePath.call(this);
     if(!this.each) return;
     const eachObject = {
-      failure:this.item.result.failure,
-      warning:this.item.result.warning,
-      success:this.item.result.success,
-      item:this.item.itemType,
-      from:this.item.from,
-      action:this.item.action,
-      modified:!!this.item.modified,
-      overwritten:this.item.overwritten,
-      root:this.item.root,
-      relative:this.item.relative,
-      absolute:this.item.absolute
+      failure:this.itemData.result.failure,
+      warning:this.itemData.result.warning,
+      success:this.itemData.result.success,
+      item:this.itemData.itemType,
+      from:this.itemData.from,
+      action:this.itemData.action,
+      modified:!!this.itemData.modified,
+      overwritten:!!this.itemData.overwritten,
+      root:this.itemData.root,
+      relative:this.itemData.relative,
+      absolute:this.itemData.absolute
     };
     this.each(eachObject);
   },
@@ -843,94 +832,94 @@ StructureDirs.prototype.response = {
     fileNonExist:function(success){
       const message = {
         create:`created`,
-        copy:`copied${this.item.beforeWrite?' with modified content ':' '}from the "${this.item.from}" path`,
-        move:`moved${this.item.beforeWrite?' with modified content ':' '}from the "${this.item.from}" path`,
-        write:`created with the given${this.item.beforeWrite?' modified ':' '}content`,
-        writeFrom:`created with the${this.item.beforeWrite?' modified ':' '}content from the "${this.item.from}" file`
+        copy:`copied${this.itemData.beforeWrite?' with modified content ':' '}from the "${this.itemData.from}" path`,
+        move:`moved${this.itemData.beforeWrite?' with modified content ':' '}from the "${this.itemData.from}" path`,
+        write:`created with the given${this.itemData.beforeWrite?' modified ':' '}content`,
+        writeFrom:`created with the${this.itemData.beforeWrite?' modified ':' '}content from the "${this.itemData.from}" file`
       };
-      return `The file "${this.item.relative}" ${success?'was successfully':'could not be'} ${message[this.item.action]}`;
+      return `The file "${this.itemData.relative}" ${success?'was successfully':'could not be'} ${message[this.itemData.action]}`;
     },
     fileOverwrite:function(success){
-      const actionMsg = type(this.item.content,String) ?
-        `The content of "${this.item.relative}" file`:
-        `The already existing file "${this.item.relative}"`;
+      const actionMsg = type(this.itemData.content,String) ?
+        `The content of "${this.itemData.relative}" file`:
+        `The already existing file "${this.itemData.relative}"`;
       const message = {
         create:`by the newly created file`,
-        copy:`by the file copied${this.item.beforeWrite?' with modified content ':' '}from the "${this.item.from}" path`,
-        move:`by the file moved${this.item.beforeWrite?' with modified content ':' '}from the "${this.item.from}" path`,
-        write:`with the given${this.item.beforeWrite?' modified ':' '}content`,
-        writeFrom:`with the${this.item.beforeWrite?' modified ':' '}content from the "${this.item.from}" file`
+        copy:`by the file copied${this.itemData.beforeWrite?' with modified content ':' '}from the "${this.itemData.from}" path`,
+        move:`by the file moved${this.itemData.beforeWrite?' with modified content ':' '}from the "${this.itemData.from}" path`,
+        write:`with the given${this.itemData.beforeWrite?' modified ':' '}content`,
+        writeFrom:`with the${this.itemData.beforeWrite?' modified ':' '}content from the "${this.itemData.from}" file`
       };
-      return `${actionMsg} ${success?'was successfully':'could not be'} overwritten ${message[this.item.action]}`;
+      return `${actionMsg} ${success?'was successfully':'could not be'} overwritten ${message[this.itemData.action]}`;
     },
     fileAppend:function(success){
       const message = {
-        write:`The given${this.item.beforeWrite?' modified ':' '}content`,
-        writeFrom:`The${this.item.beforeWrite?' modified ':' '}content from the "${this.item.from}" file`
+        write:`The given${this.itemData.beforeWrite?' modified ':' '}content`,
+        writeFrom:`The${this.itemData.beforeWrite?' modified ':' '}content from the "${this.itemData.from}" file`
       };
-      return `${message[this.item.action]} ${success?'was successfully':'could not be'} appended to the "${this.item.relative}" file`;
+      return `${message[this.itemData.action]} ${success?'was successfully':'could not be'} appended to the "${this.itemData.relative}" file`;
     },
     dirNonExist:function(success){
       const message = {
         create:'created',
         contents:'created with its contents',
-        copy:`copied from the "${this.item.from}" path`,
-        move:`moved from the "${this.item.from}" path`,
-        merge:`merged with the "${this.item.from}" folder`
+        copy:`copied from the "${this.itemData.from}" path`,
+        move:`moved from the "${this.itemData.from}" path`,
+        merge:`merged with the "${this.itemData.from}" folder`
       };
-      return `The folder "${this.item.relative}" ${success?'was successfully':'could not be'} ${message[this.item.action]}`;
+      return `The folder "${this.itemData.relative}" ${success?'was successfully':'could not be'} ${message[this.itemData.action]}`;
     },
     dirOverwrite:function(success){
       const message = {
         create:'overwritten by the newly created folder',
         contents:'overwritten by the newly created folder and its contents',
-        copy:`overwritten by the folder copied from the "${this.item.from}" path`,
-        move:`overwritten by the folder moved from the "${this.item.from}" path`,
-        merge:`merged with the "${this.item.from}" folder`
+        copy:`overwritten by the folder copied from the "${this.itemData.from}" path`,
+        move:`overwritten by the folder moved from the "${this.itemData.from}" path`,
+        merge:`merged with the "${this.itemData.from}" folder`
       };
-      return `The already existing folder "${this.item.relative}" ${success?'was successfully':'could not be'} ${message[this.item.action]}`;
+      return `The already existing folder "${this.itemData.relative}" ${success?'was successfully':'could not be'} ${message[this.itemData.action]}`;
     },
     unrecognized:function(){
       const message = {
-        copy:`copied into the "${this.item.relative}" path`,
-        move:`moved into the "${this.item.relative}" path`,
-        merge:`merged with the "${this.item.relative}"`
+        copy:`copied into the "${this.itemData.relative}" path`,
+        move:`moved into the "${this.itemData.relative}" path`,
+        merge:`merged with the "${this.itemData.relative}"`
       };
-      return `The item of the path "${this.item.from}" is inaccessible and could not be ${message[this.item.action]}`;
+      return `The item of the path "${this.itemData.from}" is inaccessible and could not be ${message[this.itemData.action]}`;
     }
   },
   computeMessage:function(type,isSuccess,additional,doubled){
     additional = additional ? additional:'.';
     var msg;
-    if(this.item.file){
+    if(this.itemData.file){
       switch(true){
-        case (this.item.alreadyFileExists&&!this.item.overwrite&&(this.item.action==='write'||this.item.action==='writeFrom')):
+        case (this.itemData.alreadyFileExists&&!this.itemData.overwrite&&(this.itemData.action==='write'||this.itemData.action==='writeFrom')):
           msg = 'fileAppend';
           break;
-        case (doubled||this.item.alreadyFileExists||this.item.usedToExist):
-          if(isSuccess) this.item.overwritten = true;
+        case (doubled||this.itemData.alreadyFileExists||this.itemData.usedToExist):
+          if(isSuccess) this.itemData.overwritten = true;
           msg = 'fileOverwrite';
           break;
-        case (!this.item.alreadyFileExists):
+        case (!this.itemData.alreadyFileExists):
           msg = 'fileNonExist';
           break;
       }
     }
-    if(this.item.folder){
+    if(this.itemData.folder){
       switch(true){
-        case (this.item.usedToExist||doubled||this.item.alreadyDirExists):
-          if(isSuccess&&this.item.action!=='merge') this.item.overwritten = true;
+        case (this.itemData.usedToExist||doubled||this.itemData.alreadyDirExists):
+          if(isSuccess&&this.itemData.action!=='merge') this.itemData.overwritten = true;
           msg = 'dirOverwrite';
           break;
-        case (!this.item.alreadyDirExists):
+        case (!this.itemData.alreadyDirExists):
           msg = 'dirNonExist';
           break;
       }
     }
-    if(this.item.unrecognized){
+    if(this.itemData.unrecognized){
       msg = 'unrecognized';
     }
-    if(msg) this.item.result[type] = this.messages[msg].call(this,isSuccess)+additional;
+    if(msg) this.itemData.result[type] = this.messages[msg].call(this,isSuccess)+additional;
   }
 };
 
@@ -969,15 +958,6 @@ StructureDirs.prototype.utils = {
       if(arguments[0]===arguments[i]) return true;
     }
     return false;
-  },
-  indexPath:function(){
-    var newArr = this.itemData.parentIndices.slice();
-    var indexPath = '';
-    newArr.push(this.itemData.index);
-    newArr.forEach((x)=>{
-      indexPath+=`[${x}]`;
-    });
-    return indexPath;
   },
   hasAtLeastItems:function(a,expected,num){
     const actual = type(a,Object) ? Object.getOwnPropertyNames(a):a;
@@ -1044,9 +1024,6 @@ StructureDirs.prototype.utils = {
     });    
   }
 };
-
-
-
 
 
 StructureDirs.prototype.methods = {
