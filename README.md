@@ -15,7 +15,7 @@ const fileAssistant = require('file-assistant');
 The `fileAssistant` contains 3 methods:
 * `fileAssistant` to handle the folders and files due to the `structure object` [\[see below\]](#fileassistantrootstructuredoneeach)
 * `fileAssistant.structurize` to automatically generate the `structure object` for the elements of the given folder path [\[see below\]](#fileassistantstructurizepathjsoncallback)
-* `fileAssistant.compare` to compare the differences between two folders *(which elements are **extraneous**, **missing** and already **existing**)* [\[see below\]](#fileassistantcomparemodelcomparedcallback)
+* `fileAssistant.compare` to compare the differences between two folders *(which elements are **extraneous**, **missing** and already **existing**)* [\[see below\]](#fileassistantcomparemodelcomparedconfigcallback)
 
 
 
@@ -44,7 +44,7 @@ The `fileAssistant` contains 3 methods:
       9. [`beforeWrite`](#beforewrite)
       10. [`overwrite`](#overwrite)
 8. [`fileAssistant.structurize` method](#fileassistantstructurizepathjsoncallback)
-9. [`fileAssistant.compare` method](#fileassistantcomparemodelcomparedcallback)
+9. [`fileAssistant.compare` method](#fileassistantcomparemodelcomparedconfigcallback)
 10. [Samples](#samples)
 
 
