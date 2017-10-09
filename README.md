@@ -654,16 +654,33 @@ fileAssistant.structurize(folder,json,(err,data)=>{
 });
 ```
 
-### `fileAssistant.compare(model,compared,callback)`
+### `fileAssistant.compare(model,compared,[config,]callback)`
 ##### Description
-It compares the paths of `model` and `compared` folders contents *(all files and subfolders of all levels)* and returns the information about the differences.
+It compares the paths of `model` and `compared` folders contents and returns the information about the differences.
 > According to the given information, you can generate the [`structure object`](#structure-object) and use it to create, copy, move or modify files or folders.
 ##### Parameters
 ##### `model` **[String]**
 * It indicates the [String] path to the folder, which contents will be used as the model, that `compared` folder should match.
 
 ##### `compared` **[String]**
-* It indicates the [String] path to the folder, which contents is matched with the `model` folder's contents.
+* It indicates the [String] path to the folder, which elements are compared with the elements of the `model` folder.
+
+##### `config` **[Object]**
+* if **omitted**, the parameters are set to their default values; *All the elements of all levels are compared*.
+* You can configure the `compare` method with the following [Object] `config`'s properties:
+  * **`depth`** [Number|null] *(default:null)*  
+    It indicates how deep the `compare` function should explore the folders in the given `model` and `compared` directories.  
+    If set to `null` *(default)* - it compares all subfiles and subfolders of all levels of the `model` and `compared` directories.  
+    If set to 1 - it compares only the one level of `model` and `compared` elements; eg. `./styles`, `./index.html`.  
+    If set to 2 - it compares two levels of `model` and `compared` elements; eg. `./styles/css`, `./scripts/ajax.js`.  
+    etc.
+  * **`exclude`** [Array|String] *(default:[])*  
+    It indicates the folders' and files' paths that should be ignored and not compared.  
+    If the folder is indicated, neither the folder nor its contents will be compared.  
+    When [String], it can indicate the one path to ignore, eg `"./bin"`.  
+    When [Array], it can indicate more than one path to ignore, eg. `["./node_modules", "./bin"]`.  
+    The given paths **must be relative** to the `model` and `compared` paths, otherwise they will be not recognized.  
+    You can ignore needless paths, eg. `'./node_modules'` or `'./.git'` to make the `compare` module faster.
 
 ##### `callback` **[Function]**
 * The `callback` function is executed after the operation is done.

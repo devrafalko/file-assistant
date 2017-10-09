@@ -17,7 +17,7 @@ function StructureDirs(){
 
   this.init = initStructure.bind(this.constructor);
   this.init.structurize = (path,json,callback)=>proto.methods.structurize.call(proto,path,json,callback);
-  this.init.compare = (model,compared,callback)=>proto.methods.compare.call(proto,model,compared,callback);
+  this.init.compare = (model,compared,config,callback)=>proto.methods.compare.call(proto,model,compared,config,callback);
 
   function initStructure(){
     const p = this.prototype;
@@ -374,7 +374,7 @@ StructureDirs.prototype.validation = {
         this.itemData.childrenList = null;
         return resolve();
       }
-      listContent(this.itemData.absolute,{deep: 1},(o)=>{
+      listContent(this.itemData.absolute,{depth: 1},(o)=>{
         this.itemData.childrenList = o;
         resolve();
       });
@@ -393,7 +393,7 @@ StructureDirs.prototype.validation = {
 StructureDirs.prototype.preparations = {
   prepareCurrentContentsList:function(resolve){
     this.firstLevelSiblings = {};
-    listContent(this.root,{deep: 1},(o)=>{
+    listContent(this.root,{depth: 1},(o)=>{
       this.firstLevelSiblings = o;
       resolve();
     });
@@ -1107,11 +1107,17 @@ StructureDirs.prototype.methods = {
     }
 
   },
-  compare:function(model,compared,callback){
-    args(arguments,[String,String,Function],(o)=>{
+  compare:function(model,compared,a,b){
+    const types = type(b,Function) ? [String,String,Object,Function]:type(a,Function) ? [String,String,Function]:type(a,Object) ? [String,String,Object,Function]:[String,String,[Object,Function],[Function,undefined]];
+    args(arguments,types,(o)=>{
       throw new TypeError(`${warn(moduleName+'.compare')}: ${o.message}`);
     });
 
+    const config = type(a,Object) ? a:{};
+    const callback = type(a,Function) ? a:b;
+    const depth = config.depth;
+    const exclude = config.exclude;
+    
     const funList = [
       isModelValid,
       isComparedValid,
@@ -1165,21 +1171,21 @@ StructureDirs.prototype.methods = {
     }
 
     function getModelContents(resolve,reject){
-      listContent(this.modelPath,(o)=>{
+      listContent(this.modelPath,{depth:depth,exclude:exclude},(o)=>{
         if(o.error) return reject(new Error(`Could not get the access to the given folder '${this.modelPath}'.`));
         this.compareObject.model = {path:o.path,dirs:o.dirs,files:o.files,inaccessible:o.inaccessible};
         resolve();
       });
     }
-    
+
     function getComparedContents(resolve,reject){
-      listContent(this.comparedPath,(o)=>{
+      listContent(this.comparedPath,{depth:depth,exclude:exclude},(o)=>{
         if(o.error) return reject(new Error(`Could not get the access to the given folder '${this.comparedPath}'.`));
         this.compareObject.compared = {path:o.path,dirs:o.dirs,files:o.files,inaccessible:o.inaccessible};
         resolve();
       });
     }
-    
+
     function addInnaccessiblePaths(resolve){
       for(var pth of this.compareObject.model.inaccessible){
         this.returnObject.inaccessible.push(path.resolve(this.modelPath,pth));
@@ -1196,7 +1202,7 @@ StructureDirs.prototype.methods = {
       compare(c.model.dirs,c.compared.dirs,r.dirs);
       compare(c.model.files,c.compared.files,r.files);
       resolve();
-      
+
       function compare(model,compared,result){
         whileLabel:
         while(model.length){
