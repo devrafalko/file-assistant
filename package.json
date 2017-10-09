@@ -1,6 +1,6 @@
 {
   "name": "file-assistant",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "This is a stable and tested file-system package to create, copy, move, merge and overwrite files and folders, to empty folders and to write, modify or append content to the files, according to the given [Array] or JSON structure instructions.",
   "main": "index.js",
   "scripts": {
