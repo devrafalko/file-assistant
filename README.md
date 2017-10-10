@@ -45,7 +45,8 @@ The `fileAssistant` contains 3 methods:
       10. [`overwrite`](#overwrite)
 8. [`fileAssistant.structurize` method](#fileassistantstructurizepathjsoncallback)
 9. [`fileAssistant.compare` method](#fileassistantcomparemodelcomparedconfigcallback)
-10. [Samples](#samples)
+10. [`fileAssistant.ensureDir` method](#fileassistantensuredirpathcallback)
+11. [Samples](#samples)
 
 
 ## OMG list
@@ -702,12 +703,30 @@ It compares the paths of `model` and `compared` folders contents and returns the
 ```javascript
 const model = './dist';
 const compared = './prod';
-fileAssistant.structurize(model,compared,(err,data)=>{
+fileAssistant.compare(model,compared,(err,data)=>{
   console.log(err);
   console.log(data.dirs.missing);
   console.log(data.files.extraneous);
 });
 ```
+
+### `fileAssistant.ensureDir(path,callback)`
+##### Description
+It creates the folders chain recursively.  
+If the folder *(or its subfolder)* already exists it is neither removed nor overwritten.
+
+##### Parameters
+##### `path` **[String]**
+* It defines the [String] path of the folder, that should be created
+* The path can be either absolute or relative
+* The path may specify the one folder or the chain of the folders:
+  * `'./dist'`
+  * `'./dist/modules/es6/libs'`
+
+##### `callback` **[String]**
+* It is called when the folder(s) are created.
+* It returns one **error** argument:
+  * `null` if the folder(s) have been successfully created, otherwise [Error]
 
 # Samples
 

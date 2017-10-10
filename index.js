@@ -18,6 +18,7 @@ function StructureDirs(){
   this.init = initStructure.bind(this.constructor);
   this.init.structurize = (path,json,callback)=>proto.methods.structurize.call(proto,path,json,callback);
   this.init.compare = (model,compared,config,callback)=>proto.methods.compare.call(proto,model,compared,config,callback);
+  this.init.ensureDir = (path,callback)=>proto.methods.ensureDir.call(proto,path,callback);
 
   function initStructure(){
     const p = this.prototype;
@@ -1218,5 +1219,11 @@ StructureDirs.prototype.methods = {
         result.extraneous = compared.slice();
       }
     }
+  },
+  ensureDir:function(path,callback){
+    args(arguments,[String,Function],(o)=>{
+      throw new TypeError(`${warn(moduleName+'.ensureDir')}: ${o.message}`);
+    });
+    this.utils.createDirs(path,callback.bind(null,null),callback);
   }
 };
