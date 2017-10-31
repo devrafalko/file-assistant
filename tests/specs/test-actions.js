@@ -1,8 +1,6 @@
-/* global expect, __dirname, it, xit, fit */
+/* global expect, __dirname, it, xit, fit, jasmine */
 
-const fs = require('fs-extra');
 const path = require('path');
-
 const helpers = path.resolve('./tests/helpers');
 const temp = path.resolve('./tests/temp');
 const prepare = require(path.resolve(helpers,'prepare.js'));
@@ -11,7 +9,6 @@ const should = require(path.resolve(helpers,'should.js'));
 const testingModule = require(path.resolve('./index.js'));
 const data = require(path.resolve(helpers,'structures.json'));
 
-const emptyDirPath = path.resolve(temp,'dist/empty');
 
 describe(`When the file does not exist in the root folder\n`+
          `and the structure contains an item with that file`,function(){
@@ -60,7 +57,7 @@ describe(`When the file does not exist in the root folder\n`+
           from: null,
           action: 'create',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -83,7 +80,7 @@ describe(`When the file does not exist in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -138,7 +135,7 @@ describe(`When the file does not exist in the root folder\n`+
           from: paths.from('dist.css'),
           action: 'copy',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -161,7 +158,7 @@ describe(`When the file does not exist in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
     
@@ -217,7 +214,7 @@ describe(`When the file does not exist in the root folder\n`+
           from: paths.from('dist.css'),
           action: 'move',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -240,7 +237,7 @@ describe(`When the file does not exist in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -290,7 +287,7 @@ describe(`When the file does not exist in the root folder\n`+
           from: null,
           action: 'write',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -313,7 +310,7 @@ describe(`When the file does not exist in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -368,7 +365,7 @@ describe(`When the file does not exist in the root folder\n`+
           from: paths.from('dist.css'),
           action: 'writeFrom',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -391,7 +388,7 @@ describe(`When the file does not exist in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -410,7 +407,7 @@ describe(`When the file already exists in the root folder\n`+
         .then(done)
         .catch(done.fail);
       });
-      
+
       it.apply(this,should.not.createNewFile({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
@@ -450,7 +447,7 @@ describe(`When the file already exists in the root folder\n`+
           from: null,
           action: 'create',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -473,7 +470,7 @@ describe(`When the file already exists in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -529,7 +526,7 @@ describe(`When the file already exists in the root folder\n`+
           from: null,
           action: 'create',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -552,7 +549,7 @@ describe(`When the file already exists in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -614,7 +611,7 @@ describe(`When the file already exists in the root folder\n`+
           from: paths.from('dist.css'),
           action: 'copy',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -637,7 +634,7 @@ describe(`When the file already exists in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -699,7 +696,7 @@ describe(`When the file already exists in the root folder\n`+
           from: paths.from('dist.css'),
           action: 'copy',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -722,7 +719,7 @@ describe(`When the file already exists in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -783,7 +780,7 @@ describe(`When the file already exists in the root folder\n`+
           from: paths.from('dist.css'),
           action: 'move',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -806,7 +803,7 @@ describe(`When the file already exists in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -868,7 +865,7 @@ describe(`When the file already exists in the root folder\n`+
           from: paths.from('dist.css'),
           action: 'move',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -891,7 +888,7 @@ describe(`When the file already exists in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -948,7 +945,7 @@ describe(`When the file already exists in the root folder\n`+
           from: null,
           action: 'write',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -971,7 +968,7 @@ describe(`When the file already exists in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -1028,7 +1025,7 @@ describe(`When the file already exists in the root folder\n`+
           from: null,
           action: 'write',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -1051,7 +1048,7 @@ describe(`When the file already exists in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -1113,7 +1110,7 @@ describe(`When the file already exists in the root folder\n`+
           from: paths.from('dist.css'),
           action: 'writeFrom',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -1136,7 +1133,7 @@ describe(`When the file already exists in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -1198,7 +1195,7 @@ describe(`When the file already exists in the root folder\n`+
           from: paths.from('dist.css'),
           action: 'writeFrom',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -1221,7 +1218,7 @@ describe(`When the file already exists in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -1275,7 +1272,7 @@ describe(`When the folder does not exist in the root folder\n`+
           from: null,
           action: 'create',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles'),
           absolute:paths.to('styles')
         }
@@ -1298,7 +1295,7 @@ describe(`When the folder does not exist in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -1382,7 +1379,7 @@ describe(`When the folder does not exist in the root folder\n`+
           from: null,
           action: 'contents',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles'),
           absolute:paths.to('styles')
         }
@@ -1401,7 +1398,7 @@ describe(`When the folder does not exist in the root folder\n`+
           from: null,
           action: 'create',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/css'),
           absolute:paths.to('styles/css')
         }
@@ -1420,7 +1417,7 @@ describe(`When the folder does not exist in the root folder\n`+
           from: null,
           action: 'create',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/mixins.scss'),
           absolute:paths.to('styles/mixins.scss')
         }
@@ -1446,7 +1443,7 @@ describe(`When the folder does not exist in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -1507,7 +1504,7 @@ describe(`When the folder does not exist in the root folder\n`+
             from: paths.from(loopPath),
             action: 'copy',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -1541,7 +1538,7 @@ describe(`When the folder does not exist in the root folder\n`+
             from: paths.from(loopPath),
             action: 'copy',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -1575,7 +1572,7 @@ describe(`When the folder does not exist in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -1641,7 +1638,7 @@ describe(`When the folder does not exist in the root folder\n`+
             from: paths.from(loopPath),
             action: 'move',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -1675,7 +1672,7 @@ describe(`When the folder does not exist in the root folder\n`+
             from: paths.from(loopPath),
             action: 'move',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -1711,7 +1708,7 @@ describe(`When the folder does not exist in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -1770,7 +1767,7 @@ describe(`When the folder does not exist in the root folder\n`+
             from: paths.from(loopPath),
             action: 'merge',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -1804,7 +1801,7 @@ describe(`When the folder does not exist in the root folder\n`+
             from: paths.from(loopPath),
             action: 'copy',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -1838,7 +1835,7 @@ describe(`When the folder does not exist in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -1940,7 +1937,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: null,
           action: 'create',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles'),
           absolute:paths.to('styles')
         }
@@ -1963,7 +1960,7 @@ describe(`When the folder already exists in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -2063,7 +2060,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: null,
           action: 'create',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles'),
           absolute:paths.to('styles')
         }
@@ -2086,7 +2083,7 @@ describe(`When the folder already exists in the root folder\n`+
               warning:[paths.to('styles')],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
 
@@ -2210,7 +2207,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: null,
           action: 'contents',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles'),
           absolute:paths.to('styles')
         }
@@ -2229,7 +2226,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: null,
           action: 'create',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/css'),
           absolute:paths.to('styles/css')
         }
@@ -2248,7 +2245,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: null,
           action: 'create',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/mixins.scss'),
           absolute:paths.to('styles/mixins.scss')
         }
@@ -2274,7 +2271,7 @@ describe(`When the folder already exists in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
       
@@ -2433,7 +2430,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: null,
           action: 'contents',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles'),
           absolute:paths.to('styles')
         }
@@ -2452,7 +2449,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: null,
           action: 'contents',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/css'),
           absolute:paths.to('styles/css')
         }
@@ -2471,7 +2468,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: null,
           action: 'contents',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/scss'),
           absolute:paths.to('styles/scss')
         }
@@ -2490,7 +2487,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: null,
           action: 'create',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/css/main.css'),
           absolute:paths.to('styles/css/main.css')
         }
@@ -2509,7 +2506,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: null,
           action: 'create',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/css/style.css'),
           absolute:paths.to('styles/css/style.css')
         }
@@ -2528,7 +2525,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: null,
           action: 'create',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/scss/main.scss'),
           absolute:paths.to('styles/scss/main.scss')
         }
@@ -2547,7 +2544,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: null,
           action: 'create',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/mixins.scss'),
           absolute:paths.to('styles/mixins.scss')
         }
@@ -2566,7 +2563,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: null,
           action: 'create',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/imports.scss'),
           absolute:paths.to('styles/imports.scss')
         }
@@ -2599,7 +2596,7 @@ describe(`When the folder already exists in the root folder\n`+
               ]),
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -2746,7 +2743,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('styles'),
           action: 'copy',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles'),
           absolute:paths.to('styles')
         }
@@ -2765,7 +2762,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('styles/scss'),
           action: 'copy',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/scss'),
           absolute:paths.to('styles/scss')
         }
@@ -2784,7 +2781,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('styles/css'),
           action: 'copy',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/css'),
           absolute:paths.to('styles/css')
         }
@@ -2807,7 +2804,7 @@ describe(`When the folder already exists in the root folder\n`+
             from: paths.from(loopPath),
             action: 'copy',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -2828,7 +2825,7 @@ describe(`When the folder already exists in the root folder\n`+
             from: paths.from(loopPath),
             action: 'copy',
             overwritten: true,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -2848,7 +2845,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('variables.scss'),
           action: 'copy',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('prod.css'),
           absolute:paths.to('prod.css')
         }
@@ -2867,7 +2864,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('prod.css'),
           action: 'copy',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('variables.scss'),
           absolute:paths.to('variables.scss')
         }
@@ -2903,7 +2900,7 @@ describe(`When the folder already exists in the root folder\n`+
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -2988,7 +2985,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('styles'),
           action: 'copy',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles'),
           absolute:paths.to('styles')
         }
@@ -3011,7 +3008,7 @@ describe(`When the folder already exists in the root folder\n`+
               warning:[paths.to('styles')],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -3174,7 +3171,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: null,
           action: 'contents',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles'),
           absolute:paths.to('styles')
         }
@@ -3193,7 +3190,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('styles/css'),
           action: 'move',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/css'),
           absolute:paths.to('styles/css')
         }
@@ -3212,7 +3209,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('styles/css/main.css'),
           action: 'move',
           overwritten: true,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/css/main.css'),
           absolute:paths.to('styles/css/main.css')
         }
@@ -3232,7 +3229,7 @@ describe(`When the folder already exists in the root folder\n`+
             from: paths.from(loopPath),
             action: 'move',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -3260,7 +3257,7 @@ describe(`When the folder already exists in the root folder\n`+
               warning:[paths.to('styles')],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -3350,7 +3347,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('styles'),
           action: 'move',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles'),
           absolute:paths.to('styles')
         }
@@ -3373,7 +3370,7 @@ describe(`When the folder already exists in the root folder\n`+
               warning:[paths.to('styles')],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -3543,7 +3540,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('styles/scss'),
           action: 'merge',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/scss'),
           absolute:paths.to('styles/scss')
         }
@@ -3562,7 +3559,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('styles/css'),
           action: 'merge',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/css'),
           absolute:paths.to('styles/css')
         }
@@ -3581,7 +3578,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('styles'),
           action: 'merge',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles'),
           absolute:paths.to('styles')
         }
@@ -3600,7 +3597,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('styles/scss/main.scss'),
           action: 'copy',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/scss/main.scss'),
           absolute:paths.to('styles/scss/main.scss')
         }
@@ -3620,7 +3617,7 @@ describe(`When the folder already exists in the root folder\n`+
             from: paths.from(loopPath),
             action: 'copy',
             overwritten: true,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -3656,7 +3653,7 @@ describe(`When the folder already exists in the root folder\n`+
               ]),
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
     
@@ -3827,7 +3824,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('styles'),
           action: 'merge',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles'),
           absolute:paths.to('styles')
         }
@@ -3846,7 +3843,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('styles/scss'),
           action: 'merge',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/scss'),
           absolute:paths.to('styles/scss')
         }
@@ -3865,7 +3862,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('styles/css'),
           action: 'merge',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/css'),
           absolute:paths.to('styles/css')
         }
@@ -3885,7 +3882,7 @@ describe(`When the folder already exists in the root folder\n`+
           from: paths.from('styles/scss/main.scss'),
           action: 'copy',
           overwritten: false,
-          root:path.join(paths.rootDir,paths.toDir),
+          root:paths.toDir,
           relative:paths.rel('styles/scss/main.scss'),
           absolute:paths.to('styles/scss/main.scss')
         }
@@ -3905,7 +3902,7 @@ describe(`When the folder already exists in the root folder\n`+
             from: paths.from(loopPath),
             action: 'copy',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -3938,7 +3935,7 @@ describe(`When the folder already exists in the root folder\n`+
               ]),
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
     
@@ -4059,7 +4056,7 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
             from: paths.to(loopPath),
             action: 'copy',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -4080,7 +4077,7 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
             from: paths.to(loopPath),
             action: 'copy',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -4113,7 +4110,7 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
                 paths.to('empty')
               ])
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -4217,7 +4214,7 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
             from: paths.to(loopPath),
             action: 'move',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -4238,7 +4235,7 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
             from: paths.to(loopPath),
             action: 'move',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -4271,7 +4268,7 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
                 paths.to('empty')
               ])
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
     
@@ -4376,7 +4373,7 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
             from: paths.to(loopPath),
             action: 'copy',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -4397,7 +4394,7 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
             from: paths.to(loopPath),
             action: 'merge',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel(loopPath),
             absolute:paths.to(loopPath)
           }
@@ -4428,7 +4425,7 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
                 paths.to('empty')
               ])
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
   });
@@ -4491,7 +4488,7 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
             from: paths.to('variables.scss'),
             action: 'writeFrom',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel('variables.scss'),
             absolute:paths.to('variables.scss')
           }
@@ -4510,7 +4507,7 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
             from: paths.to('dist.css'),
             action: 'writeFrom',
             overwritten: false,
-            root:path.join(paths.rootDir,paths.toDir),
+            root:paths.toDir,
             relative:paths.rel('dist.css'),
             absolute:paths.to('dist.css')
           }
@@ -4536,7 +4533,7 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
               warning:[],
               failure:[]
             },
-            root:path.join(paths.rootDir,paths.toDir)
+            root:paths.toDir
           }
         }));
     

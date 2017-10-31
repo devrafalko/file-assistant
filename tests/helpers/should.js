@@ -604,8 +604,7 @@ const protoMethods = {
     prepareArgs: function(obj){
       const o = obj.data;
       const argumentNames = ['root','structure','done','each'];
-      const absoluteToDir = path.resolve(paths.rootDir,paths.toDir);
-      const argumentDefaults = [absoluteToDir,[],()=>{},()=>{}];
+      const argumentDefaults = [paths.toDir,[],()=>{},()=>{}];
       
       const scenarioErr = this.scenarioErr(o);
       const isScenario = scenarioErr === "scenario";

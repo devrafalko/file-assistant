@@ -30,10 +30,10 @@ function getPath(which,p){
         return path.resolve(mainPath,data['root-dir'].path,data['from-dir'].path,data[p].path);
         break;
       case 'toDir':
-        return path.normalize(data['to-dir'].path);
+        return path.resolve(mainPath,data['root-dir'].path,data['to-dir'].path);
         break;
       case 'fromDir':
-        return path.normalize(data['from-dir'].path);
+        return path.resolve(mainPath,data['root-dir'].path,data['from-dir'].path);
         break;
       case 'rootDir':
         return path.resolve(mainPath,data['root-dir'].path);

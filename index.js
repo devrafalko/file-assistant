@@ -370,6 +370,10 @@ StructureDirs.prototype.validation = {
       this.itemData.root = this.globalData.root;
       resolve();
     },
+    defineParentPath:function(resolve){
+      this.itemData.parentPath = this.levelData.parent ? this.levelData.parent.absolute:this.globalData.root;
+      resolve();
+    },
     defineChildrenPaths:function(resolve){
       if(!this.itemData.folder){
         this.itemData.childrenList = null;
@@ -621,7 +625,8 @@ StructureDirs.prototype.appenders = {
       response:this.response,
       utils:this.utils,
       messages:this.response.messages,
-      computeMessage:this.response.computeMessage
+      computeMessage:this.response.computeMessage,
+      methods:ap
     };
 
     if(itemData.file) moveOn(fileList,userContext,onFileDone,onFileDone);
@@ -765,8 +770,15 @@ StructureDirs.prototype.appenders = {
       if(this.itemData.alreadyDirExists) return resolve();
       fs.mkdir(this.itemData.absolute,(err)=>{
         if(err){
-          this.computeMessage('failure',false);
-          return reject();
+          listContent(this.itemData.parentPath,{depth:1},(o)=>{
+            if(o.dirs.some((d)=>d===this.itemData.name)){
+              this.itemData.alreadyDirExists = true;
+              this.methods.abortIfDirOverwrite.call(this,resolve,reject);
+            } else {
+              this.computeMessage('failure',false);
+              return reject();
+            }
+          });
         }
         if(!err){
           if(!this.itemData.tidyUp) this.computeMessage('success',true);

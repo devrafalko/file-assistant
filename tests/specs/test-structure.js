@@ -58,7 +58,7 @@ describe('When the module function',function(){
 
     describe("leads to the folder",function(){
       beforeAll(function(done){
-        this.structure = path.join(paths.rootDir,paths.fromDir);
+        this.structure = paths.fromDir;
         prepare.resetFrom()
         .then(done)
         .catch(done.fail);
@@ -153,7 +153,7 @@ describe('When the module function',function(){
 
     describe("leads to the json file of valid content, but of [non-Array] type",function(){
       beforeAll(function(done){
-        this.structure = path.join(paths.rootDir,paths.fromDir,'structure.json');
+        this.structure = path.join(paths.fromDir,'structure.json');
         prepare.resetFrom()
         .then(()=>prepare.writeJSON(this.structure,{dir:'styles'}))
         .then(done)
@@ -187,7 +187,7 @@ describe('When the module function',function(){
 
       describe("that is empty",function(){
         beforeAll(function(done){
-          this.structure = path.join(paths.rootDir,paths.fromDir,'structure.json');
+          this.structure = path.join(paths.fromDir,'structure.json');
           prepare.resetFrom()
           .then(()=>prepare.writeJSON(this.structure,[]))
           .then(done)
@@ -220,7 +220,7 @@ describe('When the module function',function(){
 
       describe("contains at least one item that is not of [Object] type",function(){
         beforeAll(function(done){
-          this.structure = path.join(paths.rootDir,paths.fromDir,'structure.json');
+          this.structure = path.join(paths.fromDir,'structure.json');
           prepare.resetFrom()
           .then(()=>prepare.writeJSON(this.structure,[1,2,3]))
           .then(done)
@@ -297,7 +297,7 @@ describe('When the module function',function(){
 
       describe("leads to the folder",function(){
         beforeAll(function(done){
-          this.structure = [{dir:'styles',contents:path.join(paths.rootDir,paths.fromDir)}];
+          this.structure = [{dir:'styles',contents:paths.fromDir}];
           prepare.resetFrom()
           .then(done)
           .catch(done.fail);
@@ -392,7 +392,7 @@ describe('When the module function',function(){
 
       describe("leads to the json file of valid content, but of [non-Array] type",function(){
         beforeAll(function(done){
-          const jsonPath = path.join(paths.rootDir,paths.fromDir,'structure.json');
+          const jsonPath = path.join(paths.fromDir,'structure.json');
           this.structure = [{dir:'styles',contents:jsonPath}];
           prepare.resetFrom()
           .then(()=>prepare.writeJSON(jsonPath,{dir:'styles'}))
@@ -427,7 +427,7 @@ describe('When the module function',function(){
 
         describe("that is empty",function(){
           beforeAll(function(done){
-            const jsonPath = path.join(paths.rootDir,paths.fromDir,'structure.json');
+            const jsonPath = path.join(paths.fromDir,'structure.json');
             this.structure = [{dir:'styles',contents:jsonPath}];
             prepare.resetFrom()
             .then(()=>prepare.writeJSON(jsonPath,[]))
@@ -461,7 +461,7 @@ describe('When the module function',function(){
 
         describe("contains at least one item that is not of [Object] type",function(){
           beforeAll(function(done){
-            const jsonPath = path.join(paths.rootDir,paths.fromDir,'structure.json');
+            const jsonPath = path.join(paths.fromDir,'structure.json');
             this.structure = [{dir:'styles',contents:jsonPath}];
             prepare.resetFrom()
             .then(()=>prepare.writeJSON(jsonPath,[1,2,3]))
@@ -3954,13 +3954,13 @@ describe('When the module function',function(){
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.toDir)
+            $directory:paths.toDir
           }));
           
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.fromDir)
+            $directory:paths.fromDir
           }));
           
           it.apply(this,should.runCallback({
@@ -3998,7 +3998,7 @@ describe('When the module function',function(){
                 warning:[],
                 failure:[]
               },
-              root:path.join(paths.rootDir,paths.toDir)
+              root:paths.toDir
             }
           }));
 
@@ -4022,13 +4022,13 @@ describe('When the module function',function(){
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.toDir)
+            $directory:paths.toDir
           }));
           
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.fromDir)
+            $directory:paths.fromDir
           }));
           
           it.apply(this,should.runCallback({
@@ -4066,7 +4066,7 @@ describe('When the module function',function(){
                 warning:[],
                 failure:[]
               },
-              root:path.join(paths.rootDir,paths.toDir)
+              root:paths.toDir
             }
           }));
 
@@ -4090,13 +4090,13 @@ describe('When the module function',function(){
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.toDir)
+            $directory:paths.toDir
           }));
 
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.fromDir)
+            $directory:paths.fromDir
           }));
 
           it.apply(this,should.runCallback({
@@ -4134,7 +4134,7 @@ describe('When the module function',function(){
                 warning:[],
                 failure:[]
               },
-              root:path.join(paths.rootDir,paths.toDir)
+              root:paths.toDir
             }
           }));
 
@@ -4162,13 +4162,13 @@ describe('When the module function',function(){
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.toDir)
+            $directory:paths.toDir
           }));
 
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.fromDir)
+            $directory:paths.fromDir
           }));
 
           it.apply(this,should.runCallback({
@@ -4206,7 +4206,7 @@ describe('When the module function',function(){
                 warning:[],
                 failure:[]
               },
-              root:path.join(paths.rootDir,paths.toDir)
+              root:paths.toDir
             }
           }));
 
@@ -4232,13 +4232,13 @@ describe('When the module function',function(){
             it.apply(this,should.keepPreviousContents({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
-              $directory:path.join(paths.rootDir,paths.toDir)
+              $directory:paths.toDir
             }));
 
             it.apply(this,should.keepPreviousContents({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
-              $directory:path.join(paths.rootDir,paths.fromDir)
+              $directory:paths.fromDir
             }));
             
             it.apply(this,should.keepFileContent({
@@ -4282,7 +4282,7 @@ describe('When the module function',function(){
                   warning:[],
                   failure:[]
                 },
-                root:path.join(paths.rootDir,paths.toDir)
+                root:paths.toDir
               }
             }));
 
@@ -4373,7 +4373,7 @@ describe('When the module function',function(){
                 action: 'writeFrom',
                 modified:true,
                 overwritten: false,
-                root:path.join(paths.rootDir,paths.toDir),
+                root:paths.toDir,
                 relative:paths.rel('prod.css'),
                 absolute:paths.to('prod.css')
               }
@@ -4396,7 +4396,7 @@ describe('When the module function',function(){
                   warning:[],
                   failure:[]
                 },
-                root:path.join(paths.rootDir,paths.toDir)
+                root:paths.toDir
               }
             }));
 
@@ -4450,7 +4450,7 @@ describe('When the module function',function(){
                 action: 'writeFrom',
                 modified:false,
                 overwritten: false,
-                root:path.join(paths.rootDir,paths.toDir),
+                root:paths.toDir,
                 relative:paths.rel('prod.css'),
                 absolute:paths.to('prod.css')
               }
@@ -4473,7 +4473,7 @@ describe('When the module function',function(){
                   warning:[],
                   failure:[]
                 },
-                root:path.join(paths.rootDir,paths.toDir)
+                root:paths.toDir
               }
             }));
 
@@ -4499,13 +4499,13 @@ describe('When the module function',function(){
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.not.createNewFile({
@@ -4553,7 +4553,7 @@ describe('When the module function',function(){
                   action: 'writeFrom',
                   modified:false,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -4575,7 +4575,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
 
@@ -4592,13 +4592,13 @@ describe('When the module function',function(){
               it.apply(this,should.not.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.createNewFile({
@@ -4646,7 +4646,7 @@ describe('When the module function',function(){
                   action: 'writeFrom',
                   modified:true,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -4668,7 +4668,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
             });
@@ -4685,13 +4685,13 @@ describe('When the module function',function(){
               it.apply(this,should.not.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.createNewFile({
@@ -4739,7 +4739,7 @@ describe('When the module function',function(){
                   action: 'writeFrom',
                   modified:true,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -4761,7 +4761,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
 
@@ -4778,13 +4778,13 @@ describe('When the module function',function(){
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.not.createNewFile({
@@ -4832,7 +4832,7 @@ describe('When the module function',function(){
                   action: 'writeFrom',
                   modified:false,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -4854,7 +4854,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
 
@@ -4871,13 +4871,13 @@ describe('When the module function',function(){
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.not.createNewFile({
@@ -4925,7 +4925,7 @@ describe('When the module function',function(){
                   action: 'writeFrom',
                   modified:false,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -4947,7 +4947,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
 
@@ -4976,13 +4976,13 @@ describe('When the module function',function(){
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.not.createNewFile({
@@ -5030,7 +5030,7 @@ describe('When the module function',function(){
                   action: 'writeFrom',
                   modified:false,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -5052,7 +5052,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
 
@@ -5069,13 +5069,13 @@ describe('When the module function',function(){
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.not.createNewFile({
@@ -5123,7 +5123,7 @@ describe('When the module function',function(){
                   action: 'writeFrom',
                   modified:false,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -5145,7 +5145,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
 
@@ -5162,13 +5162,13 @@ describe('When the module function',function(){
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.not.createNewFile({
@@ -5216,7 +5216,7 @@ describe('When the module function',function(){
                   action: 'writeFrom',
                   modified:false,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -5238,7 +5238,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
             });
@@ -5255,13 +5255,13 @@ describe('When the module function',function(){
             it.apply(this,should.keepPreviousContents({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
-              $directory:path.join(paths.rootDir,paths.toDir)
+              $directory:paths.toDir
             }));
 
             it.apply(this,should.keepPreviousContents({
               $function:testingModule,
               $arguments:{structure:should.context('structure')},
-              $directory:path.join(paths.rootDir,paths.fromDir)
+              $directory:paths.fromDir
             }));
             
             it.apply(this,should.keepFileContent({
@@ -5305,7 +5305,7 @@ describe('When the module function',function(){
                   warning:[],
                   failure:[]
                 },
-                root:path.join(paths.rootDir,paths.toDir)
+                root:paths.toDir
               }
             }));
 
@@ -5397,7 +5397,7 @@ describe('When the module function',function(){
                 action: 'write',
                 modified:true,
                 overwritten: false,
-                root:path.join(paths.rootDir,paths.toDir),
+                root:paths.toDir,
                 relative:paths.rel('prod.css'),
                 absolute:paths.to('prod.css')
               }
@@ -5420,7 +5420,7 @@ describe('When the module function',function(){
                   warning:[],
                   failure:[]
                 },
-                root:path.join(paths.rootDir,paths.toDir)
+                root:paths.toDir
               }
             }));
 
@@ -5474,7 +5474,7 @@ describe('When the module function',function(){
                 action: 'write',
                 modified:false,
                 overwritten: false,
-                root:path.join(paths.rootDir,paths.toDir),
+                root:paths.toDir,
                 relative:paths.rel('prod.css'),
                 absolute:paths.to('prod.css')
               }
@@ -5497,7 +5497,7 @@ describe('When the module function',function(){
                   warning:[],
                   failure:[]
                 },
-                root:path.join(paths.rootDir,paths.toDir)
+                root:paths.toDir
               }
             }));
 
@@ -5523,13 +5523,13 @@ describe('When the module function',function(){
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.not.createNewFile({
@@ -5577,7 +5577,7 @@ describe('When the module function',function(){
                   action: 'write',
                   modified:false,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -5599,7 +5599,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
 
@@ -5616,13 +5616,13 @@ describe('When the module function',function(){
               it.apply(this,should.not.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.createNewFile({
@@ -5670,7 +5670,7 @@ describe('When the module function',function(){
                   action: 'write',
                   modified:true,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -5692,7 +5692,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
             });
@@ -5709,13 +5709,13 @@ describe('When the module function',function(){
               it.apply(this,should.not.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.createNewFile({
@@ -5763,7 +5763,7 @@ describe('When the module function',function(){
                   action: 'write',
                   modified:true,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -5785,7 +5785,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
 
@@ -5802,13 +5802,13 @@ describe('When the module function',function(){
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.not.createNewFile({
@@ -5856,7 +5856,7 @@ describe('When the module function',function(){
                   action: 'write',
                   modified:false,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -5878,7 +5878,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
 
@@ -5895,13 +5895,13 @@ describe('When the module function',function(){
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.not.createNewFile({
@@ -5949,7 +5949,7 @@ describe('When the module function',function(){
                   action: 'write',
                   modified:false,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -5971,7 +5971,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
             });
@@ -5998,13 +5998,13 @@ describe('When the module function',function(){
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.not.createNewFile({
@@ -6052,7 +6052,7 @@ describe('When the module function',function(){
                   action: 'write',
                   modified:false,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -6074,7 +6074,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
             });
@@ -6090,13 +6090,13 @@ describe('When the module function',function(){
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.not.createNewFile({
@@ -6144,7 +6144,7 @@ describe('When the module function',function(){
                   action: 'write',
                   modified:false,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -6166,7 +6166,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
             });
@@ -6182,13 +6182,13 @@ describe('When the module function',function(){
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.toDir)
+                $directory:paths.toDir
               }));
 
               it.apply(this,should.keepPreviousContents({
                 $function:testingModule,
                 $arguments:{structure:should.context('structure')},
-                $directory:path.join(paths.rootDir,paths.fromDir)
+                $directory:paths.fromDir
               }));
 
               it.apply(this,should.not.createNewFile({
@@ -6236,7 +6236,7 @@ describe('When the module function',function(){
                   action: 'write',
                   modified:false,
                   overwritten: false,
-                  root:path.join(paths.rootDir,paths.toDir),
+                  root:paths.toDir,
                   relative:paths.rel('prod.css'),
                   absolute:paths.to('prod.css')
                 }
@@ -6258,7 +6258,7 @@ describe('When the module function',function(){
                     warning:[],
                     failure:[]
                   },
-                  root:path.join(paths.rootDir,paths.toDir)
+                  root:paths.toDir
                 }
               }));
             });
@@ -6282,13 +6282,13 @@ describe('When the module function',function(){
           it.apply(this,should.not.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.toDir)
+            $directory:paths.toDir
           }));
 
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.fromDir)
+            $directory:paths.fromDir
           }));
 
           it.apply(this,should.createNewFile({
@@ -6356,7 +6356,7 @@ describe('When the module function',function(){
               action: 'copy',
               modified:true,
               overwritten: false,
-              root:path.join(paths.rootDir,paths.toDir),
+              root:paths.toDir,
               relative:paths.rel('prod.css'),
               absolute:paths.to('prod.css')
             }
@@ -6378,7 +6378,7 @@ describe('When the module function',function(){
                 warning:[],
                 failure:[]
               },
-              root:path.join(paths.rootDir,paths.toDir)
+              root:paths.toDir
             }
           }));
         });
@@ -6400,13 +6400,13 @@ describe('When the module function',function(){
           it.apply(this,should.not.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.toDir)
+            $directory:paths.toDir
           }));
 
           it.apply(this,should.not.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.fromDir)
+            $directory:paths.fromDir
           }));
 
           it.apply(this,should.createNewFile({
@@ -6461,7 +6461,7 @@ describe('When the module function',function(){
               action: 'move',
               modified:true,
               overwritten: false,
-              root:path.join(paths.rootDir,paths.toDir),
+              root:paths.toDir,
               relative:paths.rel('prod.css'),
               absolute:paths.to('prod.css')
             }
@@ -6483,7 +6483,7 @@ describe('When the module function',function(){
                 warning:[],
                 failure:[]
               },
-              root:path.join(paths.rootDir,paths.toDir)
+              root:paths.toDir
             }
           }));
         });
@@ -6506,13 +6506,13 @@ describe('When the module function',function(){
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.toDir)
+            $directory:paths.toDir
           }));
 
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.fromDir)
+            $directory:paths.fromDir
           }));
 
           it.apply(this,should.not.createNewFile({
@@ -6567,7 +6567,7 @@ describe('When the module function',function(){
               action: 'write',
               modified:true,
               overwritten: true,
-              root:path.join(paths.rootDir,paths.toDir),
+              root:paths.toDir,
               relative:paths.rel('prod.css'),
               absolute:paths.to('prod.css')
             }
@@ -6589,7 +6589,7 @@ describe('When the module function',function(){
                 warning:[],
                 failure:[]
               },
-              root:path.join(paths.rootDir,paths.toDir)
+              root:paths.toDir
             }
           }));
         });
@@ -6612,13 +6612,13 @@ describe('When the module function',function(){
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.toDir)
+            $directory:paths.toDir
           }));
 
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.fromDir)
+            $directory:paths.fromDir
           }));
 
           it.apply(this,should.not.createNewFile({
@@ -6673,7 +6673,7 @@ describe('When the module function',function(){
               action: 'write',
               modified:true,
               overwritten: false,
-              root:path.join(paths.rootDir,paths.toDir),
+              root:paths.toDir,
               relative:paths.rel('prod.css'),
               absolute:paths.to('prod.css')
             }
@@ -6695,7 +6695,7 @@ describe('When the module function',function(){
                 warning:[],
                 failure:[]
               },
-              root:path.join(paths.rootDir,paths.toDir)
+              root:paths.toDir
             }
           }));
         });
@@ -6718,13 +6718,13 @@ describe('When the module function',function(){
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.toDir)
+            $directory:paths.toDir
           }));
 
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.fromDir)
+            $directory:paths.fromDir
           }));
 
           it.apply(this,should.not.createNewFile({
@@ -6790,7 +6790,7 @@ describe('When the module function',function(){
               action: 'writeFrom',
               modified:true,
               overwritten: false,
-              root:path.join(paths.rootDir,paths.toDir),
+              root:paths.toDir,
               relative:paths.rel('prod.css'),
               absolute:paths.to('prod.css')
             }
@@ -6812,7 +6812,7 @@ describe('When the module function',function(){
                 warning:[],
                 failure:[]
               },
-              root:path.join(paths.rootDir,paths.toDir)
+              root:paths.toDir
             }
           }));
         });
@@ -6835,13 +6835,13 @@ describe('When the module function',function(){
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.toDir)
+            $directory:paths.toDir
           }));
 
           it.apply(this,should.keepPreviousContents({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
-            $directory:path.join(paths.rootDir,paths.fromDir)
+            $directory:paths.fromDir
           }));
 
           it.apply(this,should.not.createNewFile({
@@ -6907,7 +6907,7 @@ describe('When the module function',function(){
               action: 'writeFrom',
               modified:true,
               overwritten: true,
-              root:path.join(paths.rootDir,paths.toDir),
+              root:paths.toDir,
               relative:paths.rel('prod.css'),
               absolute:paths.to('prod.css')
             }
@@ -6929,7 +6929,7 @@ describe('When the module function',function(){
                 warning:[],
                 failure:[]
               },
-              root:path.join(paths.rootDir,paths.toDir)
+              root:paths.toDir
             }
           }));
         });

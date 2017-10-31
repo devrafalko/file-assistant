@@ -68,7 +68,6 @@ module.exports = {
     add:function(item,getDir,done){
       return new Promise((resolve,reject)=>{
         const re = this.response(done,resolve,reject);
-        
         if(getDir==='file'){
           fs.ensureFile(path.join(paths.rootDir,item),(err)=>{
             if(err) re.ject(new Error(`Could not add '${item}' file.`));
@@ -84,14 +83,14 @@ module.exports = {
           return;
         }
         
-        var dir = data[getDir+'-dir'].path;
+        var dir = paths[getDir+'Dir'];
         var p = data[item];
         if(!p) {
           re.ject(new Error(`Could not find '${item}' on the list of templates.`));
           return;
         }
         if(p.type==='dir'){
-          fs.ensureDir(path.join(paths.rootDir,dir,p.path))
+          fs.ensureDir(path.join(dir,p.path))
           .then(()=>{
             re.solve(null);
             return;
@@ -103,7 +102,7 @@ module.exports = {
           });
           } else if(p.type==='file'){
             var content = p.content&&typeof p.content === 'string' ? p.content:"";
-            var newPath = path.join(paths.rootDir,dir,p.path);
+            var newPath = path.join(dir,p.path);
             fs.ensureFile(newPath)
             .then(()=>fs.writeFile(newPath,content))
             .then(()=>{
@@ -153,7 +152,7 @@ module.exports = {
     emptyDirs:function(getDir,done){
       return new Promise((resolve,reject)=>{
         const re = this.response(done,resolve,reject);
-        fs.emptyDir(path.join(paths.rootDir,paths[getDir+'Dir']))
+        fs.emptyDir(paths[getDir+'Dir'])
         .then(()=>re.solve(null))
         .catch(()=>re.ject(new Error(`Could not empty testing folders.`)));
       });
@@ -165,7 +164,7 @@ module.exports = {
           const promises = [];
           for(let i in data){
             promises.push(new Promise((resolve,reject)=>{
-              let pth = path.join(paths.rootDir,paths.fromDir,data[i].path);
+              let pth = path.join(paths.fromDir,data[i].path);
               if(data[i].type==='dir') this.addFolder(pth,i,resolve,reject);
               if(data[i].type==='file') this.addFile(pth,i,resolve,reject);
               if(data[i].type!=='dir'&&data[i].type!=='file') resolve();

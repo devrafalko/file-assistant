@@ -7,8 +7,6 @@ const paths = require(path.resolve(helpers,'paths.js'));
 const should = require(path.resolve(helpers,'should.js'));
 const testingModule = require(path.resolve('./index.js'));
 
-const absoluteToDir = path.resolve(paths.rootDir,paths.toDir);
-
 describe("When the module function is executed",function(){
 
   describe("with the root path folder that already exists as a folder",function(){
@@ -23,12 +21,12 @@ describe("When the module function is executed",function(){
 
     it.apply(this,should.not.throwError({
       $function:testingModule,
-      $arguments:[absoluteToDir]
+      $arguments:[paths.toDir]
     }));
 
     it.apply(this,should.runCallbackWithObject({
       $function:testingModule,
-      $arguments:[absoluteToDir],
+      $arguments:[paths.toDir],
       $callback:'done',
       $callbackTimes:1,
       $properties:{
@@ -49,8 +47,8 @@ describe("When the module function is executed",function(){
 
       it.apply(this,should.keepPreviousContents({
         $function:testingModule,
-        $arguments:[absoluteToDir],
-        $directory:absoluteToDir
+        $arguments:[paths.toDir],
+        $directory:paths.toDir
       }));
 
     });
@@ -67,12 +65,12 @@ describe("When the module function is executed",function(){
 
       it.apply(this,should.not.throwError({
         $function:testingModule,
-        $arguments:[absoluteToDir]
+        $arguments:[paths.toDir]
       }));
 
       it.apply(this,should.runCallbackWithObject({
         $function:testingModule,
-        $arguments:[absoluteToDir],
+        $arguments:[paths.toDir],
         $callback:'done',
         $callbackTimes:1,
         $properties:{
@@ -82,8 +80,8 @@ describe("When the module function is executed",function(){
 
       it.apply(this,should.createNewFolder({
         $function:testingModule,
-        $arguments:[absoluteToDir],
-        $folder:absoluteToDir
+        $arguments:[paths.toDir],
+        $folder:paths.toDir
       }));
 
   });
@@ -135,12 +133,12 @@ describe("When the module function is executed",function(){
 
       it.apply(this,should.not.throwError({
         $function:testingModule,
-        $arguments:[absoluteToDir]
+        $arguments:[paths.toDir]
       }));
 
       it.apply(this,should.runCallbackError({
         $function:testingModule,
-        $arguments:[absoluteToDir],
+        $arguments:[paths.toDir],
         $callback:'done',
         $callbackTimes:1,
         $propertyName:'error',
@@ -150,8 +148,8 @@ describe("When the module function is executed",function(){
 
       it.apply(this,should.not.createNewFolder({
         $function:testingModule,
-        $arguments:[absoluteToDir],
-        $folder:absoluteToDir
+        $arguments:[paths.toDir],
+        $folder:paths.toDir
       }));
 
   });
