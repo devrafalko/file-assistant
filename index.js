@@ -91,7 +91,7 @@ StructureDirs.prototype.validation = {
       root:this.root,
       invalidMessage:(indeces)=>`Invalid structure argument ${indeces}.`
     };
-    
+
     exploreStructure.call(this,{
       currentLevel:this.structure,
       abstract:this.abstractStructure,
@@ -110,7 +110,8 @@ StructureDirs.prototype.validation = {
         elementsNumber:o.currentLevel.length,
         parent:o.parent,
         siblings:o.siblings,
-        whenDone:o.whenDone
+        whenDone:o.whenDone,
+        reservedNames:{}
       };
 
       for(var i in o.currentLevel){
@@ -203,14 +204,23 @@ StructureDirs.prototype.validation = {
       resolve();
     },
     isFileDirEmpty:function(resolve,reject){
-      const condition = this.itemData.item[this.itemData.itemType].length;
+      const condition = this.itemData.name.length;
       if(condition) return resolve();
       reject(new Error(`${this.itemData.invalidMessage} The ["${this.itemData.itemType}"] property is empty, while it should define the ${this.itemData.itemMessage} name.`));
     },
     hasFileDirSlashes:function(resolve,reject){
-      const condition = (/[\\\/]/).test(this.itemData.item[this.itemData.itemType]);
+      const condition = (/[\\\/]/).test(this.itemData.name);
       if(!condition) return resolve();
       reject(new Error(`${this.itemData.invalidMessage} The ["${this.itemData.itemType}"] property should define the ${this.itemData.itemMessage} name rather than ${this.itemData.itemMessage} path. It cannot contain backslashes and forwardslashes.`));
+    },
+    hasSiblingsOfTheSameName:function(resolve,reject){
+      const levelList = this.levelData.reservedNames;
+      const isNameDuplicated = levelList.hasOwnProperty(this.itemData.name);
+      if(isNameDuplicated&&((this.itemData.file&&levelList[this.itemData.name].folder)||(this.itemData.folder&&levelList[this.itemData.name].file))){
+        return reject(new Error(`${this.itemData.invalidMessage} The ${levelList[this.itemData.name].indeces} ${levelList[this.itemData.name].file ? 'file':'folder'} item has already got the same name.`));
+      }
+      levelList[this.itemData.name] = {indeces:this.itemData.indeces,file:this.itemData.file,folder:this.itemData.folder};
+      resolve();
     },
     defineCorrectProperties:function(resolve){
       var content = this.utils.hasAtLeastItems(this.itemData.item,['content'],1);
@@ -1004,22 +1014,22 @@ StructureDirs.prototype.utils = {
     createNext(pathList[mkIter],resolve);
 
     function createNext(elemPath,eachDone){
-      utils.itemExists(elemPath,(o)=>{
-        if(o.exists&&o.dir) next();
-        if(o.exists&&o.file) return reject(new Error(`Could not create the folder in the path '${getPath}', because the file of the same name already exists in this path.`));
-        if(!o.exists){
-          fs.mkdir(elemPath,(err)=>{
-            if(err) return reject(new Error(`Could not create the folder in the path '${getPath}'. The access was denied.`));
-            if(!err) next();
+      fs.mkdir(elemPath,(err)=>{
+        if(err){
+          utils.itemExists(elemPath,(o)=>{
+            if(o.exists&&o.dir) return next();
+            if(o.exists&&o.file) return reject(new Error(`Could not create the folder in the path '${getPath}', because the file of the same name already exists in this path.`));
+            return reject(new Error(`Could not create the folder in the path '${getPath}'. The access was denied.`));
           });
         }
-
-        function next(){
-          mkIter++;
-          if(mkIter<pathList.length) createNext(pathList[mkIter],eachDone);
-          if(mkIter>=pathList.length) eachDone();
-        }
+        if(!err) next();
       });
+
+      function next(){
+        mkIter++;
+        if(mkIter<pathList.length) createNext(pathList[mkIter],eachDone);
+        if(mkIter>=pathList.length) eachDone();
+      }
     }
   },
   convertJSON:function(json,callback){
