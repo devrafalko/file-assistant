@@ -87,5 +87,16 @@
     "type":"dir",
     "name":"empty",
     "path":"empty"
+  },
+  "scripts":{
+    "type":"dir",
+    "name":"scripts",
+    "path":"scripts"
+  },
+  "scripts/ajax":{
+    "type":"file",
+    "name":"ajax",
+    "path":"scripts/ajax",
+    "content":"const req = new XMLHttpRequest();"
   }
 }
