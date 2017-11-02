@@ -85,7 +85,7 @@ StructureDirs.prototype.validation = {
       functionList.push(this.validation.methods[method]);
     }
 
-    this.abstractStructure = [];
+    this.abstractStructure = {};
     const globalData = {
       execution:true,
       root:this.root,
@@ -131,9 +131,10 @@ StructureDirs.prototype.validation = {
 
       function onItemDone(){
         if(this.globalData.execution === false) return;
-        const hasAbstractStructure = type(this.itemData.item.contents,Array);
-        this.levelData.abstract.push(this.itemData);
+        if(!type(this.levelData.abstract[this.itemData.name],Array)) this.levelData.abstract[this.itemData.name] = [];
+        this.levelData.abstract[this.itemData.name].push(this.itemData);
 
+        const hasAbstractStructure = type(this.itemData.item.contents,Array);
         if(!hasAbstractStructure) return moveIterator.call(this);
 
         exploreStructure.call(this,{
@@ -150,9 +151,8 @@ StructureDirs.prototype.validation = {
         function moveIterator(){
           this.levelData.iterator++;
           if(this.levelData.iterator>=this.levelData.elementsNumber){
-            //after all children are done - use tidyUp property for their parent:
             const parent = this.levelData.parent;
-            if(parent&&parent.folder&&(parent.abstractScope.length)) parent.tidyUp = true;
+            if(parent&&parent.folder&&(Object.keys(parent.abstractScope).length)) parent.tidyUp = true;
             return this.levelData.whenDone.call(this.globalData);
           }
         }
@@ -395,7 +395,7 @@ StructureDirs.prototype.validation = {
       });
     },
     defineAbstractScope:function(resolve){
-      this.itemData.abstractScope = [];
+      this.itemData.abstractScope = {};
       resolve();
     },
     defineTidyUpFolder:function(resolve){
@@ -507,21 +507,47 @@ StructureDirs.prototype.appenders = {
       parent:null,
       onDone:resolve
     });
-    
+
     function run(o){
       var iterator = 0;
-      if(!o.abstractScope.length) return increase.call(this);
-      for(let itemData of o.abstractScope){
-        const nextRun = run.bind(this,{
-          abstractScope:itemData.abstractScope,
-          parent:itemData,
-          onDone:increase.bind(this)
-        });
-        const nextAction = itemData.tidyUp ? nextRun:increase.bind(this);
-        this.appenders.createItem.call(this,itemData,nextAction);
+
+      if(!Object.keys(o.abstractScope).length) return increase.call(this);
+      for(let item in o.abstractScope){
+        const itemList = o.abstractScope[item];
+        const multiple = itemList.length>1;
+        if(multiple){
+          const functionList = [];
+          const doubledData = {
+            //alreadyExist
+          };
+          for(let itemData of itemList){
+            functionList.push(function(resolve){
+              const nextRun = run.bind(this,{
+                abstractScope:itemData.abstractScope,
+                parent:itemData,
+                onDone:increase.bind(this)
+              });
+              const nextAction = itemData.tidyUp ? nextRun:resolve;
+              this.appenders.createItem.call(this,itemData,nextAction);
+            });
+          }
+          moveOn(functionList,this,increase.bind(this),()=>{});
+        }
+
+        if(!multiple){
+          const itemData = itemList[0];
+          const nextRun = run.bind(this,{
+            abstractScope:itemData.abstractScope,
+            parent:itemData,
+            onDone:increase.bind(this)
+          });
+          const nextAction = itemData.tidyUp ? nextRun:increase.bind(this);
+          this.appenders.createItem.call(this,itemData,nextAction);
+        }
+
       }
       function increase(){
-        if(++iterator>=o.abstractScope.length){
+        if(++iterator>=Object.keys(o.abstractScope).length){
           if(o.parent) this.appenders.tidyUpFolder.call(this,o.parent,o.onDone);
           if(!o.parent) o.onDone();
         }
@@ -569,17 +595,21 @@ StructureDirs.prototype.appenders = {
 
       function checkIfChildrenFailed(resolve){
         const countResult = {};
-        const ch = this.itemData.abstractScope;
-        for(var x in ch){
-          for(var y in ch[x].result){
-            countResult[y] = ch[x].result[y]!==null ? true:countResult[y] ? countResult[y]:false;
+        const siblings = this.itemData.abstractScope;
+        for(var doubled in siblings){
+          for(var singleItem of siblings[doubled]){
+            for(var x in singleItem.result){
+              countResult[x] = singleItem.result[x]!==null ? true:countResult[x] ? countResult[x]:false;
+            }
           }
         }
+
         this.itemData.childResults = countResult;
         resolve();
       }
 
       function computeFolderSummaryMessage(resolve){
+
         switch(true){
           case (this.itemData.childResults.failure):
             this.computeMessage('warning',true,', but at least one of its child items failed.');
@@ -597,7 +627,7 @@ StructureDirs.prototype.appenders = {
   },
   createItem:function(itemData,done){
     const ap = this.appenders.methods;
-    
+
     const fileList = [
       ap.abortIfDirExists,
       ap.abortIfPathInaccessible,
@@ -608,7 +638,7 @@ StructureDirs.prototype.appenders = {
       ap.writeFile,
       ap.removeFile
     ];
-    
+
     const dirList = [
       ap.abortIfFileExists,
       ap.abortIfPathInaccessible,
@@ -617,7 +647,7 @@ StructureDirs.prototype.appenders = {
       ap.createFolder,
       ap.emptyContent
     ];
-    
+
     const unrecognizedList = [
       ap.handleUnrecognized
     ];
@@ -650,7 +680,7 @@ StructureDirs.prototype.appenders = {
 
       function onDirDone(){
         if(this.itemData.action==='move') return done();
-        if(this.itemData.abstractScope.length) return done();
+        if(Object.keys(this.itemData.abstractScope).length) return done();
         this.response.onEach.call(this);
         done();
       }
