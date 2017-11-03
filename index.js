@@ -399,7 +399,7 @@ StructureDirs.prototype.validation = {
     },
 
     defineParentPath:function(resolve){
-      this.itemData.parentPath = this.levelData.parent ? this.levelData.parent.absolute:this.globalData.root;
+      this.itemData.parent = this.levelData.parent;
       resolve();
     },
     defineChildrenPaths:function(resolve){
@@ -600,11 +600,12 @@ StructureDirs.prototype.appenders = {
         if(this.itemData.action!=='move') return resolve();
         const addMsg = '. The folder was successfully copied to the target location, but could not be removed from its origin location.';
         emptyFolder(this.itemData.from,true,(o)=>{
-          if(!o.error) return resolve();
           if(o.error){
             this.computeMessage('failure',false,addMsg);
-            reject();
+            return reject();
           };
+          this.itemData.globalLevel[this.itemData.absolute].alreadyMoved = true;          
+          return resolve();
         });
       }
 
@@ -646,6 +647,7 @@ StructureDirs.prototype.appenders = {
     const fileList = [
       ap.abortIfDirExists,
       ap.checkDoubleFileExists,
+      ap.abortIfAlreadyMoved,
       ap.abortIfPathInaccessible,
       ap.abortIfTheSamePaths,
       ap.abortIfFileOverwrite,
@@ -658,6 +660,7 @@ StructureDirs.prototype.appenders = {
     const dirList = [
       ap.abortIfFileExists,
       ap.checkDoubleDirExists,
+      ap.abortIfAlreadyMoved,
       ap.abortIfPathInaccessible,
       ap.abortIfTheSamePaths,
       ap.abortIfDirOverwrite,
@@ -674,7 +677,7 @@ StructureDirs.prototype.appenders = {
       failure:null,
       warning:null
     };
-    
+
     const userContext = {
       itemData:itemData,
       globalItemsData:this.globalItemsData,
@@ -718,6 +721,13 @@ StructureDirs.prototype.appenders = {
     },
     checkDoubleFileExists:function(resolve){
       if(this.itemData.globalLevel[this.itemData.absolute].alreadyExists) this.itemData.alreadyFileExists = true;
+      resolve();
+    },
+    abortIfAlreadyMoved:function(resolve,reject){
+      if(this.itemData.globalLevel[this.itemData.absolute].alreadyMoved){
+        this.computeMessage('failure',false,`, because this ${this.itemData.file ? 'file':'folder'} has been already moved.`);
+        return reject();
+      }
       resolve();
     },
     abortIfPathInaccessible:function(resolve,reject){
@@ -811,6 +821,7 @@ StructureDirs.prototype.appenders = {
           this.computeMessage('failure',false,'. The file was successfully copied to the target location, but could not be removed from its origin location.');
           return reject();
         }
+        this.itemData.globalLevel[this.itemData.absolute].alreadyMoved = true;
         this.computeMessage('success',true);
         resolve();
       });
@@ -823,7 +834,8 @@ StructureDirs.prototype.appenders = {
       resolve();
     },
     checkDoubleDirExists:function(resolve){
-      if(this.itemData.globalLevel[this.itemData.absolute].alreadyExists) this.itemData.alreadyDirExists = true;
+      const parentOverwrite = this.itemData.action === 'merge' ? false:this.itemData.parent && this.itemData.parent.overwrite;
+      if(this.itemData.globalLevel[this.itemData.absolute].alreadyExists&&!parentOverwrite) this.itemData.alreadyDirExists = true;
       resolve();
     },
     abortIfDirOverwrite:function(resolve,reject){

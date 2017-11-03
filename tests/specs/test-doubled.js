@@ -1,14 +1,17 @@
-/* global expect */
+/* global expect, it */
 
 
 const path = require('path');
 const helpers = path.resolve('./tests/helpers');
+const testingModule = require(path.resolve('./index.js'));
 
 const prepare = require(path.resolve(helpers,'prepare.js'));
 const paths = require(path.resolve(helpers,'paths.js'));
 const data = require(path.resolve(helpers,'structures.json'));
+const should = require(path.resolve(helpers,'should.js'));
 
-xdescribe(`When the structure contains more than one items`,function(){
+
+describe(`When the structure contains more than one items`,function(){
   beforeEach(function(done){
     prepare.remove()
     .then(()=>prepare.resetFrom())
@@ -16,7 +19,7 @@ xdescribe(`When the structure contains more than one items`,function(){
     .then(done)
     .catch(done.fail);
   });
-  
+
   describe(`that have the 'file' property of the same value`,function(){
     describe(`and any action property`,function(){
       beforeEach(function(){
@@ -28,6 +31,14 @@ xdescribe(`When the structure contains more than one items`,function(){
         ];
       });
 
+      for(var item of ['prod.css','dist.css']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+      }
+
     });
     describe(`and 'move' property`,function(){
       beforeEach(function(){
@@ -38,7 +49,22 @@ xdescribe(`When the structure contains more than one items`,function(){
           {file:paths.name('dist.css'), move:paths.from('dist.css'), overwrite:false}
         ];
       });
-      
+
+      for(var item of ['prod.css','dist.css']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+
+        it.apply(this,should.removeFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.from(item)
+        }));
+      }
+
+
     });
     describe(`and 'copy' property`,function(){
       beforeEach(function(){
@@ -49,7 +75,22 @@ xdescribe(`When the structure contains more than one items`,function(){
           {file:paths.name('dist.css'), copy:paths.from('dist.css'), overwrite:false}
         ];
       });
-      
+
+      for(var item of ['prod.css','dist.css']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+
+        it.apply(this,should.not.removeFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.from(item)
+        }));
+      }
+
+
     });
     describe(`and one has 'copy' and other one has 'move' property`,function(){
       beforeEach(function(){
@@ -60,6 +101,26 @@ xdescribe(`When the structure contains more than one items`,function(){
           {file:paths.name('dist.css'), move:paths.from('dist.css'), overwrite:false}
         ];
       });
+
+      for(var item of ['prod.css','dist.css']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+      }
+
+      it.apply(this,should.removeFile({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $file:paths.from('prod.css')
+      }));
+
+      it.apply(this,should.not.removeFile({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $file:paths.from('dist.css')
+      }));
 
     });
     describe(`and one has 'move' and other one has 'copy' property`,function(){
@@ -72,6 +133,20 @@ xdescribe(`When the structure contains more than one items`,function(){
         ];
       });
 
+      for(var item of ['prod.css','dist.css']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+        
+        it.apply(this,should.removeFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.from(item)
+        }));
+      }
+
     });
     describe(`and 'write' property`,function(){
       beforeEach(function(){
@@ -83,6 +158,14 @@ xdescribe(`When the structure contains more than one items`,function(){
         ];
       });
 
+      for(var item of ['prod.css','dist.css']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+      }
+
     });
     describe(`and 'writeFrom' property`,function(){
       beforeEach(function(){
@@ -93,6 +176,15 @@ xdescribe(`When the structure contains more than one items`,function(){
           {file:paths.name('dist.css'), writeFrom:paths.from('dist.css'), overwrite:false}
         ];
       });
+
+      for(var item of ['prod.css','dist.css']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+      }
+
 
     });
   });
@@ -110,8 +202,22 @@ xdescribe(`When the structure contains more than one items`,function(){
         function before(data,resolve){
           resolve(data);
         }
-
       });
+
+      for(var item of ['prod.css','dist.css']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+        
+        it.apply(this,should.removeFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.from(item)
+        }));
+      }
+
 
     });
     describe(`and 'copy' property`,function(){
@@ -126,8 +232,21 @@ xdescribe(`When the structure contains more than one items`,function(){
         function before(data,resolve){
           resolve(data);
         }
-
       });
+
+      for(var item of ['prod.css','dist.css']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+        
+        it.apply(this,should.not.removeFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.from(item)
+        }));
+      }
 
     });
     describe(`and 'write' property`,function(){
@@ -142,8 +261,15 @@ xdescribe(`When the structure contains more than one items`,function(){
         function before(data,resolve){
           resolve(data);
         }
-
       });
+
+      for(var item of ['prod.css','dist.css']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+      }
 
     });
     describe(`and 'writeFrom' property`,function(){
@@ -158,8 +284,15 @@ xdescribe(`When the structure contains more than one items`,function(){
         function before(data,resolve){
           resolve(data);
         }
-
       });
+
+      for(var item of ['prod.css','dist.css']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+      }
 
     });
   });
@@ -174,6 +307,15 @@ xdescribe(`When the structure contains more than one items`,function(){
           {dir:paths.name('scripts'), overwrite:false}
         ];
       });
+
+      for(var item of ['styles','scripts']){
+        it.apply(this,should.createNewFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to(item)
+        }));
+      }
+
     });
     describe(`and 'move' property`,function(){
       beforeEach(function(){
@@ -184,6 +326,32 @@ xdescribe(`When the structure contains more than one items`,function(){
           {dir:paths.name('scripts'), move:paths.from('scripts'), overwrite:false}
         ];
       });
+
+      for(var item of ['styles','scripts','styles/css','styles/scss']){
+        it.apply(this,should.createNewFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to(item)
+        }));
+        it.apply(this,should.removeFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.from(item)
+        }));
+      }
+
+      for(var item of ['styles/mixins.scss','styles/imports.scss','styles/css/main.css','styles/css/style.css','styles/css/extra.css','styles/scss/main.scss','scripts/ajax.js']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+        it.apply(this,should.removeFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.from(item)
+        }));
+      }
 
     });
     describe(`and 'copy' property`,function(){
@@ -196,6 +364,32 @@ xdescribe(`When the structure contains more than one items`,function(){
         ];
       });
 
+      for(var item of ['styles','scripts','styles/css','styles/scss']){
+        it.apply(this,should.createNewFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to(item)
+        }));
+        it.apply(this,should.not.removeFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.from(item)
+        }));
+      }
+
+      for(var item of ['styles/mixins.scss','styles/imports.scss','styles/css/main.css','styles/css/style.css','styles/css/extra.css','styles/scss/main.scss','scripts/ajax.js']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+        it.apply(this,should.not.removeFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.from(item)
+        }));
+      }
+
     });
     describe(`and one has 'copy' and other one has 'move' property`,function(){
       beforeEach(function(){
@@ -206,6 +400,54 @@ xdescribe(`When the structure contains more than one items`,function(){
           {dir:paths.name('scripts'), move:paths.from('scripts'), overwrite:false}
         ];
       });
+
+      for(var item of ['styles','scripts','styles/css','styles/scss']){
+        it.apply(this,should.createNewFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to(item)
+        }));
+      }
+
+      for(var item of ['styles','styles/css','styles/scss']){
+        it.apply(this,should.removeFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.from(item)
+        }));
+      }
+
+      it.apply(this,should.not.removeFolder({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $folder:paths.from('scripts')
+      }));
+
+      for(var item of ['styles/mixins.scss','styles/imports.scss','styles/css/main.css','styles/css/style.css','styles/css/extra.css','styles/scss/main.scss']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+
+        it.apply(this,should.removeFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.from(item)
+        }));
+      }
+
+      it.apply(this,should.createNewFile({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $file:paths.to('scripts/ajax.js')
+      }));
+
+      it.apply(this,should.not.removeFile({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $file:paths.from('scripts/ajax.js')
+      }));
 
     });
     describe(`and one has 'move' and other one has 'copy' property`,function(){
@@ -218,6 +460,34 @@ xdescribe(`When the structure contains more than one items`,function(){
         ];
       });
 
+      for(var item of ['styles','scripts','styles/css','styles/scss']){
+        it.apply(this,should.createNewFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to(item)
+        }));
+        
+        it.apply(this,should.removeFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.from(item)
+        }));
+      }
+
+      for(var item of ['styles/mixins.scss','styles/imports.scss','styles/css/main.css','styles/css/style.css','styles/css/extra.css','styles/scss/main.scss','scripts/ajax.js']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+
+        it.apply(this,should.removeFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.from(item)
+        }));
+      }
+
     });
     describe(`and 'merge' property`,function(){
       beforeEach(function(){
@@ -228,6 +498,22 @@ xdescribe(`When the structure contains more than one items`,function(){
           {dir:paths.name('scripts'), merge:paths.from('scripts'), overwrite:false}
         ];
       });
+
+      for(var item of ['styles','scripts','styles/css','styles/scss']){
+        it.apply(this,should.createNewFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to(item)
+        }));
+      }
+
+      for(var item of ['styles/mixins.scss','styles/imports.scss','styles/css/main.css','styles/css/style.css','styles/css/extra.css','styles/scss/main.scss','scripts/ajax.js']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+      }
 
     });
   });
@@ -248,6 +534,20 @@ xdescribe(`When the structure contains more than one items`,function(){
           ];
         });
 
+        it.apply(this,should.createNewFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to('styles')
+        }));
+
+        for(var item of ['styles/mixins.scss','styles/imports.scss']){
+          it.apply(this,should.createNewFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to(item)
+          }));
+        }
+
       });
       describe(`and 'move' property`,function(){
         beforeEach(function(){
@@ -263,6 +563,25 @@ xdescribe(`When the structure contains more than one items`,function(){
           ];
         });
 
+        it.apply(this,should.createNewFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to('styles')
+        }));
+
+        for(var item of ['styles/mixins.scss','styles/imports.scss']){
+          it.apply(this,should.createNewFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to(item)
+          }));
+          it.apply(this,should.removeFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.from(item)
+          }));
+        }
+
       });
       describe(`and 'copy' property`,function(){
         beforeEach(function(){
@@ -277,6 +596,25 @@ xdescribe(`When the structure contains more than one items`,function(){
             ]}
           ];
         });
+
+        it.apply(this,should.createNewFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to('styles')
+        }));
+
+        for(var item of ['styles/mixins.scss','styles/imports.scss']){
+          it.apply(this,should.createNewFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to(item)
+          }));
+          it.apply(this,should.not.removeFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.from(item)
+          }));
+        }
 
       });
       describe(`and 'write' property`,function(){
@@ -293,6 +631,20 @@ xdescribe(`When the structure contains more than one items`,function(){
           ];
         });
 
+        it.apply(this,should.createNewFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to('styles')
+        }));
+
+        for(var item of ['styles/mixins.scss','styles/imports.scss']){
+          it.apply(this,should.createNewFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to(item)
+          }));
+        }
+
       });
       describe(`and 'writeFrom' property`,function(){
         beforeEach(function(){
@@ -308,8 +660,23 @@ xdescribe(`When the structure contains more than one items`,function(){
           ];
         });
 
+        it.apply(this,should.createNewFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to('styles')
+        }));
+
+        for(var item of ['styles/mixins.scss','styles/imports.scss']){
+          it.apply(this,should.createNewFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to(item)
+          }));
+        }
+
       });
     });
+
     describe(`items with 'dir' of the same value`,function(){
       describe(`and any action property`,function(){
         beforeEach(function(){
@@ -324,7 +691,15 @@ xdescribe(`When the structure contains more than one items`,function(){
             ]}
           ];
         });
-        
+
+        for(var item of ['styles','styles/css','styles/scss']){
+          it.apply(this,should.createNewFolder({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $folder:paths.to(item)
+          }));
+        }
+
       });
       describe(`and 'move' property`,function(){
         beforeEach(function(){
@@ -339,7 +714,39 @@ xdescribe(`When the structure contains more than one items`,function(){
             ]}
           ];
         });
+
+        it.apply(this,should.createNewFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to('styles')
+        }));
         
+        for(var item of ['styles/css','styles/scss']){
+          it.apply(this,should.createNewFolder({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $folder:paths.to(item)
+          }));
+          it.apply(this,should.removeFolder({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $folder:paths.from(item)
+          }));
+        }
+
+        for(var item of ['styles/css/main.css','styles/css/style.css','styles/css/extra.css','styles/scss/main.scss']){
+          it.apply(this,should.createNewFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to(item)
+          }));
+          it.apply(this,should.removeFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.from(item)
+          }));
+        }
+
       });
       describe(`and 'copy' property`,function(){
         beforeEach(function(){
@@ -354,7 +761,39 @@ xdescribe(`When the structure contains more than one items`,function(){
             ]}
           ];
         });
-        
+
+        it.apply(this,should.createNewFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to('styles')
+        }));
+
+        for(var item of ['styles/css','styles/scss']){
+          it.apply(this,should.createNewFolder({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $folder:paths.to(item)
+          }));
+          it.apply(this,should.not.removeFolder({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $folder:paths.from(item)
+          }));
+        }
+
+        for(var item of ['styles/css/main.css','styles/css/style.css','styles/css/extra.css','styles/scss/main.scss']){
+          it.apply(this,should.createNewFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to(item)
+          }));
+          it.apply(this,should.not.removeFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.from(item)
+          }));
+        }
+
       });
       describe(`and 'merge' property`,function(){
         beforeEach(function(){
@@ -369,6 +808,22 @@ xdescribe(`When the structure contains more than one items`,function(){
             ]}
           ];
         });
+
+        for(var item of ['styles','styles/css','styles/scss']){
+          it.apply(this,should.createNewFolder({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $folder:paths.to(item)
+          }));
+        }
+
+        for(var item of ['styles/css/main.css','styles/css/style.css','styles/css/extra.css','styles/scss/main.scss']){
+          it.apply(this,should.createNewFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to(item)
+          }));
+        }
 
       });
       describe(`and 'contents' property`,function(){
@@ -399,10 +854,23 @@ xdescribe(`When the structure contains more than one items`,function(){
             ]}
           ];
         });
-        
-        
-        
-        
+
+        for(var item of ['styles','styles/css','styles/scss']){
+          it.apply(this,should.createNewFolder({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $folder:paths.to(item)
+          }));
+        }
+
+        for(var item of ['styles/mixins.scss','styles/imports.scss','styles/css/main.css','styles/css/style.css','styles/css/extra.css','styles/scss/main.scss']){
+          it.apply(this,should.createNewFile({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to(item)
+          }));
+        }
+
       });
     });
   });

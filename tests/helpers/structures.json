@@ -93,10 +93,10 @@
     "name":"scripts",
     "path":"scripts"
   },
-  "scripts/ajax":{
+  "scripts/ajax.js":{
     "type":"file",
-    "name":"ajax",
-    "path":"scripts/ajax",
+    "name":"ajax.js",
+    "path":"scripts/ajax.js",
     "content":"const req = new XMLHttpRequest();"
   }
 }
