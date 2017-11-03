@@ -37,6 +37,12 @@ describe(`When the structure contains more than one items`,function(){
           $arguments:{structure:should.context('structure')},
           $file:paths.to(item)
         }));
+        it.apply(this,should.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item),
+          $content:''
+        }));
       }
 
     });
@@ -62,6 +68,14 @@ describe(`When the structure contains more than one items`,function(){
           $arguments:{structure:should.context('structure')},
           $file:paths.from(item)
         }));
+
+        it.apply(this,should.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item),
+          $content:data[item].content
+        }));
+
       }
 
 
@@ -88,9 +102,21 @@ describe(`When the structure contains more than one items`,function(){
           $arguments:{structure:should.context('structure')},
           $file:paths.from(item)
         }));
+
+        it.apply(this,should.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item),
+          $content:data[item].content
+        }));
+
+        it.apply(this,should.haveTheSameContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $model:paths.from(item),
+          $compared:paths.to(item)
+        }));
       }
-
-
     });
     describe(`and one has 'copy' and other one has 'move' property`,function(){
       beforeEach(function(){
@@ -122,6 +148,13 @@ describe(`When the structure contains more than one items`,function(){
         $file:paths.from('dist.css')
       }));
 
+      it.apply(this,should.haveContent({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $file:paths.to(item),
+        $content:data[item].content
+      }));
+
     });
     describe(`and one has 'move' and other one has 'copy' property`,function(){
       beforeEach(function(){
@@ -145,6 +178,13 @@ describe(`When the structure contains more than one items`,function(){
           $arguments:{structure:should.context('structure')},
           $file:paths.from(item)
         }));
+
+        it.apply(this,should.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item),
+          $content:data[item].content
+        }));
       }
 
     });
@@ -166,6 +206,20 @@ describe(`When the structure contains more than one items`,function(){
         }));
       }
 
+      it.apply(this,should.haveContent({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $file:paths.to('prod.css'),
+        $content:data['dist.css'].content
+      }));
+      
+      it.apply(this,should.haveContent({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $file:paths.to('dist.css'),
+        $content:data['prod.css'].content + data['dist.css'].content
+      }));
+
     });
     describe(`and 'writeFrom' property`,function(){
       beforeEach(function(){
@@ -185,6 +239,19 @@ describe(`When the structure contains more than one items`,function(){
         }));
       }
 
+      it.apply(this,should.haveContent({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $file:paths.to('prod.css'),
+        $content:data['prod.css'].content
+      }));
+
+      it.apply(this,should.haveContent({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $file:paths.to('dist.css'),
+        $content:data['dist.css'].content + data['dist.css'].content
+      }));
 
     });
   });
@@ -199,8 +266,8 @@ describe(`When the structure contains more than one items`,function(){
           {file:paths.name('dist.css'), move:paths.from('dist.css'), overwrite:false, beforeWrite:before}
         ];
 
-        function before(data,resolve){
-          resolve(data);
+        function before(getData,resolve){
+          resolve(getData);
         }
       });
 
@@ -216,8 +283,15 @@ describe(`When the structure contains more than one items`,function(){
           $arguments:{structure:should.context('structure')},
           $file:paths.from(item)
         }));
-      }
 
+        it.apply(this,should.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item),
+          $content:data[item].content
+        }));
+
+      }
 
     });
     describe(`and 'copy' property`,function(){
@@ -229,8 +303,8 @@ describe(`When the structure contains more than one items`,function(){
           {file:paths.name('dist.css'), copy:paths.from('dist.css'), overwrite:false, beforeWrite:before}
         ];
 
-        function before(data,resolve){
-          resolve(data);
+        function before(getData,resolve){
+          resolve(getData + data['styles/css/main.css'].content);
         }
       });
 
@@ -246,6 +320,13 @@ describe(`When the structure contains more than one items`,function(){
           $arguments:{structure:should.context('structure')},
           $file:paths.from(item)
         }));
+        
+        it.apply(this,should.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item),
+          $content:data[item].content + data['styles/css/main.css'].content
+        }));
       }
 
     });
@@ -258,8 +339,8 @@ describe(`When the structure contains more than one items`,function(){
           {file:paths.name('dist.css'), write:data['dist.css'].content, overwrite:false, beforeWrite:before}
         ];
 
-        function before(data,resolve){
-          resolve(data);
+        function before(getData,resolve){
+          resolve(getData + data['styles/css/main.css'].content);
         }
       });
 
@@ -270,6 +351,20 @@ describe(`When the structure contains more than one items`,function(){
           $file:paths.to(item)
         }));
       }
+
+      it.apply(this,should.haveContent({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $file:paths.to('prod.css'),
+        $content:data['dist.css'].content + data['styles/css/main.css'].content
+      }));
+
+      it.apply(this,should.haveContent({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $file:paths.to('dist.css'),
+        $content:data['prod.css'].content + data['styles/css/main.css'].content + data['dist.css'].content + data['styles/css/main.css'].content
+      }));
 
     });
     describe(`and 'writeFrom' property`,function(){
@@ -281,8 +376,8 @@ describe(`When the structure contains more than one items`,function(){
           {file:paths.name('dist.css'), writeFrom:paths.from('dist.css'), overwrite:false, beforeWrite:before}
         ];
 
-        function before(data,resolve){
-          resolve(data);
+        function before(getData,resolve){
+          resolve(getData + data['styles/css/main.css'].content);
         }
       });
 
@@ -293,6 +388,20 @@ describe(`When the structure contains more than one items`,function(){
           $file:paths.to(item)
         }));
       }
+
+      it.apply(this,should.haveContent({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $file:paths.to('prod.css'),
+        $content:data['prod.css'].content + data['styles/css/main.css'].content
+      }));
+
+      it.apply(this,should.haveContent({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $file:paths.to('dist.css'),
+        $content:data['dist.css'].content + data['styles/css/main.css'].content + data['dist.css'].content + data['styles/css/main.css'].content
+      }));
 
     });
   });
@@ -346,11 +455,20 @@ describe(`When the structure contains more than one items`,function(){
           $arguments:{structure:should.context('structure')},
           $file:paths.to(item)
         }));
+
         it.apply(this,should.removeFile({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $file:paths.from(item)
         }));
+
+        it.apply(this,should.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item),
+          $content:data[item].content
+        }));
+
       }
 
     });
@@ -370,11 +488,13 @@ describe(`When the structure contains more than one items`,function(){
           $arguments:{structure:should.context('structure')},
           $folder:paths.to(item)
         }));
+
         it.apply(this,should.not.removeFolder({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $folder:paths.from(item)
         }));
+
       }
 
       for(var item of ['styles/mixins.scss','styles/imports.scss','styles/css/main.css','styles/css/style.css','styles/css/extra.css','styles/scss/main.scss','scripts/ajax.js']){
@@ -383,10 +503,18 @@ describe(`When the structure contains more than one items`,function(){
           $arguments:{structure:should.context('structure')},
           $file:paths.to(item)
         }));
+
         it.apply(this,should.not.removeFile({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $file:paths.from(item)
+        }));
+
+        it.apply(this,should.haveTheSameContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $model:paths.from(item),
+          $compared:paths.to(item)
         }));
       }
 
@@ -435,6 +563,14 @@ describe(`When the structure contains more than one items`,function(){
           $arguments:{structure:should.context('structure')},
           $file:paths.from(item)
         }));
+
+        it.apply(this,should.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item),
+          $content:data[item].content
+        }));
+
       }
 
       it.apply(this,should.createNewFile({
@@ -447,6 +583,13 @@ describe(`When the structure contains more than one items`,function(){
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
         $file:paths.from('scripts/ajax.js')
+      }));
+
+      it.apply(this,should.haveTheSameContent({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $model:paths.from('scripts/ajax.js'),
+        $compared:paths.to('scripts/ajax.js')
       }));
 
     });
@@ -486,6 +629,14 @@ describe(`When the structure contains more than one items`,function(){
           $arguments:{structure:should.context('structure')},
           $file:paths.from(item)
         }));
+
+        it.apply(this,should.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item),
+          $content:data[item].content
+        }));
+
       }
 
     });
@@ -512,6 +663,13 @@ describe(`When the structure contains more than one items`,function(){
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
           $file:paths.to(item)
+        }));
+
+        it.apply(this,should.haveTheSameContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $model:paths.from(item),
+          $compared:paths.to(item)
         }));
       }
 
@@ -546,6 +704,13 @@ describe(`When the structure contains more than one items`,function(){
             $arguments:{structure:should.context('structure')},
             $file:paths.to(item)
           }));
+
+          it.apply(this,should.haveContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to(item),
+            $content:''
+          }));
         }
 
       });
@@ -575,10 +740,18 @@ describe(`When the structure contains more than one items`,function(){
             $arguments:{structure:should.context('structure')},
             $file:paths.to(item)
           }));
+
           it.apply(this,should.removeFile({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $file:paths.from(item)
+          }));
+
+          it.apply(this,should.haveContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to(item),
+            $content:data[item].content
           }));
         }
 
@@ -609,10 +782,18 @@ describe(`When the structure contains more than one items`,function(){
             $arguments:{structure:should.context('structure')},
             $file:paths.to(item)
           }));
+
           it.apply(this,should.not.removeFile({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $file:paths.from(item)
+          }));
+
+          it.apply(this,should.haveTheSameContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $model:paths.from(item),
+            $compared:paths.to(item)
           }));
         }
 
@@ -645,6 +826,21 @@ describe(`When the structure contains more than one items`,function(){
           }));
         }
 
+        it.apply(this,should.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to('styles/mixins.scss'),
+          $content:data['styles/imports.scss'].content
+        }));
+
+        it.apply(this,should.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to('styles/imports.scss'),
+          $content:data['styles/imports.scss'].content + data['styles/mixins.scss'].content
+        }));
+
+
       });
       describe(`and 'writeFrom' property`,function(){
         beforeEach(function(){
@@ -673,6 +869,20 @@ describe(`When the structure contains more than one items`,function(){
             $file:paths.to(item)
           }));
         }
+
+        it.apply(this,should.haveTheSameContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $model:paths.from('styles/imports.scss'),
+          $compared:paths.to('styles/mixins.scss')
+        }));
+
+        it.apply(this,should.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to('styles/imports.scss'),
+          $content:data['styles/imports.scss'].content + data['styles/mixins.scss'].content
+        }));
 
       });
     });
@@ -740,10 +950,18 @@ describe(`When the structure contains more than one items`,function(){
             $arguments:{structure:should.context('structure')},
             $file:paths.to(item)
           }));
+
           it.apply(this,should.removeFile({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $file:paths.from(item)
+          }));
+
+          it.apply(this,should.haveContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to(item),
+            $content:data[item].content
           }));
         }
 
@@ -787,11 +1005,20 @@ describe(`When the structure contains more than one items`,function(){
             $arguments:{structure:should.context('structure')},
             $file:paths.to(item)
           }));
+
           it.apply(this,should.not.removeFile({
             $function:testingModule,
             $arguments:{structure:should.context('structure')},
             $file:paths.from(item)
           }));
+
+          it.apply(this,should.haveTheSameContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $model:paths.from(item),
+            $compared:paths.to(item)
+          }));
+
         }
 
       });
@@ -823,8 +1050,14 @@ describe(`When the structure contains more than one items`,function(){
             $arguments:{structure:should.context('structure')},
             $file:paths.to(item)
           }));
-        }
 
+          it.apply(this,should.haveTheSameContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $model:paths.from(item),
+            $compared:paths.to(item)
+          }));
+        }
       });
       describe(`and 'contents' property`,function(){
         beforeEach(function(){
@@ -869,6 +1102,14 @@ describe(`When the structure contains more than one items`,function(){
             $arguments:{structure:should.context('structure')},
             $file:paths.to(item)
           }));
+
+          it.apply(this,should.haveContent({
+            $function:testingModule,
+            $arguments:{structure:should.context('structure')},
+            $file:paths.to(item),
+            $content:''
+          }));
+
         }
 
       });
