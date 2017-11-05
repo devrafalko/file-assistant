@@ -11,7 +11,7 @@ const data = require(path.resolve(helpers,'structures.json'));
 const should = require(path.resolve(helpers,'should.js'));
 
 
-describe(`When the structure contains more than one items`,function(){
+fdescribe(`When the structure contains more than one items`,function(){
   beforeEach(function(done){
     prepare.remove()
     .then(()=>prepare.resetFrom())
@@ -45,6 +45,28 @@ describe(`When the structure contains more than one items`,function(){
         }));
       }
 
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:2,
+        $folders:0
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
     });
     describe(`and 'move' property`,function(){
       beforeEach(function(){
@@ -75,9 +97,29 @@ describe(`When the structure contains more than one items`,function(){
           $file:paths.to(item),
           $content:data[item].content
         }));
-
       }
 
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:2,
+        $folders:0
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
 
     });
     describe(`and 'copy' property`,function(){
@@ -117,7 +159,30 @@ describe(`When the structure contains more than one items`,function(){
           $compared:paths.to(item)
         }));
       }
+
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:2,
+        $folders:0
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
     });
+
     describe(`and one has 'copy' and other one has 'move' property`,function(){
       beforeEach(function(){
         this.structure = [
@@ -155,7 +220,30 @@ describe(`When the structure contains more than one items`,function(){
         $content:data[item].content
       }));
 
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:2,
+        $folders:0
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
     });
+
     describe(`and one has 'move' and other one has 'copy' property`,function(){
       beforeEach(function(){
         this.structure = [
@@ -187,7 +275,86 @@ describe(`When the structure contains more than one items`,function(){
         }));
       }
 
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:2,
+        $folders:0
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
     });
+
+    describe(`and one has 'move' and other one has 'writeFrom' property`,function(){
+      beforeEach(function(){
+        this.structure = [
+          {file:paths.name('prod.css'), move:paths.from('prod.css'), overwrite:true},
+          {file:paths.name('prod.css'), writeFrom:paths.from('prod.css'), overwrite:true},
+          {file:paths.name('dist.css'), move:paths.from('dist.css'), overwrite:false},
+          {file:paths.name('dist.css'), writeFrom:paths.from('dist.css'), overwrite:false}
+        ];
+      });
+
+      for(var item of ['prod.css','dist.css']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+        
+        it.apply(this,should.removeFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.from(item)
+        }));
+
+        it.apply(this,should.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item),
+          $content:data[item].content
+        }));
+      }
+
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:2,
+        $folders:0
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+    });
+
+
+
+
     describe(`and 'write' property`,function(){
       beforeEach(function(){
         this.structure = [
@@ -220,7 +387,30 @@ describe(`When the structure contains more than one items`,function(){
         $content:data['prod.css'].content + data['dist.css'].content
       }));
 
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:2,
+        $folders:0
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
     });
+
     describe(`and 'writeFrom' property`,function(){
       beforeEach(function(){
         this.structure = [
@@ -252,6 +442,29 @@ describe(`When the structure contains more than one items`,function(){
         $file:paths.to('dist.css'),
         $content:data['dist.css'].content + data['dist.css'].content
       }));
+
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:2,
+        $folders:0
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
 
     });
   });
@@ -290,8 +503,30 @@ describe(`When the structure contains more than one items`,function(){
           $file:paths.to(item),
           $content:data[item].content
         }));
-
       }
+
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:2,
+        $folders:0
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
 
     });
     describe(`and 'copy' property`,function(){
@@ -329,7 +564,29 @@ describe(`When the structure contains more than one items`,function(){
         }));
       }
 
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:2,
+        $folders:0
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
     });
+    
     describe(`and 'write' property`,function(){
       beforeEach(function(){
         this.structure = [
@@ -366,7 +623,30 @@ describe(`When the structure contains more than one items`,function(){
         $content:data['prod.css'].content + data['styles/css/main.css'].content + data['dist.css'].content + data['styles/css/main.css'].content
       }));
 
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:2,
+        $folders:0
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
     });
+
     describe(`and 'writeFrom' property`,function(){
       beforeEach(function(){
         this.structure = [
@@ -403,6 +683,28 @@ describe(`When the structure contains more than one items`,function(){
         $content:data['dist.css'].content + data['styles/css/main.css'].content + data['dist.css'].content + data['styles/css/main.css'].content
       }));
 
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:2,
+        $folders:0
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
     });
   });
 
@@ -425,8 +727,31 @@ describe(`When the structure contains more than one items`,function(){
         }));
       }
 
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:0,
+        $folders:2
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
+
     });
-    describe(`and 'move' property`,function(){
+    fdescribe(`and 'move' property`,function(){
       beforeEach(function(){
         this.structure = [
           {dir:paths.name('styles'), move:paths.from('styles'), overwrite:true},
@@ -468,8 +793,30 @@ describe(`When the structure contains more than one items`,function(){
           $file:paths.to(item),
           $content:data[item].content
         }));
-
       }
+
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:7,
+        $folders:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:13
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
 
     });
     describe(`and 'copy' property`,function(){
@@ -517,6 +864,28 @@ describe(`When the structure contains more than one items`,function(){
           $compared:paths.to(item)
         }));
       }
+
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:7,
+        $folders:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:21
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
 
     });
     describe(`and one has 'copy' and other one has 'move' property`,function(){
@@ -592,6 +961,29 @@ describe(`When the structure contains more than one items`,function(){
         $compared:paths.to('scripts/ajax.js')
       }));
 
+
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:7,
+        $folders:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:21
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
     });
     describe(`and one has 'move' and other one has 'copy' property`,function(){
       beforeEach(function(){
@@ -639,6 +1031,28 @@ describe(`When the structure contains more than one items`,function(){
 
       }
 
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:7,
+        $folders:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:13
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
     });
     describe(`and 'merge' property`,function(){
       beforeEach(function(){
@@ -673,7 +1087,101 @@ describe(`When the structure contains more than one items`,function(){
         }));
       }
 
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:14,
+        $folders:6
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:22
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
     });
+
+
+    describe(`and one has 'move' and other one has 'merge' property`,function(){
+      beforeEach(function(){
+        this.structure = [
+          {dir:paths.name('styles'), move:paths.from('styles'), overwrite:true},
+          {dir:paths.name('styles'), merge:paths.from('styles'), overwrite:true},
+          {dir:paths.name('scripts'), move:paths.from('scripts'), overwrite:false},
+          {dir:paths.name('scripts'), merge:paths.from('scripts'), overwrite:false}
+        ];
+      });
+
+      for(var item of ['styles','scripts','styles/css','styles/scss']){
+        it.apply(this,should.createNewFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.to(item)
+        }));
+        
+        it.apply(this,should.removeFolder({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $folder:paths.from(item)
+        }));
+      }
+
+      for(var item of ['styles/mixins.scss','styles/imports.scss','styles/css/main.css','styles/css/style.css','styles/css/extra.css','styles/scss/main.scss','scripts/ajax.js']){
+        it.apply(this,should.createNewFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item)
+        }));
+
+        it.apply(this,should.removeFile({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.from(item)
+        }));
+
+        it.apply(this,should.haveContent({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $file:paths.to(item),
+          $content:data[item].content
+        }));
+
+      }
+
+      it.apply(this,should.containItemsNumber({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $directory:paths.toDir,
+        $files:7,
+        $folders:4
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'each',
+        $callbackTimes:13
+      }));
+
+      it.apply(this,should.runCallback({
+        $function:testingModule,
+        $arguments:{structure:should.context('structure')},
+        $callback:'done',
+        $callbackTimes:1
+      }));
+
+    });
+
   });
 
   describe(`that have the 'dir' property of the same value and 'content' property, and 'content' scope contains`,function(){
@@ -712,6 +1220,28 @@ describe(`When the structure contains more than one items`,function(){
             $content:''
           }));
         }
+
+        it.apply(this,should.containItemsNumber({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $directory:paths.toDir,
+          $files:2,
+          $folders:1
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:6
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
 
       });
       describe(`and 'move' property`,function(){
@@ -755,6 +1285,28 @@ describe(`When the structure contains more than one items`,function(){
           }));
         }
 
+        it.apply(this,should.containItemsNumber({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $directory:paths.toDir,
+          $files:2,
+          $folders:1
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:6
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
+
       });
       describe(`and 'copy' property`,function(){
         beforeEach(function(){
@@ -796,6 +1348,29 @@ describe(`When the structure contains more than one items`,function(){
             $compared:paths.to(item)
           }));
         }
+
+        it.apply(this,should.containItemsNumber({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $directory:paths.toDir,
+          $files:2,
+          $folders:1
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:6
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
+
 
       });
       describe(`and 'write' property`,function(){
@@ -840,6 +1415,27 @@ describe(`When the structure contains more than one items`,function(){
           $content:data['styles/imports.scss'].content + data['styles/mixins.scss'].content
         }));
 
+        it.apply(this,should.containItemsNumber({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $directory:paths.toDir,
+          $files:2,
+          $folders:1
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:6
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
 
       });
       describe(`and 'writeFrom' property`,function(){
@@ -884,6 +1480,29 @@ describe(`When the structure contains more than one items`,function(){
           $content:data['styles/imports.scss'].content + data['styles/mixins.scss'].content
         }));
 
+        it.apply(this,should.containItemsNumber({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $directory:paths.toDir,
+          $files:2,
+          $folders:1
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:6
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
+
+
       });
     });
 
@@ -909,6 +1528,29 @@ describe(`When the structure contains more than one items`,function(){
             $folder:paths.to(item)
           }));
         }
+
+        it.apply(this,should.containItemsNumber({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $directory:paths.toDir,
+          $files:0,
+          $folders:3
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:6
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
+
 
       });
       describe(`and 'move' property`,function(){
@@ -964,6 +1606,30 @@ describe(`When the structure contains more than one items`,function(){
             $content:data[item].content
           }));
         }
+
+        it.apply(this,should.containItemsNumber({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $directory:paths.toDir,
+          $files:4,
+          $folders:3
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:10
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
+
+
 
       });
       describe(`and 'copy' property`,function(){
@@ -1021,6 +1687,31 @@ describe(`When the structure contains more than one items`,function(){
 
         }
 
+        it.apply(this,should.containItemsNumber({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $directory:paths.toDir,
+          $files:4,
+          $folders:3
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:13
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
+
+
+
+
       });
       describe(`and 'merge' property`,function(){
         beforeEach(function(){
@@ -1058,6 +1749,30 @@ describe(`When the structure contains more than one items`,function(){
             $compared:paths.to(item)
           }));
         }
+
+        it.apply(this,should.containItemsNumber({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $directory:paths.toDir,
+          $files:8,
+          $folders:3
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:14
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
+
+
       });
       describe(`and 'contents' property`,function(){
         beforeEach(function(){
@@ -1111,6 +1826,28 @@ describe(`When the structure contains more than one items`,function(){
           }));
 
         }
+
+        it.apply(this,should.containItemsNumber({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $directory:paths.toDir,
+          $files:6,
+          $folders:3
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'each',
+          $callbackTimes:17
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
 
       });
     });

@@ -1596,7 +1596,7 @@ describe(`When the folder does not exist in the root folder\n`+
         $arguments:{structure:should.context('structure')},
         $folder:paths.from('styles')
       }));
-      
+
       it.apply(this,should.removeFolder({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
@@ -3658,6 +3658,7 @@ describe(`When the folder already exists in the root folder\n`+
         }));
     
   });
+
   describe(`and 'merge' and overwrite:false property`,function(){
 
       beforeEach(function(done){
@@ -3944,20 +3945,20 @@ describe(`When the folder already exists in the root folder\n`+
 
 describe(`When the path of the new file or dir is the same as the path of`,function(){
 
-    beforeEach(function(done){
-      prepare.remove()
-      .then(()=>prepare.resetFrom())
-      .then(()=>prepare.resetTo())
-      .then(()=>prepare.addTo('empty'))
-      .then(()=>prepare.addTo('styles'))
-      .then(()=>prepare.addTo('styles/imports.scss'))
-      .then(()=>prepare.addTo('styles/css'))
-      .then(()=>prepare.addTo('styles/css/style.css'))
-      .then(()=>prepare.addTo('variables.scss'))
-      .then(()=>prepare.addTo('dist.css'))
-      .then(done)
-      .catch(done.fail);
-    });
+  beforeEach(function(done){
+    prepare.remove()
+    .then(()=>prepare.resetFrom())
+    .then(()=>prepare.resetTo())
+    .then(()=>prepare.addTo('empty'))
+    .then(()=>prepare.addTo('styles'))
+    .then(()=>prepare.addTo('styles/imports.scss'))
+    .then(()=>prepare.addTo('styles/css'))
+    .then(()=>prepare.addTo('styles/css/style.css'))
+    .then(()=>prepare.addTo('variables.scss'))
+    .then(()=>prepare.addTo('dist.css'))
+    .then(done)
+    .catch(done.fail);
+  });
 
   describe(`'copy' property`,function(){
     
@@ -4114,8 +4115,6 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
           }
         }));
   });
-  
-  
 
   describe(`'move' property`,function(){
     
@@ -4273,10 +4272,6 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
         }));
     
   });
-    
-    
-    
-  
 
   describe(`'merge' property`,function(){
     
@@ -4430,7 +4425,6 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
         }));
   });
 
-
   describe(`'writeFrom' property`,function(){
 
       beforeEach(function(){
@@ -4538,8 +4532,5 @@ describe(`When the path of the new file or dir is the same as the path of`,funct
         }));
     
   });
-  
-  
-  
   
 });

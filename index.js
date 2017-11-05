@@ -84,12 +84,12 @@ StructureDirs.prototype.validation = {
     for(var method of methodsList){
       functionList.push(this.validation.methods[method]);
     }
-    this.globalItemsData = [];
     this.abstractStructure = {};
-    const globalData = {
+    this.globalData = {
       execution:true,
       root:this.root,
-      globalItemsData:this.globalItemsData,
+      movingData:{},
+      globalItemsData:[],
       invalidMessage:(indeces)=>`Invalid structure argument ${indeces}.`
     };
 
@@ -98,14 +98,13 @@ StructureDirs.prototype.validation = {
       abstract:this.abstractStructure,
       parent:null,
       level:0,
-      globalData:globalData,
       siblings:this.firstLevelSiblings,
       indeces:'',
       whenDone:resolve
     });
 
     function exploreStructure(o){
-      if(!o.currentLevel.length) o.whenDone.call(o.globalData);
+      if(!o.currentLevel.length) o.whenDone.call(this.globalData);
 
       const levelData = {
         iterator:0,
@@ -121,7 +120,8 @@ StructureDirs.prototype.validation = {
         const userContext = {
           utils:this.utils,
           prepare:this.prepare,
-          globalData:o.globalData,
+          abstractStructure:this.abstractStructure,
+          globalData:this.globalData,
           level:o.level+1,
           levelData:levelData,
           itemData:{
@@ -145,7 +145,6 @@ StructureDirs.prototype.validation = {
           currentLevel:this.itemData.item.contents,
           abstract:this.itemData.abstractScope,
           parent:this.itemData,
-          globalData:this.globalData,
           level:this.level,
           siblings:this.itemData.childrenList,
           indeces:this.itemData.indeces,
@@ -169,7 +168,7 @@ StructureDirs.prototype.validation = {
         this.globalData.execution = false;
         reject(err);
       }
-    
+
   },
   methods:{
     defineInvalidMessage:function(resolve){
@@ -240,7 +239,7 @@ StructureDirs.prototype.validation = {
       } else {
         const item = gData[level][abs];
         if((item.file&&this.itemData.folder)||(item.folder&&this.itemData.file)){
-          return reject(new Error(`${this.itemData.invalidMessage} The ${item.indeces} ${item.file ? 'file':'folder'} item has already got the same name.`));
+          return reject(new Error(`${this.itemData.invalidMessage} The ${item.indeces} ${item.file ? 'file':'dir'} item has already got the same name.`));
         }
       }
       this.itemData.globalLevel = gData[level];
@@ -379,6 +378,7 @@ StructureDirs.prototype.validation = {
       this.prepare.generateContent(config,(generatedStructure)=>{
         this.itemData.item.contents = generatedStructure;
         delete this.itemData.item[this.itemData.action];
+        this.itemData.movingParent = true;
         resolve();
       },(err)=>{
         reject(new Error(`${this.itemData.invalidMessage} ${err}`));
@@ -397,9 +397,13 @@ StructureDirs.prototype.validation = {
       this.itemData.beforeWrite = this.itemData.item.beforeWrite;
       resolve();
     },
-
     defineParentPath:function(resolve){
       this.itemData.parent = this.levelData.parent;
+      resolve();
+    },
+    defineMovingChild:function(resolve){
+      const parent = this.itemData.parent;
+      if(parent&&(parent.movingParent||parent.movingChild)) this.itemData.movingChild = true;
       resolve();
     },
     defineChildrenPaths:function(resolve){
@@ -537,13 +541,14 @@ StructureDirs.prototype.appenders = {
           const functionList = [];
           for(let itemData of itemList){
             functionList.push(function(resolve){
-              const nextRun = run.bind(this,{
-                abstractScope:itemData.abstractScope,
-                parent:itemData,
-                onDone:resolve
+              this.appenders.createItem.call(this,itemData,()=>{
+                if(!itemData.tidyUp) return resolve();
+                run.call(this,{
+                  abstractScope:itemData.abstractScope,
+                  parent:itemData,
+                  onDone:resolve
+                });
               });
-              const nextAction = itemData.tidyUp ? nextRun:resolve;
-              this.appenders.createItem.call(this,itemData,nextAction);
             });
           }
           moveOn(functionList,this,increase.bind(this),()=>{});
@@ -551,13 +556,14 @@ StructureDirs.prototype.appenders = {
 
         if(!multiple){
           const itemData = itemList[0];
-          const nextRun = run.bind(this,{
-            abstractScope:itemData.abstractScope,
-            parent:itemData,
-            onDone:increase.bind(this)
+          this.appenders.createItem.call(this,itemData,()=>{
+            if(!itemData.tidyUp) return increase.call(this);
+            run.call(this,{
+              abstractScope:itemData.abstractScope,
+              parent:itemData,
+              onDone:increase.bind(this)
+            });
           });
-          const nextAction = itemData.tidyUp ? nextRun:increase.bind(this);
-          this.appenders.createItem.call(this,itemData,nextAction);
         }
 
       }
@@ -581,6 +587,7 @@ StructureDirs.prototype.appenders = {
       itemData:itemData,
       each:this.each,
       doneObject:this.doneObject,
+      globalData:this.globalData,
       response:this.response,
       utils:this.utils,
       messages:this.response.messages,
@@ -604,7 +611,17 @@ StructureDirs.prototype.appenders = {
             this.computeMessage('failure',false,addMsg);
             return reject();
           };
-          this.itemData.globalLevel[this.itemData.absolute].alreadyMoved = true;          
+          var parent = this.itemData.parent;
+          if(parent&&(parent.movingParent||parent.movingChild)) return resolve();
+          
+          this.itemData.globalLevel[this.itemData.absolute].alreadyMoved = true;        
+          const splitPath = path.resolve(this.itemData.from).split(path.sep);
+          var currentPath = this.globalData.movingData;
+          for(var i = 0;i<splitPath.length;i++){
+            if(!type(currentPath[splitPath[i]],Object)) currentPath[splitPath[i]] = i===splitPath.length-1 ? this.itemData.indeces:{};
+            currentPath = currentPath[splitPath[i]];
+          }
+          
           return resolve();
         });
       }
@@ -679,8 +696,9 @@ StructureDirs.prototype.appenders = {
     };
 
     const userContext = {
+      done:done,
       itemData:itemData,
-      globalItemsData:this.globalItemsData,
+      globalData:this.globalData,
       doneObject:this.doneObject,
       each:this.each,
       response:this.response,
@@ -719,15 +737,26 @@ StructureDirs.prototype.appenders = {
       }
       resolve();
     },
-    checkDoubleFileExists:function(resolve){
-      if(this.itemData.globalLevel[this.itemData.absolute].alreadyExists) this.itemData.alreadyFileExists = true;
+    abortIfAlreadyMoved:function(resolve,reject){
+      const hasOuterStructure = this.utils.orEqual(this.itemData.action,'move','copy','merge');
+      if(!hasOuterStructure) return resolve();
+      const splitPath = path.resolve(this.itemData.from).split(path.sep);
+      var currentPath = this.globalData.movingData;
+      for(var i = 0;i<splitPath.length;i++){
+        if(type(currentPath[splitPath[i]],undefined)) break;
+        if(type(currentPath[splitPath[i]],String)&&!this.itemData.indeces.startsWith(currentPath[splitPath[i]])){
+          this.itemData.abstractScope = {};
+          if(this.itemData.folder&&this.itemData.action!=='move') this.itemData.tidyUp = false;
+          this.computeMessage('failure',false,`, because this ${this.itemData.file ? 'file':'folder'} has been already moved.`);
+          return reject();
+        }
+        currentPath = currentPath[splitPath[i]];
+      }
+
       resolve();
     },
-    abortIfAlreadyMoved:function(resolve,reject){
-      if(this.itemData.globalLevel[this.itemData.absolute].alreadyMoved){
-        this.computeMessage('failure',false,`, because this ${this.itemData.file ? 'file':'folder'} has been already moved.`);
-        return reject();
-      }
+    checkDoubleFileExists:function(resolve){
+      if(this.itemData.globalLevel[this.itemData.absolute].alreadyExists) this.itemData.alreadyFileExists = true;
       resolve();
     },
     abortIfPathInaccessible:function(resolve,reject){
@@ -759,10 +788,8 @@ StructureDirs.prototype.appenders = {
             this.computeMessage('failure',false,`. Could not read the content of the '${this.itemData.from}' file.`);
             return reject();
           }
-          if(!err){
-            this.itemData.content = data;
-            return resolve();
-          }
+          this.itemData.content = data;
+          return resolve();
         });
       } else if(this.itemData.action==='write'){
         this.itemData.content = this.itemData.item.write;
@@ -821,7 +848,20 @@ StructureDirs.prototype.appenders = {
           this.computeMessage('failure',false,'. The file was successfully copied to the target location, but could not be removed from its origin location.');
           return reject();
         }
-        this.itemData.globalLevel[this.itemData.absolute].alreadyMoved = true;
+
+        var parent = this.itemData.parent;
+        if(parent&&(parent.movingParent||parent.movingChild)){
+          this.computeMessage('success',true);
+          return resolve();
+        }
+
+        const splitPath = path.resolve(this.itemData.from).split(path.sep);
+        var currentPath = this.globalData.movingData;
+        for(var i = 0;i<splitPath.length;i++){
+          if(!type(currentPath[splitPath[i]],Object)) currentPath[splitPath[i]] = i===splitPath.length-1 ? this.itemData.indeces:{};
+          currentPath = currentPath[splitPath[i]];
+        }
+        
         this.computeMessage('success',true);
         resolve();
       });
@@ -840,6 +880,8 @@ StructureDirs.prototype.appenders = {
     },
     abortIfDirOverwrite:function(resolve,reject){
       if(this.itemData.alreadyDirExists&&!this.itemData.overwrite&&this.itemData.action!=='merge'){
+        if(this.itemData.action !== 'contents') this.itemData.abstractScope = {};
+        if(this.itemData.folder&&this.itemData.action==='copy') this.itemData.tidyUp = false;
         this.computeMessage('warning',false,', due to the "overwrite" property settings.',true);
         return reject();
       }

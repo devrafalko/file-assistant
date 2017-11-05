@@ -621,7 +621,6 @@ describe('When the module function',function(){
 
       });
 
-
       describe(`that has both 'file' and 'dir' property of incorrect type`,function(){
         beforeAll(function(){
           this.structure = [{dir:2,file:null}];
@@ -1077,8 +1076,7 @@ describe('When the module function',function(){
 
 
           });
-         describe(`of correct [String] type`,function(){
-
+          describe(`of correct [String] type`,function(){
             describe(`but empty, while it should indicate file`,function(){
 
               beforeAll(function(){
@@ -1108,7 +1106,6 @@ describe('When the module function',function(){
               }));
 
             });
-
             describe(`but empty, while it should indicate folder`,function(){
 
               beforeAll(function(){
@@ -1138,7 +1135,6 @@ describe('When the module function',function(){
               }));
 
             });
-
             describe(`but it leads to the file, while the item has the 'dir' property`,function(){
 
               beforeAll(function(){
@@ -1272,9 +1268,7 @@ describe('When the module function',function(){
               }));
 
             });
-
           });
-
 
       });
 
@@ -1593,6 +1587,7 @@ describe('When the module function',function(){
           });
 
       });
+
       describe(`that has 'merge' property`,function(){
 
           describe(`but also has 'contents' property`,function(){
@@ -2072,6 +2067,7 @@ describe('When the module function',function(){
           });
 
       });
+
       describe(`that has 'dir' property and 'content' property`,function(){
 
           describe(`but of incorrect type`,function(){
@@ -2106,7 +2102,6 @@ describe('When the module function',function(){
 
       });
 
-
       describe(`that has 'overwrite' property`,function(){
 
         describe(`but of incorrect type`,function(){
@@ -2137,6 +2132,226 @@ describe('When the module function',function(){
           }));
 
         });
+
+      });
+
+    });
+
+    describe('contains [Object] type items of the same level',function(){
+      
+      describe(`where the first one has 'file' and the second one has 'dir' property of the same value`,function(){
+        beforeAll(function(){
+          this.structure = [
+            {file:paths.name('styles')},
+            {dir:paths.name('styles')}
+          ];
+        });
+
+        it.apply(this,should.not.throwError({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')}
+        }));
+
+        it.apply(this,should.runCallbackError({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1,
+          $propertyName:'error',
+          $errorObject:Error,
+          $message:/Invalid structure argument \[1\]\. The \[0\] file item has already got the same name\./i
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
+
+      });
+      
+      describe(`where the first one has 'dir' and the second one has 'file' property of the same value`,function(){
+        beforeAll(function(){
+          this.structure = [
+            {dir:paths.name('styles')},
+            {file:paths.name('styles')}
+          ];
+        });
+
+        it.apply(this,should.not.throwError({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')}
+        }));
+
+        it.apply(this,should.runCallbackError({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1,
+          $propertyName:'error',
+          $errorObject:Error,
+          $message:/Invalid structure argument \[1\]\. The \[0\] dir item has already got the same name\./i
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
+
+      });
+      
+      describe(`where both has 'dir' property of the same name and 'contents' property that contains - the first one 'file' and the second one 'dir' property - of the same value`,function(){
+        beforeAll(function(){
+          this.structure = [
+            {dir:paths.name('styles'), contents:[
+              {file:paths.name('styles/css')}
+            ]},
+            {dir:paths.name('styles'), contents:[
+              {dir:paths.name('styles/css')}
+            ]}
+          ];
+        });
+
+        it.apply(this,should.not.throwError({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')}
+        }));
+
+        it.apply(this,should.runCallbackError({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1,
+          $propertyName:'error',
+          $errorObject:Error,
+          $message:/Invalid structure argument \[1\]\[0\]\. The \[0\]\[0\] file item has already got the same name\./i
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
+
+      });
+      
+      describe(`where both has 'dir' property of the same name and 'contents' property that contains - the first one 'dir' and the second one 'file' property - of the same value`,function(){
+        beforeAll(function(){
+          this.structure = [
+            {dir:paths.name('styles'), contents:[
+              {dir:paths.name('styles/css')}
+            ]},
+            {dir:paths.name('styles'), contents:[
+              {file:paths.name('styles/css')}
+            ]}
+          ];
+        });
+
+        it.apply(this,should.not.throwError({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')}
+        }));
+
+        it.apply(this,should.runCallbackError({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1,
+          $propertyName:'error',
+          $errorObject:Error,
+          $message:/Invalid structure argument \[1\]\[0\]\. The \[0\]\[0\] dir item has already got the same name\./i
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
+
+      });
+      
+      describe(`where both has 'dir' property of the same name and 'contents' property that contains 'dir' property of the same value and 'contents' property that contains - the first one 'dir' and the second one 'file' property - of the same value`,function(){
+        beforeAll(function(){
+          this.structure = [
+            {dir:paths.name('styles'), contents:[
+              {dir:paths.name('styles/css'), contents:[
+                {dir:paths.name('styles/css/main.css')}
+              ]}
+            ]},
+            {dir:paths.name('styles'), contents:[
+              {dir:paths.name('styles/css'), contents:[
+                {file:paths.name('styles/css/main.css')}
+              ]}
+            ]}
+          ];
+        });
+
+        it.apply(this,should.not.throwError({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')}
+        }));
+
+        it.apply(this,should.runCallbackError({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1,
+          $propertyName:'error',
+          $errorObject:Error,
+          $message:/Invalid structure argument \[1\]\[0\]\[0\]\. The \[0\]\[0\]\[0\] dir item has already got the same name\./i
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
+
+      });
+      
+      describe(`where both has 'dir' property of the same name and 'contents' property that contains 'dir' property of the same value and 'contents' property that contains - the first one 'file' and the second one 'dir' property - of the same value`,function(){
+        beforeAll(function(){
+          this.structure = [
+            {dir:paths.name('styles'), contents:[
+              {dir:paths.name('styles/css'), contents:[
+                {file:paths.name('styles/css/main.css')}
+              ]}
+            ]},
+            {dir:paths.name('styles'), contents:[
+              {dir:paths.name('styles/css'), contents:[
+                {dir:paths.name('styles/css/main.css')}
+              ]}
+            ]}
+          ];
+        });
+
+        it.apply(this,should.not.throwError({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')}
+        }));
+
+        it.apply(this,should.runCallbackError({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1,
+          $propertyName:'error',
+          $errorObject:Error,
+          $message:/Invalid structure argument \[1\]\[0\]\[0\]\. The \[0\]\[0\]\[0\] file item has already got the same name\./i
+        }));
+
+        it.apply(this,should.runCallback({
+          $function:testingModule,
+          $arguments:{structure:should.context('structure')},
+          $callback:'done',
+          $callbackTimes:1
+        }));
 
       });
 
@@ -2263,7 +2478,6 @@ describe('When the module function',function(){
         }));
 
       });
-
 
       describe(`that has both 'file' and 'dir' property of incorrect type`,function(){
         beforeAll(function(){
@@ -3236,6 +3450,7 @@ describe('When the module function',function(){
           });
 
       });
+
       describe(`that has 'merge' property`,function(){
 
           describe(`but also has 'contents' property`,function(){
