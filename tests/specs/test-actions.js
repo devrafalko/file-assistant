@@ -121,7 +121,7 @@ describe(`When the file does not exist in the root folder\n`+
         $callback:'each',
         $callbackTimes:1
       }));
-      
+
       it.apply(this,should.runCallbackWithObject({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
@@ -140,7 +140,7 @@ describe(`When the file does not exist in the root folder\n`+
           absolute:paths.to('prod.css')
         }
       }));
-    
+
       it.apply(this,should.runCallbackWithObject({
           $function:testingModule,
           $arguments:{structure:should.context('structure')},
@@ -3333,7 +3333,6 @@ describe(`When the folder already exists in the root folder\n`+
         $callback:'done',
         $callbackTimes:1
       }));
-
       it.apply(this,should.runCallbackWithObject({
         $function:testingModule,
         $arguments:{structure:should.context('structure')},
@@ -3352,6 +3351,7 @@ describe(`When the folder already exists in the root folder\n`+
           absolute:paths.to('styles')
         }
       }));
+
 
       it.apply(this,should.runCallbackWithObject({
           $function:testingModule,

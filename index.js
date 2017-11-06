@@ -124,6 +124,7 @@ StructureDirs.prototype.validation = {
           globalData:this.globalData,
           level:o.level+1,
           levelData:levelData,
+          siblingIndex:i,
           itemData:{
             item:o.currentLevel[i],
             indeces:`${o.indeces}[${i}]`
@@ -136,7 +137,7 @@ StructureDirs.prototype.validation = {
       function onItemDone(){
         if(this.globalData.execution === false) return;
         if(!type(this.levelData.abstract[this.itemData.name],Array)) this.levelData.abstract[this.itemData.name] = [];
-        this.levelData.abstract[this.itemData.name].push(this.itemData);
+        this.levelData.abstract[this.itemData.name][this.siblingIndex] = this.itemData;
 
         const hasAbstractStructure = type(this.itemData.item.contents,Array);
         if(!hasAbstractStructure) return moveIterator.call(this);
@@ -539,7 +540,8 @@ StructureDirs.prototype.appenders = {
         const multiple = itemList.length>1;
         if(multiple){
           const functionList = [];
-          for(let itemData of itemList){
+          for(let it in itemList){
+            let itemData = itemList[it];
             functionList.push(function(resolve){
               this.appenders.createItem.call(this,itemData,()=>{
                 if(!itemData.tidyUp) return resolve();
@@ -630,7 +632,8 @@ StructureDirs.prototype.appenders = {
         const countResult = {};
         const siblings = this.itemData.abstractScope;
         for(var doubled in siblings){
-          for(var singleItem of siblings[doubled]){
+          for(var si in siblings[doubled]){
+            var singleItem = siblings[doubled][si];
             for(var x in singleItem.result){
               countResult[x] = singleItem.result[x]!==null ? true:countResult[x] ? countResult[x]:false;
             }
@@ -738,7 +741,7 @@ StructureDirs.prototype.appenders = {
       resolve();
     },
     abortIfAlreadyMoved:function(resolve,reject){
-      const hasOuterStructure = this.utils.orEqual(this.itemData.action,'move','copy','merge');
+      const hasOuterStructure = this.utils.orEqual(this.itemData.action,'move','copy','merge','writeFrom');
       if(!hasOuterStructure) return resolve();
       const splitPath = path.resolve(this.itemData.from).split(path.sep);
       var currentPath = this.globalData.movingData;
@@ -875,7 +878,9 @@ StructureDirs.prototype.appenders = {
     },
     checkDoubleDirExists:function(resolve){
       const parentOverwrite = this.itemData.action === 'merge' ? false:this.itemData.parent && this.itemData.parent.overwrite;
-      if(this.itemData.globalLevel[this.itemData.absolute].alreadyExists&&!parentOverwrite) this.itemData.alreadyDirExists = true;
+      const globalExists = this.itemData.globalLevel[this.itemData.absolute].alreadyExists;
+      if(globalExists&&!parentOverwrite) this.itemData.alreadyDirExists = true;
+      if(globalExists&&parentOverwrite) this.itemData.usedToExist = true;
       resolve();
     },
     abortIfDirOverwrite:function(resolve,reject){
@@ -964,7 +969,7 @@ StructureDirs.prototype.response = {
       return `The file "${this.itemData.relative}" ${success?'was successfully':'could not be'} ${message[this.itemData.action]}`;
     },
     fileOverwrite:function(success){
-      const actionMsg = type(this.itemData.content,String) ?
+      const actionMsg = this.itemData.action === 'write' ?
         `The content of "${this.itemData.relative}" file`:
         `The already existing file "${this.itemData.relative}"`;
       const message = {

@@ -124,7 +124,7 @@ describe("When the module function is executed",function(){
   });
 
   describe("with the root path folder that already exists as a file",function(){
-      beforeEach(function(done){
+      beforeAll(function(done){
         prepare.remove()
         .then(()=>prepare.addFile('prod'))
         .then(done)
